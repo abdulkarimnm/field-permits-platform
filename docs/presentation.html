@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>منصة تصاريح دخول الميدان — عرض للعميل</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+@page { size: 297mm 210mm; margin: 0; }
+:root{--brand:#763b30;--deep:#5a2b23;--ink:#3d2a24;--soft:#6e5a53;--rose2:#e4bfbc;--cream:#ffecdc;--paper:#fffaf5;--line:#eadfd8;--gold:#c9a66b;--gold2:#e9cfa6;--ok:#1f7a4d}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#cfc5bf}
+body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.page{width:297mm;height:210mm;position:relative;overflow:hidden;background:var(--paper);break-after:page;page-break-after:always;margin:0 auto}
+.page:last-child{break-after:auto}
+.dark{color:#fbf1ea;background:radial-gradient(110% 80% at 85% -10%,rgba(150,72,54,.6),transparent 60%),radial-gradient(80% 70% at 0% 110%,rgba(228,191,188,.14),transparent 60%),linear-gradient(160deg,#6a3226,#57281e 50%,#3d1b14)}
+.dark::before{content:"";position:absolute;inset:0;opacity:.6;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='96' viewBox='0 0 84 96'%3E%3Cpath d='M6 96V40a36 36 0 0 1 72 0v56' fill='none' stroke='%23e9cfa6' stroke-opacity='.08'/%3E%3C/svg%3E") 0 0/22mm 25mm}
+.foot{position:absolute;bottom:7mm;inset-inline:14mm;display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:var(--soft)}
+.dark .foot{color:rgba(255,236,220,.55)}
+.foot b{color:var(--brand)}.dark .foot b{color:var(--gold2)}
+.eyebrow{display:flex;align-items:center;gap:2.5mm;font-size:9pt;font-weight:600;color:var(--gold)}
+.eyebrow::before{content:"";width:2mm;height:2mm;transform:rotate(45deg);background:var(--gold)}
+h1{font-size:44pt;font-weight:700;line-height:1.2;color:#fff}
+h2{font-size:24pt;font-weight:700;line-height:1.3;margin-top:2mm}
+.lead{font-size:11pt;line-height:1.85;color:var(--soft);margin-top:2mm;max-width:150mm}
+.dark .lead{color:rgba(255,236,220,.8)}
+
+/* frames */
+.browser{border-radius:3mm;overflow:hidden;background:#fff;box-shadow:0 6mm 16mm -6mm rgba(61,42,36,.45),0 0 0 .3mm rgba(61,42,36,.12)}
+.browser .bar{height:6mm;background:#efe7e1;display:flex;align-items:center;gap:1.4mm;padding:0 3mm;direction:ltr}
+.browser .bar i{width:2mm;height:2mm;border-radius:50%;background:#d9cbc3}
+.browser .bar span{margin:auto;font-size:6pt;color:#8a776f;background:#fff;border-radius:1.2mm;padding:.6mm 6mm}
+.browser img{display:block;width:100%;height:auto}
+.phone{border-radius:9mm;padding:2.2mm;background:linear-gradient(145deg,#3a2a26,#120a08 60%,#2b1d19);box-shadow:0 8mm 18mm -6mm rgba(0,0,0,.6),inset 0 0 0 .35mm rgba(233,207,166,.4)}
+.phone img{display:block;width:100%;border-radius:7mm}
+.crop{overflow:hidden}
+.crop img{display:block;width:100%}
+
+/* callouts */
+.calls{display:flex;flex-direction:column;gap:6mm}
+.call{display:grid;grid-template-columns:8mm 1fr;gap:3mm;align-items:start}
+.call i{width:8mm;height:8mm;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:10pt;box-shadow:0 0 0 .8mm var(--paper),0 0 0 1.1mm var(--gold)}
+.call b{display:block;font-size:11.5pt;color:var(--ink)}
+.call span{display:block;font-size:9.4pt;line-height:1.75;color:var(--soft);margin-top:.5mm}
+
+.feature{position:absolute;inset:14mm 14mm 16mm;display:grid;grid-template-columns:78mm 1fr;gap:12mm}
+.feature .txt{display:flex;flex-direction:column}
+.feature .txt .calls{margin-top:9mm}
+.feature .vis{position:relative;display:flex;align-items:center;justify-content:center}
+
+/* cover */
+.cover .logo{position:absolute;top:12mm;right:14mm;background:var(--paper);border-radius:3mm;padding:3mm 5mm;box-shadow:0 0 0 .4mm var(--gold)}
+.cover .logo img{height:13mm;display:block}
+.cover .copy{position:absolute;top:44mm;right:14mm;width:122mm}
+.cover .chips{display:flex;flex-wrap:wrap;gap:2.5mm;margin-top:8mm}
+.cover .chips span{border:.3mm solid rgba(233,207,166,.45);border-radius:99px;padding:1.2mm 4mm;font-size:9pt;color:var(--gold2);background:rgba(0,0,0,.12)}
+.cover .note{position:absolute;bottom:16mm;right:14mm;font-size:8.5pt;color:rgba(255,236,220,.65);line-height:1.7}
+.cover .note b{color:#fff;font-size:10pt;display:block}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:5mm;margin-top:9mm}
+.stat{background:#fff;border:.3mm solid var(--line);border-radius:4mm;padding:5mm 6mm;box-shadow:0 2mm 6mm -4mm rgba(61,42,36,.2)}
+.stat b{display:block;font-size:30pt;font-weight:700;color:var(--brand);line-height:1.1}
+.stat span{display:block;font-size:10pt;color:var(--ink);font-weight:600;margin-top:1mm}
+.stat small{display:block;font-size:8.5pt;color:var(--soft);margin-top:1mm;line-height:1.6}
+.cycle{margin-top:8mm;border-radius:5mm;padding:6mm 7mm}
+.cycle h3{font-size:11pt;color:var(--gold2);font-weight:600}
+.cycle ol{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:3mm;margin-top:4mm}
+.cycle li{background:rgba(255,255,255,.06);border:.3mm solid rgba(233,207,166,.2);border-radius:3mm;padding:3.5mm}
+.cycle li em{font-style:normal;font-size:8pt;color:var(--gold2)}
+.cycle li b{display:block;font-size:11pt;margin-top:1mm}
+.cycle li span{display:block;font-size:8pt;color:rgba(255,236,220,.7);line-height:1.6;margin-top:.8mm}
+
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:9.5pt;background:#fff;border:.3mm solid var(--line);border-radius:3mm;overflow:hidden}
+th{background:var(--brand);color:#fff;font-weight:600;padding:2.6mm 3mm;text-align:center}
+th:first-child{text-align:right}
+td{padding:2.3mm 3mm;border-top:.3mm solid var(--line);text-align:center}
+td:first-child{text-align:right;font-weight:500}
+tr:nth-child(even) td{background:#fdf7f2}
+.y{color:var(--ok);font-weight:700}.n{color:#c9bab2}
+.mini{display:flex;flex-direction:column;gap:3.5mm}
+.mini div{background:#fff;border:.3mm solid var(--line);border-radius:3.5mm;padding:3.5mm 4.5mm}
+.mini b{font-size:10.5pt;color:var(--brand)}.mini span{display:block;font-size:8.8pt;color:var(--soft);line-height:1.7;margin-top:.5mm}
+
+.layers{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;margin-top:8mm}
+.layer{background:rgba(255,255,255,.06);border:.3mm solid rgba(233,207,166,.22);border-radius:4mm;padding:4.5mm}
+.layer em{font-style:normal;display:grid;place-items:center;width:8mm;height:8mm;border-radius:50%;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#4a2119;font-weight:700;font-size:10pt}
+.layer b{display:block;margin-top:2.5mm;font-size:11pt}
+.layer span{display:block;font-size:8.6pt;color:rgba(255,236,220,.75);line-height:1.7;margin-top:1mm}
+
+.phases{display:flex;flex-direction:column;gap:3mm}
+.phase{display:flex;gap:4mm;align-items:center;background:rgba(255,255,255,.06);border:.3mm solid rgba(233,207,166,.22);border-radius:3.5mm;padding:3.5mm 4.5mm}
+.phase em{flex-shrink:0;font-style:normal;width:9mm;height:9mm;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#4a2119;font-weight:700}
+.phase b{display:block;font-size:10.5pt}.phase span{display:block;font-size:8.5pt;color:rgba(255,236,220,.72);line-height:1.6}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="page dark cover">
+  <div class="logo"><img src="shots-web/logo.png" alt="سيد الشهداء" /></div>
+  <div class="copy">
+    <p class="eyebrow">إدارة ميدان سيد الشهداء</p>
+    <h1 style="margin-top:4mm">منصة تصاريح<br/>دخول الميدان</h1>
+    <p class="lead" style="font-size:13pt;max-width:118mm">تصريح دخول المركبات والأفراد والمعدات من الطلب إلى البوابة في مكان واحد. كل قرار له مسؤول، وكل تصريح يُتحقق منه لحظة الوصول، وكل عملية تُسجّل في سجل لا يُمحى.</p>
+    <div class="chips"><span>اعتماد على مرحلتين</span><span>رمز يتغير كل 30 ثانية</span><span>تحقق ميداني حي</span><span>غرفة عمليات بخريطة</span><span>تطبيق جوال</span></div>
+  </div>
+  <div style="position:absolute;top:24mm;left:12mm;width:150mm">
+    <div class="browser" style="transform:rotate(-1.5deg)"><div class="bar"><i></i><i></i><i></i><span>permits.sayyidalshuhada.sa</span></div><img src="shots-web/landing.jpg" alt="" /></div>
+    <div class="phone" style="position:absolute;width:46mm;left:-4mm;bottom:-34mm;transform:rotate(3deg)"><img src="shots-web/pass.jpg" alt="" /></div>
+  </div>
+  <div class="note"><b>نموذج عامل للعرض</b>نوفمبر 2026 · اللقطات حقيقية من النسخة التجريبية</div>
+</section>
+
+<!-- 2 · IN A MINUTE -->
+<section class="page">
+  <div style="position:absolute;inset:14mm 14mm 16mm">
+    <p class="eyebrow">المنصة في دقيقة</p>
+    <h2>من تصريح ورقي يُتداول، إلى تصريح حي يُتحقق منه</h2>
+    <p class="lead" style="max-width:220mm">تحوّل المنصة طلبات الدخول ومراجعتها واعتمادها والتحقق منها عند البوابات إلى دورة إلكترونية واحدة على قاعدة بيانات واحدة؛ يرى كل طرف الحالة نفسها لحظة بلحظة، ولا يرى إلا ما يحتاجه لعمله.</p>
+    <div class="stats">
+      <div class="stat"><b class="num">5</b><span>بوابات في منصة واحدة</span><small>الطلبات، المراجعة، الإصدار، التحقق، الإدارة</small></div>
+      <div class="stat"><b class="num">2</b><span>مرحلتا اعتماد</span><small>مراجعة أولية ثم اعتماد نهائي، ولا يعتمدهما الشخص نفسه</small></div>
+      <div class="stat"><b class="num">7</b><span>طبقات تحقق</span><small>قبل السماح بالدخول — الورقة وحدها لا تكفي</small></div>
+      <div class="stat"><b class="num">30</b><span>ثانية عمر الرمز</span><small>رمز الجوال يتجدد، فلا تنفع صورة الشاشة</small></div>
+    </div>
+    <div class="cycle dark" style="position:relative">
+      <h3>دورة التصريح في المنصة</h3>
+      <ol>
+        <li><em class="num">1</em><b>تقديم</b><span>رمز لمرة واحدة، نموذج يتحقق أثناء الكتابة</span></li>
+        <li><em class="num">2</em><b>فرز ذكي</b><span>درجة مخاطر وأسباب واضحة للمراجع</span></li>
+        <li><em class="num">3</em><b>مراجعة أولية</b><span>اعتماد أو إعادة أو رفض بسبب</span></li>
+        <li><em class="num">4</em><b>اعتماد نهائي</b><span>من شخص مختلف، بإسناد من مسؤول النظام</span></li>
+        <li><em class="num">5</em><b>إصدار</b><span>PDF بهوية الميدان وبطاقة جوال</span></li>
+        <li><em class="num">6</em><b>تحقق ميداني</b><span>الحالة الحية ومطابقة الموجودين</span></li>
+      </ol>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">2</span></div>
+</section>
+
+<!-- 3 · APPLICANT -->
+<section class="page">
+  <div class="feature">
+    <div class="txt">
+      <p class="eyebrow">الجهة المتقدمة · تقديم الطلب</p>
+      <h2>طلب كامل في دقائق، دون حساب ودون مراسلات</h2>
+      <div class="calls">
+        <div class="call"><i class="num">1</i><div><b>نموذج من ثمانية أقسام يتحقق أثناء الكتابة</b><span>الجهة، الممثل، الغرض والفترة والمناطق، الأفراد، المركبات، المعدات، المرفقات، والإقرار — حتى 100 فرد و50 مركبة.</span></div></div>
+        <div class="call"><i class="num">2</i><div><b>طلب مماثل ولصق من Excel</b><span>ملف الجهة يحفظ بياناتها، وأي طلب سابق يُنسخ بنقرة، وقوائم الأفراد تُلصق دفعة واحدة.</span></div></div>
+        <div class="call"><i class="num">3</i><div><b>حجز موعد الدخول من جدول السعة</b><span>تختار الجهة ساعة دخول المركبات من سعة حية لكل منطقة، فلا ازدحام عند المداخل.</span></div></div>
+      </div>
+    </div>
+    <div class="vis">
+      <div class="browser" style="width:100%"><div class="bar"><i></i><i></i><i></i><span>/apply/new</span></div><div class="crop" style="height:104mm"><img src="shots-web/form.jpg" alt="" /></div></div>
+      <div class="phone" style="position:absolute;width:44mm;left:-6mm;bottom:-6mm"><img src="shots-web/apply-mobile.jpg" alt="" /></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">3</span></div>
+</section>
+
+<!-- 4 · REVIEW -->
+<section class="page">
+  <div class="feature">
+    <div class="txt">
+      <p class="eyebrow">إدارة الميدان · المراجعة والاعتماد</p>
+      <h2>يعتمد عن يقين، ويعرف أين يتأخر كل طلب</h2>
+      <div class="calls">
+        <div class="call"><i class="num">1</i><div><b>فرز ذكي بدرجة مخاطر شفافة</b><span>تُحسب من سجل الجهة والمناطق الحساسة والطلبات العاجلة والتداخل مع جهات أخرى — مسار سريع للموثوقين، ومشدد لما يحتاجه.</span></div></div>
+        <div class="call"><i class="num">2</i><div><b>قرار موثق بسبب واضح</b><span>اعتماد أو إعادة للاستكمال أو رفض، والسبب إلزامي ويصل للجهة برسالة فورًا.</span></div></div>
+        <div class="call"><i class="num">3</i><div><b>فصل المهام بين المرحلتين</b><span>يحدد مسؤول النظام المسؤول عن كل مرحلة، ويمنع النظام الشخص نفسه من الاعتماد مرتين.</span></div></div>
+      </div>
+    </div>
+    <div class="vis">
+      <div class="browser" style="width:100%"><div class="bar"><i></i><i></i><i></i><span>/staff/review</span></div><div class="crop" style="height:120mm"><img src="shots-web/review.jpg" alt="" /></div></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">4</span></div>
+</section>
+
+<!-- 5 · PERMIT + PASS -->
+<section class="page">
+  <div class="feature">
+    <div class="txt">
+      <p class="eyebrow">الإصدار · التصريح وبطاقة الجوال</p>
+      <h2>تصريح رسمي بهوية الميدان، ونسخة حية على الجوال</h2>
+      <div class="calls">
+        <div class="call"><i class="num">1</i><div><b>PDF من صفحة A4 ثنائي اللغة</b><span>يصدر تلقائيًا بعد الاعتماد النهائي برقم التصريح والإصدار ورمز QR، وأرقام الهوية مخفية جزئيًا.</span></div></div>
+        <div class="call"><i class="num">2</i><div><b>رمز يتغير كل 30 ثانية</b><span>بطاقة الممثل تولّد رمزًا موقّعًا متجددًا يعمل دون إنترنت؛ صورة الشاشة تُرفض عند البوابة.</span></div></div>
+        <div class="call"><i class="num">3</i><div><b>التعديل لا يوقف التصريح</b><span>أي تعديل جوهري يمر بالمرحلتين برقم جديد، والتصريح ساري ببياناته المعتمدة حتى اعتماده.</span></div></div>
+      </div>
+    </div>
+    <div class="vis" style="gap:10mm">
+      <div class="browser" style="width:108mm"><div class="crop" style="height:150mm"><img src="shots-web/permit.jpg" alt="" style="width:170%;margin-right:-35%" /></div></div>
+      <div class="phone" style="width:60mm"><img src="shots-web/pass.jpg" alt="" /></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">5</span></div>
+</section>
+
+<!-- 6 · GATE -->
+<section class="page">
+  <div class="feature">
+    <div class="txt">
+      <p class="eyebrow">الجهات المختصة · التحقق عند البوابة</p>
+      <h2>يرى الحالة الآن، لا ما طُبع قبل أيام</h2>
+      <div class="calls">
+        <div class="call"><i class="num">1</i><div><b>حالة لحظية واضحة</b><span>ساري، لم تبدأ صلاحيته، منتهي، موقوف، ملغي — مع رقم الإصدار، وتنبيه إن كانت النسخة المطبوعة قديمة.</span></div></div>
+        <div class="call"><i class="num">2</i><div><b>مطابقة من دخل فعلًا</b><span>يؤشر المتحقق على الأفراد والمركبات والمعدات الموجودين، والنظام يمنع السماح لتصريح غير سارٍ أو لبوابة خارج نطاقه.</span></div></div>
+        <div class="call"><i class="num">3</i><div><b>رمز مؤقت لجوال الممثل</b><span>يثبت أن الحامل هو الممثل نفسه لا من يحمل صورة التصريح، وكل محاولة تُسجّل.</span></div></div>
+        <div class="call"><i class="num">4</i><div><b>يعمل حتى دون اتصال</b><span>نسخة موقّعة رقميًا لدى المتحقق تُبقي البوابة عاملة، وتُرفع النتائج عند عودة الشبكة.</span></div></div>
+      </div>
+    </div>
+    <div class="vis" style="gap:9mm">
+      <div class="phone" style="width:62mm"><img src="shots-web/verify.jpg" alt="" /></div>
+      <div class="browser" style="width:112mm"><div class="bar"><i></i><i></i><i></i><span>/staff/permits</span></div><div class="crop" style="height:70mm"><img src="shots-web/permit-admin.jpg" alt="" /></div></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">6</span></div>
+</section>
+
+<!-- 7 · OPS ROOM -->
+<section class="page">
+  <div class="feature" style="grid-template-columns:72mm 1fr">
+    <div class="txt">
+      <p class="eyebrow">مشرف الميدان · غرفة العمليات</p>
+      <h2>الميدان كله على خريطة واحدة</h2>
+      <div class="calls">
+        <div class="call"><i class="num">1</i><div><b>الازدحام والتواجد لحظيًا</b><span>كل منطقة ملونة بإشغالها مقابل سعتها، ومن داخلها الآن، مع تنبيه عند تجاوز 85%.</span></div></div>
+        <div class="call"><i class="num">2</i><div><b>بوابات تنبض بالنشاط</b><span>عدد التحققات وحالات المنع والمحاولات المشبوهة لكل بوابة، وخطوط الحركة إلى المناطق.</span></div></div>
+        <div class="call"><i class="num">3</i><div><b>مؤشرات النجاح دون إدخال يدوي</b><span>زمن المعالجة، ونسب الإعادة والرفض، ومحاولات التلاعب — من السجلات مباشرة.</span></div></div>
+      </div>
+    </div>
+    <div class="vis">
+      <div class="browser" style="width:100%"><div class="bar"><i></i><i></i><i></i><span>/staff/ops</span></div><img src="shots-web/map.jpg" alt="" /></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">7</span></div>
+</section>
+
+<!-- 8 · SEVEN LAYERS -->
+<section class="page dark">
+  <div style="position:absolute;inset:14mm 14mm 16mm">
+    <p class="eyebrow" style="color:var(--gold2)">التحقق ومنع التلاعب</p>
+    <h2 style="color:#fff">سبع طبقات قبل أن تُفتح البوابة</h2>
+    <p class="lead" style="max-width:220mm">لا يُعد التصريح المطبوع أو رمز QR وحده إثباتًا للدخول؛ القرار يُبنى على طبقات ينفذها المتحقق بالترتيب، وكل محاولة تحايل تُرفض وتظهر في غرفة العمليات.</p>
+    <div class="layers">
+      <div class="layer"><em class="num">1</em><b>رمز لا يحمل بيانات</b><span>معرّف عشوائي بطول 256 بت لا يُخمَّن ولا يُقرأ منه شيء.</span></div>
+      <div class="layer"><em class="num">2</em><b>للمخولين فقط</b><span>المسح دون دخول جهة مختصة لا يعرض أي معلومة.</span></div>
+      <div class="layer"><em class="num">3</em><b>ماسح داخل البوابة</b><span>لا يفتح روابط الرموز؛ الرمز المزيف يظهر «غير موجود».</span></div>
+      <div class="layer"><em class="num">4</em><b>حالة لحظية</b><span>الصلاحية والإيقاف والإلغاء تُحسب لحظة المسح.</span></div>
+      <div class="layer"><em class="num">5</em><b>مطابقة النطاق</b><span>البوابة والمنطقة والأفراد والمركبات والمعدات.</span></div>
+      <div class="layer"><em class="num">6</em><b>رمز الممثل</b><span>يصل لجواله المسجل ويثبت أنه الحامل الحقيقي.</span></div>
+      <div class="layer"><em class="num">7</em><b>سجل لكل عملية</b><span>مربوط بسلسلة بصمات SHA-256 لا تقبل التعديل.</span></div>
+      <div class="layer" style="border-color:rgba(233,207,166,.55);background:rgba(201,166,107,.12)"><em>+</em><b>رمز متغير كل 30 ثانية</b><span>طبقة إضافية: صورة الشاشة الحديثة تُرفض أيضًا.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">8</span></div>
+</section>
+
+<!-- 9 · ROLES -->
+<section class="page">
+  <div style="position:absolute;inset:14mm 14mm 16mm;display:grid;grid-template-columns:1fr 82mm;gap:10mm">
+    <div>
+      <p class="eyebrow">الصلاحيات والأمان</p>
+      <h2>كل دور يرى ما يخصه، ويفعل ما يُسمح له فقط</h2>
+      <table style="margin-top:7mm">
+        <tr><th>الصلاحية</th><th>مقدم الطلب</th><th>مراجع أولي</th><th>معتمد نهائي</th><th>مشرف الميدان</th><th>متحقق ميداني</th><th>مسؤول النظام</th></tr>
+        <tr><td>تقديم الطلبات ومتابعتها وتنزيل التصريح</td><td class="y">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td></tr>
+        <tr><td>المراجعة الأولية والاطلاع على المرفقات</td><td class="n">—</td><td class="y">✓</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+        <tr><td>الاعتماد النهائي والإصدار</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+        <tr><td>إيقاف التصاريح وإلغاؤها</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="n">—</td><td class="y">✓</td></tr>
+        <tr><td>التحقق الميداني عند البوابة</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+        <tr><td>غرفة العمليات وسجل العمليات</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td><td class="n">—</td><td class="y">✓</td></tr>
+        <tr><td>المستخدمون والأدوار والمناطق والإعدادات</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+      </table>
+    </div>
+    <div class="mini" style="padding-top:16mm">
+      <div><b>هوية مخفية جزئيًا</b><span>آخر 4 أرقام فقط في التصريح وبوابة التحقق، وإظهارها كاملة يُسجّل.</span></div>
+      <div><b>مرفقات محمية</b><span>خارج المجلد العام بأسماء عشوائية، ويُفحص نوعها الفعلي، وكل اطلاع يُسجّل.</span></div>
+      <div><b>دخول محمي</b><span>رموز مُجزأة بحد محاولات، وكلمات مرور مشفرة، وإيقاف بعد 5 محاولات فاشلة، وجلسة تنتهي بالخمول.</span></div>
+      <div><b>سجل لا يُمحى</b><span>كل عملية تحمل بصمة سابقتها؛ أي تعديل يكسر السلسلة فورًا.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · نموذج للعرض</span><span class="num">9</span></div>
+</section>
+
+<!-- 10 · READY -->
+<section class="page dark">
+  <div style="position:absolute;inset:16mm 14mm 18mm;display:grid;grid-template-columns:1fr 125mm;gap:12mm;align-items:center">
+    <div>
+      <p class="eyebrow" style="color:var(--gold2)">الخطوة التالية</p>
+      <h1 style="font-size:36pt;margin-top:3mm">جاهزة لتجربتها<br/>مع فريقكم</h1>
+      <p class="lead" style="font-size:12pt">النموذج يعمل اليوم ببيانات تجريبية كاملة، ويمكن استعراضه في ثلاث دقائق عبر المحاكاة الحية «عِش التجربة» التي يلعب فيها المستخدم كل الأدوار على النظام الحقيقي. نقترح تجربته مع فريق إدارة الميدان ومتحقق من جهة مختصة، ثم نكمل المراحل.</p>
+      <div class="browser" style="width:120mm;margin-top:8mm"><div class="bar"><i></i><i></i><i></i><span>/demo</span></div><img src="shots-web/demo.jpg" alt="" /></div>
+    </div>
+    <div class="phases">
+      <div class="phase"><em class="num">1</em><div><b>التجربة الداخلية</b><span>المناطق الفعلية وحسابات المراجعين والمعتمدين وتجربة المسار كاملًا</span></div></div>
+      <div class="phase"><em class="num">2</em><div><b>التجهيز للتشغيل</b><span>بوابة الرسائل، تخزين دائم، نطاق رسمي HTTPS، مراجعة أمنية واختبار اختراق</span></div></div>
+      <div class="phase"><em class="num">3</em><div><b>تشغيل تجريبي محدود</b><span>عدد من الجهات ومدخل واحد مع تدريب المتحققين</span></div></div>
+      <div class="phase"><em class="num">4</em><div><b>الإطلاق الكامل</b><span>جميع الجهات والمداخل مع تطبيق الجوال ودليل مختصر</span></div></div>
+      <div class="phase"><em class="num">5</em><div><b>التطوير المستمر</b><span>النفاذ الوطني، التحقق من الهويات والمركبات، قراءة اللوحات آليًا</span></div></div>
+    </div>
+  </div>
+  <div class="foot"><span><b>منصة تصاريح دخول الميدان</b> · إدارة ميدان سيد الشهداء</span><span class="num">10</span></div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>منصة تصاريح دخول الميدان — وثيقة الحل</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+@page { size: A4; margin: 0; }
+:root{--brand:#763b30;--deep:#5a2b23;--ink:#3d2a24;--soft:#6e5a53;--rose:#b38079;--rose2:#e4bfbc;--cream:#ffecdc;--paper:#fffaf5;--line:#eadfd8;--gold:#c9a66b;--gold2:#e9cfa6;--ok:#1f7a4d;--bad:#b3261e;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#d9d0ca}
+body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:10.5pt;line-height:1.85}
+.num{font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;background:var(--paper);page-break-after:always;break-after:page;margin:0 auto}
+.page:last-child{page-break-after:auto}
+
+/* inner page chrome */
+.hd{position:absolute;top:0;inset-inline:0;height:22mm;display:flex;align-items:center;justify-content:space-between;padding:0 16mm;border-bottom:.4mm solid var(--line)}
+.hd img{height:11mm}
+.hd .t{font-size:8pt;color:var(--soft);text-align:left}
+.hd .t b{display:block;color:var(--brand);font-size:8.5pt}
+.hd::after{content:"";position:absolute;bottom:-.9mm;inset-inline:16mm;height:.5mm;background:linear-gradient(90deg,var(--brand),var(--gold),var(--brand))}
+.ft{position:absolute;bottom:0;inset-inline:0;height:14mm;display:flex;align-items:center;justify-content:space-between;padding:0 16mm;font-size:7.5pt;color:var(--soft);border-top:.3mm solid var(--line)}
+.ft .pn{display:grid;place-items:center;width:8mm;height:8mm;border-radius:50%;background:var(--brand);color:#fff;font-weight:700;font-size:8pt}
+.body{position:absolute;top:30mm;bottom:20mm;inset-inline:16mm}
+.pattern{position:absolute;inset:0;pointer-events:none;opacity:.5;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='96' viewBox='0 0 84 96'%3E%3Cpath d='M6 96V40a36 36 0 0 1 72 0v56' fill='none' stroke='%23c9a66b' stroke-opacity='.10'/%3E%3C/svg%3E") 0 0/22mm 25mm;-webkit-mask-image:linear-gradient(180deg,transparent 60%,#000);mask-image:linear-gradient(180deg,transparent 60%,#000)}
+
+/* headings */
+.sec{display:flex;align-items:center;gap:4mm;margin-bottom:5mm}
+.sec .n{width:11mm;height:11mm;border-radius:50%;border:.5mm solid var(--gold);display:grid;place-items:center;font-weight:700;color:var(--brand);font-size:11pt;flex-shrink:0;background:#fff}
+.sec small{display:block;font-size:8pt;color:var(--gold);font-weight:600;letter-spacing:.2px}
+h2{font-size:21pt;font-weight:700;color:var(--ink);line-height:1.3}
+h3{font-size:12pt;font-weight:700;color:var(--brand);line-height:1.4}
+.lead{font-size:11.5pt;color:var(--soft);line-height:1.95;margin-bottom:6mm}
+p{margin-bottom:2.5mm}
+.gl{height:.4mm;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:5mm 0}
+
+/* blocks */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:4mm}
+.card{background:#fff;border:.3mm solid var(--line);border-radius:4mm;padding:4.5mm;box-shadow:0 1mm 4mm -2mm rgba(61,42,36,.12);break-inside:avoid}
+.card p{font-size:9.6pt;color:var(--soft);line-height:1.8;margin:1.5mm 0 0}
+.card .ic{width:9mm;height:9mm;border-radius:2.5mm;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#4a2119;display:grid;place-items:center;margin-bottom:2.5mm}
+.card.dark{background:linear-gradient(160deg,#6a3226,#45201a);color:#fbf1ea;border-color:rgba(201,166,107,.35)}
+.card.dark h3{color:var(--gold2)}.card.dark p{color:rgba(255,236,220,.78)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:3mm}
+.kpi{border-radius:4mm;padding:4mm;text-align:center;background:linear-gradient(160deg,#6a3226,#45201a);color:#fbf1ea}
+.kpi b{display:block;font-size:22pt;font-weight:700;color:var(--gold2);line-height:1.2}
+.kpi span{font-size:8.5pt;color:rgba(255,236,220,.8)}
+table{width:100%;border-collapse:separate;border-spacing:0;font-size:9.2pt;border:.3mm solid var(--line);border-radius:3mm;overflow:hidden;background:#fff}
+th{background:var(--brand);color:#fff;font-weight:600;text-align:right;padding:2.4mm 3mm}
+td{padding:2.2mm 3mm;border-top:.3mm solid var(--line);vertical-align:top;line-height:1.7}
+tr:nth-child(even) td{background:#fdf7f2}
+.tick{color:var(--ok);font-weight:700}
+.pill{display:inline-block;border-radius:99px;padding:.4mm 2.5mm;font-size:8pt;font-weight:600;background:var(--cream);color:var(--brand)}
+.quote{border-inline-start:1.2mm solid var(--gold);background:#fff;padding:4mm 5mm;border-radius:2mm;font-size:11pt;color:var(--ink);line-height:1.9}
+
+/* journey */
+.journey{display:grid;grid-template-columns:repeat(5,1fr);gap:2mm;position:relative;margin-top:4mm}
+.journey::before{content:"";position:absolute;top:5.5mm;inset-inline:8%;height:.5mm;background:linear-gradient(90deg,var(--gold2),var(--gold),var(--gold2))}
+.journey div{text-align:center;position:relative}
+.journey i{display:grid;place-items:center;width:11mm;height:11mm;margin:0 auto;border-radius:50%;background:var(--brand);color:#fff;font-style:normal;font-weight:700;border:.8mm solid var(--paper);box-shadow:0 0 0 .4mm var(--gold)}
+.journey b{display:block;margin-top:2mm;font-size:9.5pt;color:var(--ink)}
+.journey span{font-size:8pt;color:var(--soft);line-height:1.6;display:block}
+
+/* layers */
+.layers{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm 5mm}
+.layer{display:flex;gap:3mm;align-items:flex-start;break-inside:avoid}
+.layer i{flex-shrink:0;width:8mm;height:8mm;border-radius:50%;background:linear-gradient(180deg,var(--gold2),var(--gold));display:grid;place-items:center;font-style:normal;font-weight:700;color:#4a2119;font-size:9pt}
+.layer b{display:block;font-size:10pt;color:var(--brand)}
+.layer span{font-size:9pt;color:var(--soft);line-height:1.7}
+
+/* phases */
+.phase{display:grid;grid-template-columns:13mm 1fr;gap:4mm;padding:3.5mm 0;border-bottom:.3mm dashed var(--line);break-inside:avoid}
+.phase .k{width:13mm;height:13mm;border-radius:3.5mm;background:linear-gradient(160deg,#6a3226,#45201a);color:var(--gold2);display:grid;place-items:center;font-weight:700;font-size:13pt}
+.phase .cond{display:inline-block;margin-top:1.5mm;font-size:8.5pt;background:var(--cream);color:var(--brand);padding:.6mm 3mm;border-radius:2mm}
+
+/* cover */
+.cover{background:radial-gradient(110% 70% at 80% -10%,rgba(150,72,54,.6),transparent 62%),radial-gradient(90% 60% at 50% 115%,rgba(228,191,188,.14),transparent 65%),linear-gradient(180deg,#6a3226,#57281e 55%,#3d1b14);color:#fbf1ea}
+.cover .band{position:absolute;top:0;inset-inline:0;height:38mm;background:var(--paper);display:flex;align-items:center;justify-content:space-between;padding:0 18mm}
+.cover .band img{height:22mm}
+.cover .band .d{text-align:left;font-size:8.5pt;color:var(--soft);line-height:1.7}
+.cover .band::after{content:"";position:absolute;bottom:0;inset-inline:0;height:1.2mm;background:linear-gradient(90deg,var(--brand),var(--gold),var(--brand))}
+.cover .arches{position:absolute;bottom:-14mm;left:50%;transform:translateX(-50%);width:200mm;opacity:.35}
+.cover .main{position:absolute;top:78mm;inset-inline:18mm}
+.cover .eye{display:flex;align-items:center;gap:4mm;color:var(--gold2);font-size:10pt;font-weight:600}
+.cover .eye::before{content:"";width:16mm;height:.4mm;background:var(--gold)}
+.cover h1{font-size:40pt;font-weight:700;line-height:1.25;margin-top:7mm;color:#fff}
+.cover h1 span{display:block;color:var(--gold2)}
+.cover .sub{margin-top:7mm;font-size:13pt;color:rgba(255,236,220,.85);max-width:150mm;line-height:1.9}
+.cover .meta{position:absolute;bottom:92mm;inset-inline:18mm;display:flex;gap:6mm}
+.cover .meta div{border:.3mm solid rgba(201,166,107,.45);border-radius:3mm;padding:3mm 5mm;background:rgba(0,0,0,.12)}
+.cover .meta small{display:block;color:var(--gold2);font-size:8pt}
+.cover .meta b{font-size:10.5pt;font-weight:600}
+.back{background:linear-gradient(180deg,#6a3226,#3d1b14);color:#fbf1ea;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.back img{height:24mm;background:var(--paper);padding:5mm 8mm;border-radius:4mm;box-shadow:0 0 0 .5mm var(--gold)}
+.back h2{color:#fff;margin-top:12mm;font-size:24pt}
+.back p{color:rgba(255,236,220,.8);max-width:130mm;margin:5mm auto 0;font-size:11.5pt;line-height:1.95}
+</style>
+</head>
+<body>
+
+<!-- 1 · COVER -->
+<section class="page cover">
+  <div class="band">
+    <img src="__LOGO__" alt="سيد الشهداء" />
+    <div class="d"><b style="color:var(--brand);font-size:9.5pt">إدارة ميدان سيد الشهداء</b><br/>وثيقة الحل المقترح · __DATE__</div>
+  </div>
+  <div class="main">
+    <p class="eye">وثيقة الحل المقترح</p>
+    <h1>منصة تصاريح دخول الميدان<span>تصريح واحد، يُتحقق منه لحظة الوصول</span></h1>
+    <p class="sub">منصة إلكترونية موحّدة تغطي دورة تصريح دخول المركبات والأفراد والمعدات كاملة: من تقديم الطلب، إلى الاعتماد على مرحلتين، فالإصدار برمز QR، ثم التحقق الميداني من الحالة الفعلية في النظام.</p>
+  </div>
+  <div class="meta">
+    <div><small>التحدي</small><b>تصاريح دخول المركبات إلى الميدان</b></div>
+    <div><small>حالة الحل</small><b>نموذج عامل جاهز للتجربة الداخلية</b></div>
+  </div>
+  <svg class="arches" viewBox="0 0 600 300" fill="none" aria-hidden="true">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9cfa6" stop-opacity=".95"/><stop offset="1" stop-color="#c9a66b" stop-opacity="0"/></linearGradient></defs>
+    <g stroke="url(#g)" stroke-width="1.3">
+      <path d="M20 300V110a90 90 0 0 1 180 0v190"/><path d="M40 300V118a70 70 0 0 1 140 0v182" stroke-opacity=".5"/>
+      <path d="M210 300V110a90 90 0 0 1 180 0v190"/><path d="M230 300V118a70 70 0 0 1 140 0v182" stroke-opacity=".5"/>
+      <path d="M400 300V110a90 90 0 0 1 180 0v190"/><path d="M420 300V118a70 70 0 0 1 140 0v182" stroke-opacity=".5"/>
+      <path d="M20 240l70-70h110M210 290c80 0 180-60 180-170M400 220l120-110 60 40" stroke-opacity=".7"/>
+    </g>
+  </svg>
+</section>
+
+<!-- 2 · EXECUTIVE SUMMARY -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">01</span><div><small>الملخص التنفيذي</small><h2>رؤية الحل في صفحة</h2></div></div>
+    <p class="lead">تحتاج إدارة ميدان سيد الشهداء إلى آلية موحّدة تتيح للجهات الراغبة في الدخول بالمركبات تقديم طلب التصريح، وتنظّم مراجعته واعتماده وإصداره، وتمكّن الجهات المختصة في الميدان من التحقق من صحته ونطاقه لحظة الدخول. نقدّم منصة واحدة تحقق ذلك، وتضيف إليه طبقات ثقة وتشغيل تجعلها مختلفة عن أي نظام تصاريح تقليدي.</p>
+    <div class="kpis">
+      <div class="kpi"><b class="num">5</b><span>بوابات على قاعدة بيانات واحدة</span></div>
+      <div class="kpi"><b class="num">2</b><span>مرحلتا اعتماد مع فصل المهام</span></div>
+      <div class="kpi"><b class="num">7</b><span>طبقات تحقق قبل السماح بالدخول</span></div>
+      <div class="kpi"><b class="num">30</b><span>ثانية لعمر الرمز المتغير</span></div>
+    </div>
+    <div class="gl"></div>
+    <div class="grid2">
+      <div class="card"><h3>ما الذي يحصل عليه الميدان</h3><p>دورة تصريح إلكترونية كاملة بلا ورق ولا بريد: طلب بثمانية أقسام، ورقم مرجعي، ومتابعة لحظية، واعتماد على مرحلتين، وتصريح PDF ثنائي اللغة بهوية الميدان، وتحقق ميداني يقرأ الحالة الحالية من النظام لا من الورقة المطبوعة.</p></div>
+      <div class="card"><h3>ما الذي يميّزه</h3><p>رمز يتغير كل 30 ثانية على جوال الممثل، وتحقق يعمل دون اتصال، وفرز ذكي للطلبات بدرجة مخاطر شفافة، وحجز سعة المناطق بالساعة، وغرفة عمليات بخريطة حية، وسجل عمليات مربوط بسلسلة بصمات لا يقبل التلاعب.</p></div>
+    </div>
+    <div class="quote" style="margin-top:6mm">لا يُعدّ التصريح المطبوع أو رمز QR وحده إثباتًا للسماح بالدخول؛ القرار يُبنى على الحالة الحية في النظام لحظة المسح، وعلى سبع طبقات ينفذها المتحقق بالترتيب.</div>
+    <div class="grid3" style="margin-top:6mm">
+      <div class="card"><span class="pill">الجهات والشركات</span><p>تقديم دون حساب دائم برمز لمرة واحدة، وطلب مماثل بنقرة، ولصق قوائم الأفراد من Excel.</p></div>
+      <div class="card"><span class="pill">إدارة الميدان</span><p>صندوق مهام مرتب بالمسار الذكي، وقرارات موثقة بالسبب، وإيقاف وإلغاء فوريان.</p></div>
+      <div class="card"><span class="pill">الجهات المختصة</span><p>مسح داخل البوابة، ومطابقة الأفراد والمركبات والمعدات، ورمز مؤقت لجوال الممثل.</p></div>
+    </div>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">2</span></footer>
+</section>
+
+<!-- 3 · CHALLENGE -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">02</span><div><small>التحدي</small><h2>ما الذي يحتاجه الميدان اليوم</h2></div></div>
+    <p class="lead">وصف التحدي: توجد حاجة إلى آلية موحدة تتيح للجهات الراغبة في الدخول إلى الميدان بالسيارات تقديم طلب تصريح يوضح بيانات الجهة، والغرض من الدخول، والفترة المطلوبة، والأفراد والمعدات المصاحبة. وتشمل الحاجة تنظيم مراجعة الطلب واعتماده، وإصدار تصريح يمكن للجهات المختصة في الميدان التحقق من صحته وصلاحيته ونطاقه عند إبراز التصريح.</p>
+    <div class="grid2">
+      <div class="card"><div class="ic">١</div><h3>تقديم مشتّت وغير مكتمل</h3><p>بيانات الجهة والأفراد والمركبات والمعدات تصل بصيغ مختلفة، مما يطيل المراجعة ويكثر الإعادة للاستكمال.</p></div>
+      <div class="card"><div class="ic">٢</div><h3>اعتماد بلا مسار واضح</h3><p>غياب تحديد المسؤول عن كل مرحلة، وصعوبة معرفة أين يتأخر الطلب، ولا ضمان أن شخصين مختلفين راجعا واعتمدا.</p></div>
+      <div class="card"><div class="ic">٣</div><h3>تصريح قابل للتزوير والتداول</h3><p>الورقة أو صورتها لا تثبت أن التصريح ما زال ساريًا أو لم يُلغَ، ولا أن حامله هو الممثل نفسه.</p></div>
+      <div class="card"><div class="ic">٤</div><h3>تحقق ميداني من الورق لا من النظام</h3><p>المتحقق يرى ما طُبع لا الحالة الفعلية، فلا يعرف بالإيقاف أو الإلغاء أو التعديلات اللاحقة.</p></div>
+      <div class="card"><div class="ic">٥</div><h3>ازدحام عند المداخل</h3><p>دخول مركبات كثيرة في الوقت نفسه دون تخطيط للسعة، خاصة في المناطق الحساسة.</p></div>
+      <div class="card"><div class="ic">٦</div><h3>غياب الرقابة والمؤشرات</h3><p>لا سجل موحد يبيّن من تحقق ومتى وبأي نتيجة، ولا مؤشرات تكشف الاختناقات ومحاولات التلاعب.</p></div>
+    </div>
+    <div class="card dark" style="margin-top:5mm"><h3>النتيجة المطلوبة كما وردت في التحدي</h3><p>خدمة إلكترونية تشمل: تقديم الطلب بكامل بياناته، ومتابعة الطلب برقم مرجعي، والبدء دون حساب دائم، والاعتماد على مرحلتين مع تمكين مسؤول النظام من تحديد المسؤول عن كل مرحلة، وإصدار تصريح إلكتروني قابل للتنزيل والطباعة بهوية الميدان برقم ورمز QR، وتحققًا ميدانيًا يعرض الحالة بوضوح، وإدارة تشمل البحث والتصفية والإيقاف والإلغاء وسجل الإجراءات — بواجهة عربية/إنجليزية متوافقة مع الجوال.</p></div>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">3</span></footer>
+</section>
+
+<!-- 4 · SOLUTION -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">03</span><div><small>الحل المقترح</small><h2>خمس بوابات، قاعدة بيانات واحدة</h2></div></div>
+    <p class="lead">يتكون الحل من خمس بوابات تعمل على قاعدة بيانات واحدة، بحيث يرى كل طرف الحالة نفسها لحظة بلحظة، ولا يرى إلا ما يحتاجه لعمله.</p>
+    <table>
+      <tr><th style="width:24%">البوابة</th><th style="width:22%">المستخدم</th><th>ما تقدّمه</th></tr>
+      <tr><td><b>تقديم الطلبات</b></td><td>الجهات والشركات وممثلوها</td><td>دخول برمز لمرة واحدة دون حساب دائم، ونموذج من 8 أقسام يتحقق أثناء الكتابة، ورقم مرجعي، ومتابعة الحالة، وملف الجهة، وطلب مماثل، وحجز موعد الدخول.</td></tr>
+      <tr><td><b>المراجعة والاعتماد</b></td><td>المراجع الأولي والمعتمد النهائي</td><td>صندوق مهام مرتب بالفرز الذكي، واعتماد أو رفض أو إعادة مع سبب إلزامي، والاطلاع على المرفقات، ومقارنة التعديلات بالتصريح الحالي.</td></tr>
+      <tr><td><b>إصدار التصريح</b></td><td>النظام تلقائيًا</td><td>تصريح PDF ثنائي اللغة على صفحة A4 بهوية الميدان يحمل رقم التصريح ورقم الإصدار ورمز QR، وبطاقة جوال برمز متغير.</td></tr>
+      <tr><td><b>التحقق الميداني</b></td><td>الجهات الحكومية والأمنية المختصة</td><td>مسح داخل البوابة، وحالة لحظية، ومطابقة الأفراد والمركبات والمعدات ونقطة الدخول، ورمز تحقق مؤقت لجوال الممثل، وتسجيل النتيجة، وعمل دون اتصال.</td></tr>
+      <tr><td><b>الإدارة والمتابعة</b></td><td>إدارة الميدان ومسؤول النظام</td><td>بحث وتصفية وتصدير، وإيقاف وإلغاء، وسجل عمليات، وغرفة عمليات بخريطة حية، وتحديد المسؤول عن كل مرحلة، والمناطق والسعة والإعدادات.</td></tr>
+    </table>
+    <h3 style="margin-top:7mm">رحلة التصريح</h3>
+    <div class="journey">
+      <div><i class="num">1</i><b>التقديم</b><span>رمز لمرة واحدة ونموذج ذكي</span></div>
+      <div><i class="num">2</i><b>المراجعة الأولية</b><span>فرز ذكي بدرجة مخاطر</span></div>
+      <div><i class="num">3</i><b>الاعتماد النهائي</b><span>فصل المهام بين المرحلتين</span></div>
+      <div><i class="num">4</i><b>الإصدار</b><span>PDF رسمي ورمز QR</span></div>
+      <div><i class="num">5</i><b>التحقق الميداني</b><span>الحالة الحية لا الورق</span></div>
+    </div>
+    <div class="grid2" style="margin-top:7mm">
+      <div class="card"><h3>كل قرار له مسؤول</h3><p>يُسند كل قرار إلى المسؤول عن مرحلته، ويعود الطلب المعاد إلى المراجعة الأولية بعد استكماله، ويُشعر مقدّم الطلب برسالة عند كل قرار.</p></div>
+      <div class="card"><h3>التعديل لا يوقف العمل</h3><p>لا تتغير بيانات التصريح الصادر إلا بتعديل برقم مرجعي جديد يمر بالمرحلتين، ويبقى التصريح ساريًا ببياناته المعتمدة حتى اعتماد التعديل.</p></div>
+    </div>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">4</span></footer>
+</section>
+
+<!-- 5 · DIFFERENTIATORS -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">04</span><div><small>المميزات</small><h2>ما الذي يجعل المنصة مختلفة</h2></div></div>
+    <p class="lead">تتجاوز المنصة متطلبات التحدي إلى مزايا تشغيلية وأمنية تُبنى عادةً كمراحل تطوير لاحقة، وهنا تعمل من اليوم الأول.</p>
+    <div class="grid2">
+      <div class="card dark"><h3>رمز حي يتغير كل 30 ثانية</h3><p>بطاقة الممثل على جواله تولّد رمزًا موقّعًا يتجدد باستمرار ويعمل دون إنترنت بعد فتحها. صورة الشاشة أو النسخة المصوّرة تُرفض عند البوابة تلقائيًا.</p></div>
+      <div class="card dark"><h3>تحقق يعمل دون اتصال</h3><p>نسخة موقّعة رقميًا (Ed25519) من التصاريح السارية لدى المتحقق تُبقي البوابة عاملة عند انقطاع الشبكة، وتُرفع النتائج تلقائيًا عند عودة الاتصال مع تنبيه واضح بوقت آخر مزامنة.</p></div>
+      <div class="card"><h3>فرز ذكي للطلبات</h3><p>درجة مخاطر شفافة من 100 تُحسب من سجل الجهة، والمناطق الحساسة، والطلبات العاجلة، والتداخل مع طلبات جهات أخرى، وسعة الموعد. مسار سريع للجهات الموثوقة ومراجعة مشددة لما يحتاجها — والقرار يبقى للمراجع.</p></div>
+      <div class="card"><h3>حجز سعة المناطق بالساعة</h3><p>لكل منطقة سعة مركبات في الساعة، وتختار الجهة موعد دخولها من جدول سعة حي، فيُمنع الازدحام قبل وقوعه ويُنبَّه المراجع عند التعارض.</p></div>
+      <div class="card"><h3>غرفة عمليات بخريطة حية</h3><p>مخطط للميدان يلوّن المناطق بمستوى الازدحام والتواجد، وبوابات تنبض عند النشاط، ومؤشرات قياس النجاح محسوبة مباشرة من السجلات، وتنبيه عند تجاوز 85% من السعة.</p></div>
+      <div class="card"><h3>سجل لا يقبل التلاعب</h3><p>كل عملية تحمل بصمة SHA-256 للعملية السابقة، فأي تعديل أو حذف في الماضي يكسر السلسلة ويظهر فورًا في غرفة العمليات وسجل العمليات.</p></div>
+      <div class="card"><h3>تطبيق جوال حقيقي</h3><p>يُثبّت على الشاشة الرئيسية بأيقونة الميدان، ويعمل ملء الشاشة بشريط تبويب سفلي، ويفتح لكل مستخدم واجهته تلقائيًا، ويعمل دون اتصال للتحقق وبطاقة الدخول.</p></div>
+      <div class="card"><h3>محاكاة حية للتدريب والعرض</h3><p>رحلة تفاعلية من سبعة فصول يلعب فيها المستخدم كل الأدوار خلال ثلاث دقائق على النظام الحقيقي — أداة تدريب للمتحققين وعرض للجهات قبل الإطلاق.</p></div>
+    </div>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">5</span></footer>
+</section>
+
+<!-- 6 · SEVEN LAYERS -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">05</span><div><small>التحقق ومنع التلاعب</small><h2>سبع طبقات قبل أن تُفتح البوابة</h2></div></div>
+    <p class="lead">لا يُعد التصريح المطبوع أو رمز QR وحده إثباتًا للسماح بالدخول؛ يُبنى القرار على سبع طبقات ينفذها المتحقق بالترتيب.</p>
+    <div class="layers">
+      <div class="layer"><i class="num">1</i><div><b>رمز لا يحمل بيانات</b><span>يحمل رمز QR معرّفًا عشوائيًا بطول 256 بت فقط، فلا يمكن تخمين رمز تصريح آخر أو قراءة بيانات منه.</span></div></div>
+      <div class="layer"><i class="num">2</i><div><b>الدخول للمخولين فقط</b><span>مسح الرمز دون تسجيل دخول مستخدم من جهة مختصة لا يعرض أي معلومات.</span></div></div>
+      <div class="layer"><i class="num">3</i><div><b>ماسح داخل البوابة</b><span>لا يفتح الرابط الموجود في الرمز، بل يبحث عن المعرّف في النظام؛ فالرمز المزيف الذي يقود إلى موقع مشابه يظهر «غير موجود» ويُسجّل.</span></div></div>
+      <div class="layer"><i class="num">4</i><div><b>حالة لحظية</b><span>تُحسب الحالة لحظة المسح من الفترة والإيقاف والإلغاء، ويظهر رقم الإصدار المعتمد، وتنبيه إن كانت النسخة المطبوعة قديمة أو هناك تعديل قيد المراجعة.</span></div></div>
+      <div class="layer"><i class="num">5</i><div><b>مطابقة النطاق</b><span>يحدد المتحقق نقطة الدخول ويؤشر على الأفراد والمركبات والمعدات الموجودة، والنظام يمنع تسجيل السماح لتصريح غير سارٍ أو لمنطقة خارج نطاقه.</span></div></div>
+      <div class="layer"><i class="num">6</i><div><b>رمز الممثل المؤقت</b><span>يُرسل إلى جوال الممثل المسجل في التصريح فيثبت أن الحامل هو ممثل الجهة نفسه، لا شخص لديه صورة من التصريح. ثلاثة أوضاع: غير مفعل، اختياري، إلزامي.</span></div></div>
+      <div class="layer"><i class="num">7</i><div><b>سجل كل عملية</b><span>يُحفظ كل استعلام ونتيجته: المتحقق وجهته، والوقت، والحالة لحظة التحقق، والإصدار، ونقطة الدخول، والمطابقة، ونتيجة الرمز.</span></div></div>
+      <div class="layer"><i class="num">+</i><div><b>رمز متغير على الجوال</b><span>طبقة إضافية في هذا الحل: رمز يتجدد كل 30 ثانية بتوقيع مشفّر، فلا تُقبل صورة الشاشة ولو كانت حديثة.</span></div></div>
+    </div>
+    <div class="gl"></div>
+    <h3>حالات التصريح كما يراها المتحقق</h3>
+    <table style="margin-top:3mm">
+      <tr><th>الحالة</th><th>ماذا تعني</th><th>هل يُسمح بالدخول</th></tr>
+      <tr><td><span class="pill" style="background:#e3f3ea;color:var(--ok)">ساري</span></td><td>ضمن الفترة، غير موقوف أو ملغي، ونقطة الدخول ضمن نطاقه</td><td class="tick">نعم، بعد المطابقة</td></tr>
+      <tr><td><span class="pill" style="background:#fbf0da;color:#9a6400">لم تبدأ صلاحيته</span></td><td>الفترة المعتمدة لم تبدأ بعد</td><td>لا</td></tr>
+      <tr><td><span class="pill" style="background:#eeeceb;color:#66605d">منتهي</span></td><td>انتهت الفترة المعتمدة</td><td>لا</td></tr>
+      <tr><td><span class="pill" style="background:#fde9d9;color:#b85400">موقوف</span></td><td>أوقفته الإدارة مؤقتًا مع ذكر السبب</td><td>لا</td></tr>
+      <tr><td><span class="pill" style="background:#fbe4e2;color:var(--bad)">ملغي</span></td><td>ألغي نهائيًا ولا يمكن إعادة تفعيله</td><td>لا</td></tr>
+    </table>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">6</span></footer>
+</section>
+
+<!-- 7 · REQUIREMENTS COMPLIANCE -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">06</span><div><small>مطابقة المتطلبات</small><h2>كل متطلب، وكيف يتحقق</h2></div></div>
+    <p class="lead">جميع المتطلبات الواردة في وصف التحدي منفذة في النموذج الحالي، عدا الربط الفعلي ببوابة الرسائل النصية الذي يتم عند الإطلاق.</p>
+    <table>
+      <tr><th style="width:27%">المتطلب</th><th>الحل المقدّم</th><th style="width:9%">الحالة</th></tr>
+      <tr><td>تقديم الطلب ببياناته الكاملة</td><td>نموذج من 8 أقسام: الجهة، الممثل، الغرض والفترة والمناطق، الأفراد، المركبات، المعدات، المرفقات، الإقرار — حتى 100 فرد و50 مركبة و50 معدة مع تحقق فوري من التواريخ وأرقام الهوية والجوال.</td><td class="tick">✓</td></tr>
+      <tr><td>رقم مرجعي ومتابعة الحالة</td><td>رقم بصيغة <span class="num">REQ-2026-000001</span>، وسجل زمني للطلب، وإشعار بالرسالة عند كل قرار.</td><td class="tick">✓</td></tr>
+      <tr><td>البدء دون حساب دائم</td><td>رمز لمرة واحدة إلى الجوال أو البريد صلاحيته 10 دقائق، والجلسة ساعتان.</td><td class="tick">✓</td></tr>
+      <tr><td>ملف للجهة والطلبات المتكررة</td><td>ملف يحفظ الجهة والممثل والأفراد والمركبات والمعدات، وزر «طلب مماثل» ينسخ أي طلب سابق.</td><td class="tick">✓</td></tr>
+      <tr><td>اعتماد على مرحلتين مع تحديد المسؤول</td><td>مراجعة أولية ثم اعتماد نهائي؛ يُسند مسؤول النظام كل مرحلة إلى دور أو شخص محدد، مع خيار منع نفس الشخص من تنفيذ المرحلتين.</td><td class="tick">✓</td></tr>
+      <tr><td>اعتماد، رفض مع السبب، إعادة للاستكمال</td><td>السبب إلزامي للرفض والإعادة ويظهر لمقدم الطلب؛ الطلب المعاد يبدأ من المراجعة الأولية بعد استكماله.</td><td class="tick">✓</td></tr>
+      <tr><td>تصريح قابل للتنزيل والطباعة بهوية الميدان</td><td>PDF من صفحة A4 واحدة يحمل رقم التصريح والجهة والغرض وفترة الصلاحية والمناطق والأفراد والمركبات والمعدات ورمز QR ورقم الإصدار.</td><td class="tick">✓</td></tr>
+      <tr><td>تحقق ميداني يعرض الحالة بوضوح</td><td>شريط ملون بالحالة الحالية: ساري، لم تبدأ صلاحيته، منتهي، موقوف، ملغي — مع مطابقة الموجودين فعليًا.</td><td class="tick">✓</td></tr>
+      <tr><td>البحث والتصفية والإلغاء والإيقاف والسجل</td><td>بحث بالرقم أو الجهة أو الجوال أو اللوحة أو الهوية، وتصفية بالحالة والمنطقة والفترة، وتصدير CSV، وإيقاف وإعادة تفعيل وإلغاء نهائي مع السبب، وسجل عمليات شامل.</td><td class="tick">✓</td></tr>
+      <tr><td>واجهة عربية / إنجليزية متوافقة مع الجوال</td><td>تبديل اللغة من أي صفحة، واتجاه من اليمين لليسار، ومراجعة الشاشات على عرض جوال 390 بكسل دون تمرير أفقي.</td><td class="tick">✓</td></tr>
+      <tr><td>التحقق من الحالة الحالية لا من الصورة</td><td>البيانات تُسترجع من النظام لحظة المسح؛ النسخة المطبوعة القديمة تظهر بالإصدار المعتمد الحالي.</td><td class="tick">✓</td></tr>
+      <tr><td>إعادة اعتماد أي تعديل جوهري</td><td>طلب تعديل برقم مرجعي جديد يمر بالمرحلتين، ويبقى التصريح ساريًا ببياناته المعتمدة حتى اعتماد التعديل.</td><td class="tick">✓</td></tr>
+      <tr><td>رمز تحقق مؤقت لجوال الممثل</td><td>ثلاثة أوضاع (غير مفعل، اختياري، إلزامي)، صلاحية الرمز 5 دقائق، وتُسجّل المحاولات الناجحة والفاشلة.</td><td class="tick">✓</td></tr>
+    </table>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">7</span></footer>
+</section>
+
+<!-- 8 · IMPACT -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">07</span><div><small>الأثر</small><h2>ما الذي يتغير في الميدان</h2></div></div>
+    <p class="lead">الأثر المتوقع على كل طرف في رحلة التصريح، وكيف يُقاس دون أي إدخال يدوي.</p>
+    <div class="grid2">
+      <div class="card"><h3>على الجهات المتقدمة</h3><p>طلب في دقائق بدل تبادل المراسلات، ووضوح كامل لما هو مطلوب ولماذا رُفض أو أُعيد، وتصريح على الجوال يغني عن الطباعة، وطلبات متكررة بنقرة واحدة.</p></div>
+      <div class="card"><h3>على إدارة الميدان</h3><p>مسار اعتماد موثق بمسؤول لكل مرحلة، وتركيز وقت المراجعين على الطلبات عالية المخاطر، وقدرة فورية على الإيقاف والإلغاء تظهر لكل البوابات في اللحظة نفسها.</p></div>
+      <div class="card"><h3>على أمن الميدان</h3><p>إغلاق باب التزوير وتداول صور التصاريح، ومعرفة من دخل فعلًا لا من يحمل ورقة، وكشف المحاولات المشبوهة لحظيًا، وسجل لا يمكن العبث به عند المراجعة أو التحقيق.</p></div>
+      <div class="card"><h3>على حركة الزوار والمداخل</h3><p>توزيع دخول المركبات على الساعات والمناطق وفق السعة، وتقليل الانتظار عند البوابات، وحماية المناطق الحساسة من التكدس.</p></div>
+    </div>
+    <h3 style="margin-top:6mm">مؤشرات قياس النجاح</h3>
+    <p style="font-size:9.5pt;color:var(--soft)">كل مؤشر يُحسب من سجلات النظام مباشرة وتعرضه غرفة العمليات لحظيًا؛ تُحدد القيم المستهدفة مع إدارة الميدان بعد التشغيل التجريبي.</p>
+    <table>
+      <tr><th>المؤشر</th><th>كيف يُحسب</th><th>ما يكشفه</th></tr>
+      <tr><td>متوسط زمن معالجة الطلب</td><td>من وقت التقديم إلى الاعتماد النهائي، لكل مرحلة على حدة</td><td>المرحلة التي تتأخر فيها الطلبات</td></tr>
+      <tr><td>نسبة الطلبات المعادة للاستكمال</td><td>الطلبات المعادة ÷ الطلبات المقدمة</td><td>وضوح النموذج والمستندات المطلوبة</td></tr>
+      <tr><td>نسبة الرفض وأسبابه</td><td>الطلبات المرفوضة ونص السبب المسجل</td><td>شروط تحتاج إلى إعلان مسبق للجهات</td></tr>
+      <tr><td>عمليات التحقق الميداني ونتائجها</td><td>عدد التحققات بحسب المنطقة والساعة، ونسبة منع الدخول</td><td>أوقات الذروة والمداخل الأكثر ضغطًا</td></tr>
+      <tr><td>محاولات بتصاريح غير صالحة</td><td>استعلامات «غير موجود»، ورموز منتهية، وتحققات لتصاريح منتهية أو موقوفة أو ملغية</td><td>محاولات التلاعب أو استخدام تصاريح قديمة</td></tr>
+      <tr><td>نتائج رمز الممثل</td><td>مرات الإرسال ونسبة الفشل</td><td>حالات استخدام التصريح من غير الممثل</td></tr>
+      <tr><td>التعديلات الجوهرية بعد الإصدار</td><td>طلبات التعديل ÷ التصاريح الصادرة</td><td>دقة التخطيط لدى الجهات وحاجتها إلى مرونة أكبر</td></tr>
+      <tr><td>إشغال المناطق</td><td>المركبات المحجوزة ÷ السعة لكل منطقة وساعة</td><td>الحاجة إلى رفع السعة أو إعادة توزيع المداخل</td></tr>
+    </table>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">8</span></footer>
+</section>
+
+<!-- 9 · SECURITY & ROLES -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">08</span><div><small>الصلاحيات وحماية البيانات</small><h2>كل مستخدم يرى ما يحتاجه فقط</h2></div></div>
+    <p class="lead">لكل مستخدم دور أو أكثر، ولا يرى إلا ما يحتاجه لعمله؛ فالمتحقق الميداني مثلًا لا يرى قائمة الطلبات ولا المرفقات.</p>
+    <table>
+      <tr><th style="width:26%">الدور</th><th>ما يحق له</th></tr>
+      <tr><td><b>مقدم الطلب</b></td><td>طلباته المرتبطة بوسيلة التواصل المتحقق منها فقط: تقديم، استكمال، سحب، تنزيل التصريح، طلب تعديل.</td></tr>
+      <tr><td><b>مراجع أولي</b></td><td>المراجعة الأولية عند إسنادها لدوره أو له شخصيًا، والاطلاع على الطلبات والمرفقات.</td></tr>
+      <tr><td><b>معتمد نهائي</b></td><td>الاعتماد النهائي عند الإسناد، وإيقاف التصاريح وإلغاؤها.</td></tr>
+      <tr><td><b>مشرف الميدان</b></td><td>الاطلاع على الطلبات والتصاريح والسجل، والإيقاف والإلغاء، والتحقق الميداني، وغرفة العمليات.</td></tr>
+      <tr><td><b>متحقق ميداني (جهة مختصة)</b></td><td>بوابة التحقق فقط.</td></tr>
+      <tr><td><b>مسؤول النظام</b></td><td>المستخدمون والأدوار، ومسؤول كل مرحلة، والمناطق والسعة والبوابات، والإعدادات.</td></tr>
+    </table>
+    <div class="grid2" style="margin-top:6mm">
+      <div class="card"><h3>حماية بيانات الأفراد</h3><p>أرقام الهوية مخفية جزئيًا (آخر 4 أرقام) في التصريح المطبوع وفي بوابة التحقق، وإظهارها كاملة للمتحقق يُسجّل. المرافق خارج المجلد العام بأسماء عشوائية، ويُفحص نوعها الفعلي (PDF أو JPG أو PNG)، وكل اطلاع عليها يُسجل.</p></div>
+      <div class="card"><h3>حماية الدخول والجلسات</h3><p>رموز التحقق مخزنة مُجزأة (HMAC) بحد 5 محاولات للرمز، ورمز كل 30 ثانية، و8 رموز في الساعة لكل رقم. كلمات مرور مشفرة، وإيقاف الحساب 15 دقيقة بعد 5 محاولات فاشلة، وانتهاء جلسة الموظف بعد 60 دقيقة خمول.</p></div>
+      <div class="card"><h3>حماية الطلبات والنماذج</h3><p>حماية من تزوير الطلبات بين المواقع لكل النماذج، والتحقق من المصدر في واجهات البرمجة، وملف الجلسة عبر HTTPS فقط في الإنتاج، وحماية التصدير من حقن الصيغ.</p></div>
+      <div class="card"><h3>نزاهة السجل والنسخ</h3><p>سجل عمليات إلحاقي مربوط بسلسلة بصمات SHA-256 يُتحقق من سلامته في كل لحظة، ونسخة التحقق دون اتصال موقّعة رقميًا ولا تحمل الرمز الثابت للتصريح بل بصمته فقط.</p></div>
+    </div>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">9</span></footer>
+</section>
+
+<!-- 10 · ROADMAP -->
+<section class="page">
+  <div class="pattern"></div>
+  <header class="hd"><img src="__LOGO__" alt="" /><div class="t"><b>منصة تصاريح دخول الميدان</b>وثيقة الحل المقترح</div></header>
+  <div class="body">
+    <div class="sec"><span class="n num">09</span><div><small>خطة التنفيذ</small><h2>من التجربة الداخلية إلى الإطلاق الكامل</h2></div></div>
+    <p class="lead">النموذج جاهز للتجربة الداخلية الآن، ويحتاج التشغيل الفعلي إلى مرحلة تجهيز تقني واحدة قبل استقبال طلبات حقيقية. لكل مرحلة شرط انتقال إلى التي تليها.</p>
+    <div class="phase"><div class="k num">1</div><div><h3>التجربة الداخلية</h3><p>ضبط اسم الميدان والجهة المصدرة والمناطق الفعلية وسعتها، وإنشاء حسابات المراجعين والمعتمدين، وتجربة المسار مع فريق إدارة الميدان عبر المحاكاة الحية.</p><span class="cond">شرط الانتقال: إتمام المسار كاملًا من التقديم إلى التحقق الميداني، واعتماد النماذج والنصوص من إدارة الميدان</span></div></div>
+    <div class="phase"><div class="k num">2</div><div><h3>التجهيز للتشغيل الفعلي</h3><p>ربط بوابة الرسائل النصية وإيقاف الوضع التجريبي، ونقل قاعدة البيانات والمرفقات إلى تخزين دائم، ونطاق رسمي بشهادة HTTPS، ونسخ احتياطي، وسياسة للاحتفاظ بالبيانات.</p><span class="cond">شرط الانتقال: اجتياز مراجعة أمنية واختبار اختراق من الجهة المسؤولة عن الأمن السيبراني</span></div></div>
+    <div class="phase"><div class="k num">3</div><div><h3>تشغيل تجريبي محدود</h3><p>عدد محدود من الجهات ومدخل واحد، مع تدريب المتحققين من الجهات المختصة على البوابة باستخدام المحاكاة.</p><span class="cond">شرط الانتقال: مراجعة مؤشرات القياس ومعالجة ملاحظات المتحققين والجهات</span></div></div>
+    <div class="phase"><div class="k num">4</div><div><h3>الإطلاق الكامل</h3><p>جميع الجهات والمداخل، مع نشر رابط الخدمة وتطبيق الجوال ودليل مختصر للجهات.</p></div></div>
+    <div class="phase" style="border:0"><div class="k num">5</div><div><h3>التطوير المستمر</h3><p>حلول إضافية بحسب الأولوية المتفق عليها: الدخول عبر النفاذ الوطني الموحد، والتحقق الآلي من الهويات والسجلات التجارية، والتحقق من بيانات المركبات، وقراءة اللوحات آليًا عند البوابات (ANPR)، والإشعارات عبر واتساب.</p></div></div>
+  </div>
+  <footer class="ft"><span>إدارة ميدان سيد الشهداء · منصة تصاريح دخول الميدان</span><span class="pn num">10</span></footer>
+</section>
+
+<!-- 11 · BACK -->
+<section class="page back">
+  <img src="__LOGO__" alt="سيد الشهداء" />
+  <h2>تصريح واحد، يُتحقق منه لحظة الوصول</h2>
+  <p>منصة تصاريح دخول الميدان — نموذج عامل جاهز للتجربة الداخلية، يمكن استعراضه كاملًا عبر المحاكاة الحية «عِش التجربة» خلال ثلاث دقائق.</p>
+  <div style="margin-top:14mm;height:.4mm;width:60mm;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
+  <p style="font-size:9pt;margin-top:6mm">إدارة ميدان سيد الشهداء</p>
+</section>
+
+</body>
+</html>
