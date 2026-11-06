@@ -4,7 +4,7 @@ import SaudiPlate from "./SaudiPlate";
 import { cleanDigits, cleanLetters, EQUIPMENT_KINDS, formatSaPlate, parseSaPlate, PLATE_LETTERS } from "@/lib/plates";
 import type { Equipment, Vehicle } from "@/lib/validate";
 
-const field = "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
+const field = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
 const VEHICLE_TYPES: [string, string][] = [["سيارة صغيرة", "Car"], ["بيك أب", "Pickup"], ["فان", "Van"], ["شاحنة نقل خفيفة", "Light truck"], ["شاحنة", "Truck"], ["رافعة", "Crane"], ["حافلة", "Bus"], ["مركبة خدمات", "Service vehicle"]];
 
 /* ───────── Vehicle: Saudi plate (letters + digits with live plate) or any other plate ───────── */
@@ -24,7 +24,7 @@ export function PlateInput({ value, onChange, onRemove, index, t, lang, invalid 
   };
   const n = index + 1;
   return (
-    <div className="rounded-2xl border border-line bg-white p-3 sm:p-4">
+    <div className="rounded-2xl border border-line bg-surface p-3 sm:p-4">
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-xs font-semibold text-ink-soft">{t(`المركبة ${n}`, `Vehicle ${n}`)}</p>
         <button type="button" onClick={onRemove} aria-label={t(`حذف المركبة ${n}`, `Remove vehicle ${n}`)} className="grid min-h-9 min-w-9 place-items-center rounded-lg text-ink-soft hover:bg-bad-soft hover:text-bad">✕</button>
@@ -46,10 +46,10 @@ export function PlateInput({ value, onChange, onRemove, index, t, lang, invalid 
                 <input aria-label={t(`حروف لوحة المركبة ${n}`, `Vehicle ${n} plate letters`)} placeholder={t("ر ك ن", "R K N")} value={letters} aria-invalid={invalid}
                   onFocus={() => setPad(true)}
                   onChange={(e) => { const L = cleanLetters(e.target.value); const s = L.join(" "); setLetters(s); emit(s, digits); }}
-                  className="w-28 border-e border-line bg-white px-3 py-2.5 text-center text-[17px] font-bold tracking-[.25em] text-ink outline-none" />
+                  className="w-28 border-e border-line bg-surface px-3 py-2.5 text-center text-[17px] font-bold tracking-[.25em] text-ink outline-none" />
                 <input aria-label={t(`أرقام لوحة المركبة ${n}`, `Vehicle ${n} plate digits`)} placeholder="1234" inputMode="numeric" dir="ltr" value={digits} aria-invalid={invalid}
                   onChange={(e) => { const d = cleanDigits(e.target.value); setDigits(d); emit(letters, d); }}
-                  className="w-24 bg-white px-3 py-2.5 text-center font-mono text-[17px] font-bold tracking-[.2em] text-ink outline-none" />
+                  className="w-24 bg-surface px-3 py-2.5 text-center font-mono text-[17px] font-bold tracking-[.2em] text-ink outline-none" />
               </div>
               <SaudiPlate plate={value.plate || "ا 0"} size="md" className={value.plate ? "" : "opacity-30"} />
             </div>
@@ -67,13 +67,13 @@ export function PlateInput({ value, onChange, onRemove, index, t, lang, invalid 
                 {PLATE_LETTERS.map(([a, e]) => (
                   <button key={a} type="button" disabled={cleanLetters(letters).length >= 3}
                     onClick={() => { const s = [...cleanLetters(letters), a].join(" "); setLetters(s); emit(s, digits); }}
-                    className="flex min-h-10 flex-col items-center justify-center rounded-lg border border-line bg-white text-ink transition hover:border-brand disabled:opacity-40">
+                    className="flex min-h-10 flex-col items-center justify-center rounded-lg border border-line bg-surface text-ink transition hover:border-brand disabled:opacity-40">
                     <span className="text-[15px] font-bold leading-none">{a}</span>
                     <span className="mt-0.5 font-mono text-[9px] leading-none text-ink-soft">{e}</span>
                   </button>
                 ))}
                 <button type="button" onClick={() => { const L = cleanLetters(letters).slice(0, -1).join(" "); setLetters(L); emit(L, digits); }}
-                  className="col-span-1 min-h-10 rounded-lg border border-line bg-white text-xs font-semibold text-ink-soft hover:border-bad hover:text-bad" aria-label={t("حذف آخر حرف", "Delete last letter")}>⌫</button>
+                  className="col-span-1 min-h-10 rounded-lg border border-line bg-surface text-xs font-semibold text-ink-soft hover:border-bad hover:text-bad" aria-label={t("حذف آخر حرف", "Delete last letter")}>⌫</button>
               </div>
             </div>
           )}
@@ -95,7 +95,7 @@ export function EquipmentInput({ value, onChange, onRemove, index, t, invalid }:
   const n = index + 1;
   const qty = value.qty || 0;
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-line bg-white ps-4">
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-surface ps-4">
       <span className="absolute inset-y-0 start-0 w-1.5 bg-gradient-to-b from-gold to-brand" aria-hidden />
       <div className="grid gap-3 p-3 sm:grid-cols-[11rem_1fr_auto] sm:items-end sm:p-4">
         <div>
@@ -119,9 +119,9 @@ export function EquipmentInput({ value, onChange, onRemove, index, t, invalid }:
           <div>
             <p className="mb-1 text-xs font-medium text-ink-soft">{t("العدد", "Qty")}</p>
             <div className="flex items-center overflow-hidden rounded-lg border border-line" dir="ltr">
-              <button type="button" aria-label={t("إنقاص", "Decrease")} onClick={() => onChange({ ...value, qty: Math.max(1, qty - 1) })} className="grid h-11 w-10 place-items-center text-lg text-ink hover:bg-cream">−</button>
+              <button type="button" aria-label={t("إنقاص", "Decrease")} onClick={() => onChange({ ...value, qty: Math.max(1, qty - 1) })} className="grid h-11 w-10 place-items-center text-lg text-ink hover:bg-chip">−</button>
               <input aria-label={t(`عدد المعدة ${n}`, `Equipment ${n} quantity`)} inputMode="numeric" value={qty || ""} onChange={(e) => onChange({ ...value, qty: Math.min(999, Number(e.target.value.replace(/\D/g, "")) || 0) })} className="h-11 w-12 border-x border-line text-center font-mono font-bold outline-none" />
-              <button type="button" aria-label={t("زيادة", "Increase")} onClick={() => onChange({ ...value, qty: Math.min(999, qty + 1) })} className="grid h-11 w-10 place-items-center text-lg text-ink hover:bg-cream">+</button>
+              <button type="button" aria-label={t("زيادة", "Increase")} onClick={() => onChange({ ...value, qty: Math.min(999, qty + 1) })} className="grid h-11 w-10 place-items-center text-lg text-ink hover:bg-chip">+</button>
             </div>
           </div>
           <button type="button" onClick={onRemove} aria-label={t(`حذف المعدة ${n}`, `Remove equipment ${n}`)} className="grid h-11 w-11 place-items-center rounded-lg text-ink-soft hover:bg-bad-soft hover:text-bad">✕</button>
@@ -135,7 +135,7 @@ export function EquipmentInput({ value, onChange, onRemove, index, t, invalid }:
 export function EquipmentTag({ e, t }: { e: Equipment; t: (a: string, b: string) => string }) {
   const k = EQUIPMENT_KINDS.find((x) => x.id === e.kind);
   return (
-    <span className="inline-flex items-center gap-2 rounded-lg border border-line bg-white py-1 pe-2.5 ps-1">
+    <span className="inline-flex items-center gap-2 rounded-lg border border-line bg-surface py-1 pe-2.5 ps-1">
       <span className="num grid h-7 min-w-7 place-items-center rounded-md bg-brand px-1.5 text-xs font-bold text-white">×{e.qty}</span>
       <span className="text-sm font-medium text-ink">{e.name}</span>
       {k && <span className="text-[11px] text-ink-soft">· {t(k.ar, k.en)}</span>}

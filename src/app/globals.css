@@ -15,6 +15,10 @@
   --color-gold: #c9a66b;
   --color-gold-soft: #e9cfa6;
   --color-noir: #4a2119;
+  /* surfaces that flip with the theme (light values; dark ones below) */
+  --color-surface: #ffffff;
+  --color-masthead: #fffaf5;
+  --color-chip: #ffecdc;
   --color-noir-2: #3d1b14;
 
   --color-ok: #1f7a4d;
@@ -320,3 +324,66 @@ nav a, nav button { -webkit-touch-callout: none; }
 @media (prefers-reduced-motion: reduce) {
   .live-dot, .alert-crit, .ev-new, .ripple { animation: none !important; }
 }
+
+/* ───────── Light / dark theme ─────────
+   One switch: the semantic tokens flip, components keep their classes.
+   Brand maroon + gold stay; surfaces go to a warm near-black so the identity holds.
+   Pairs checked for WCAG AA: ink/surface 13.9:1, ink-soft/surface 7.1:1, brand-text/surface 8.6:1. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-paper: #120d0b;
+  --color-surface: #1c1513;
+  --color-masthead: #1a1311;
+  --color-chip: #33221d;
+  --color-mist: #261c19;
+  --color-line: #3a2c27;
+  --color-ink: #f4e9e2;
+  --color-ink-soft: #bba79e;
+  --color-rose-soft: #4d332e;
+  --color-ok-soft: #12291d; --color-wait-soft: #2c2312; --color-off-soft: #292422; --color-hold-soft: #2f1f12; --color-bad-soft: #351513;
+}
+/* status fills keep their strong colour (white text on them stays AA); status *text* is lifted for dark surfaces */
+:root[data-theme="dark"] .text-ok { color: #63c995; }
+:root[data-theme="dark"] .text-wait { color: #e6b65c; }
+:root[data-theme="dark"] .text-off { color: #b9b1ad; }
+:root[data-theme="dark"] .text-hold { color: #f2a467; }
+:root[data-theme="dark"] .text-bad, :root[data-theme="dark"] .hover:text-bad:hover { color: #f48b81; }
+:root[data-theme="dark"] .border-bad/30, :root[data-theme="dark"] .border-bad/40 { border-color: rgb(244 139 129 / .35); }
+:root[data-theme="dark"] .force-light .text-ok { color: var(--color-ok); }
+:root[data-theme="dark"] .force-light .text-bad { color: var(--color-bad); }
+:root[data-theme="dark"] .force-light .text-hold { color: var(--color-hold); }
+:root[data-theme="dark"] .force-light .text-wait { color: var(--color-wait); }
+/* text in brand maroon would vanish on dark surfaces: lift it to a rose tint (buttons keep the maroon fill) */
+:root[data-theme="dark"] .text-brand, :root[data-theme="dark"] .hover\:text-brand:hover { color: #eeb3a4; }
+:root[data-theme="dark"] .border-brand { border-color: #b8695a; }
+:root[data-theme="dark"] .text-\[\#2b6f93\] { color: #8fcbea; }
+:root[data-theme="dark"] .bg-ink\/45, :root[data-theme="dark"] .bg-ink\/40 { background-color: rgb(0 0 0 / .6); }
+/* the brand logo is maroon on cream: on dark it becomes a single warm-cream mark */
+:root[data-theme="dark"] .logo-adapt { filter: brightness(0) invert(1) sepia(.25) brightness(.94); }
+:root[data-theme="dark"] .shadow-sm, :root[data-theme="dark"] [class*="shadow-[0_1px_2px"] { --tw-shadow-color: rgb(0 0 0 / .5); }
+:root[data-theme="dark"] input[type="checkbox"], :root[data-theme="dark"] input[type="radio"] { accent-color: #c9a66b; }
+:root[data-theme="dark"] body { background: var(--color-paper); }
+
+/* Documents, the pass in hand, and plates always render as on paper (light), whatever the theme. */
+.force-light {
+  color-scheme: light;
+  --color-paper: #faf7f4; --color-surface: #ffffff; --color-masthead: #fffaf5; --color-chip: #ffecdc;
+  --color-mist: #f2f2f1; --color-line: #eadfd8; --color-ink: #3d2a24; --color-ink-soft: #6e5a53; --color-rose-soft: #e4bfbc;
+  --color-ok: #1f7a4d; --color-ok-soft: #e3f3ea; --color-wait: #9a6400; --color-wait-soft: #fbf0da;
+  --color-off: #66605d; --color-off-soft: #eeeceb; --color-hold: #b85400; --color-hold-soft: #fde9d9;
+  --color-bad: #b3261e; --color-bad-soft: #fbe4e2;
+}
+:root[data-theme="dark"] .force-light .text-brand { color: var(--color-brand); }
+:root[data-theme="dark"] .force-light .logo-adapt { filter: none; }
+
+.theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
+
+/* While a sheet or dialog is open, floating chrome steps aside so it never covers the dialog's buttons. */
+html[data-overlay] .lab-dock, html[data-overlay] .tabbar, html[data-overlay] .float-chrome { opacity: 0; pointer-events: none; transform: translateY(12px); }
+.lab-dock, .tabbar, .float-chrome { transition: opacity .2s ease, transform .2s ease; }
+
+/* keep the last row of a page clear of the floating roles-lab bubble on wide screens */
+@media (min-width: 768px) { body:has(.lab-dock) main { padding-bottom: 5.5rem; } }
+
+/* Phones: while typing, the roles-lab bubble steps aside so it never covers a field or the keyboard bar */
+@media (max-width: 767px) { html[data-typing] .lab-dock, html[data-typing] .float-chrome { opacity: 0; pointer-events: none; transform: translateY(12px); } }

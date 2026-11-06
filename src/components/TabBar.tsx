@@ -3,6 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icon, type IconName } from "./icons";
+import { useOverlay } from "./useOverlay";
+import ThemeSwitch from "./ThemeSwitch";
 import { logoutAction, setLangAction } from "@/app/actions";
 
 export type Tab = { href: string; label: string; full: string; icon: IconName; primary?: boolean };
@@ -32,21 +34,12 @@ export default function TabBar({
   const current = all.filter((t) => path === t.href || path.startsWith(t.href + "/")).sort((a, b) => b.href.length - a.href.length)[0]?.href;
 
   useEffect(() => setOpen(false), [path]);
-  useEffect(() => {
-    if (!open) return;
-    const k = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    addEventListener("keydown", k);
-    document.body.style.overflow = "hidden";
-    return () => {
-      removeEventListener("keydown", k);
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  useOverlay(open, () => setOpen(false));
 
   return (
     <>
       <nav
-        className="no-print fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-noir/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+        className="no-print tabbar fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-noir/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
         aria-label={labels.menu}
       >
         <div className="gold-line absolute inset-x-0 top-0 opacity-40" />
@@ -99,7 +92,7 @@ export default function TabBar({
       </nav>
 
       {/* More sheet */}
-      <div className={`fixed inset-0 z-[60] md:hidden ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
+      <div className={`fixed inset-0 z-[80] md:hidden ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
         <div onClick={() => setOpen(false)} className={`absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${open ? "opacity-100" : "opacity-0"}`} />
         <div
           role="dialog"
@@ -129,6 +122,9 @@ export default function TabBar({
                   <Icon name="globe" className="text-gold/80" /> {labels.language}
                 </button>
               </form>
+            </li>
+            <li className="px-1 py-1.5">
+              <ThemeSwitch lang={lang} variant="sheet" />
             </li>
             {kind && (
               <li>

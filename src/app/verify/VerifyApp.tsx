@@ -224,7 +224,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
       </div>
 
       {/* Gate */}
-      <div className="rounded-2xl border border-line bg-white p-4">
+      <div className="rounded-2xl border border-line bg-surface p-4">
         <label htmlFor="gate" className="mb-1.5 block text-sm font-medium">{t("نقطة الدخول", "Entry point")}</label>
         <select
           id="gate"
@@ -279,7 +279,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
 
       {exitRes && (
         exitRes.found && exitRes.exited ? (
-          <div className="overflow-hidden rounded-2xl border border-[#2b6f93]/30 bg-white shadow-[0_24px_60px_-30px_rgba(43,111,147,.5)]">
+          <div className="overflow-hidden rounded-2xl border border-[#2b6f93]/30 bg-surface shadow-[0_24px_60px_-30px_rgba(43,111,147,.5)]">
             <div className={`${undone === "done" ? "bg-off" : "bg-[#2b6f93]"} px-5 py-5 text-center text-white`}>
               <p className="font-display text-3xl font-bold">{undone === "done" ? t("أُلغي الخروج", "Exit undone") : t("تم تسجيل الخروج", "Exit recorded")}</p>
               <p className="num mt-1 text-sm opacity-90">{exitRes.number} · {exitRes.org}</p>
@@ -319,7 +319,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
             </div>
           </div>
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-line bg-white">
+          <div className="overflow-hidden rounded-2xl border border-line bg-surface">
             <div className={`${exitRes.found ? "bg-wait" : "bg-bad"} px-5 py-6 text-center text-white`}>
               <p className="font-display text-2xl font-bold">{exitRes.found ? t("لا يوجد دخول مسجّل", "No recorded entry") : t("مرفوض", "REJECTED")}</p>
               <p className="mt-1 text-sm">
@@ -339,7 +339,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
       )}
 
       {res && !res.found && (
-        <div className="overflow-hidden rounded-2xl border border-bad/30 bg-white">
+        <div className="overflow-hidden rounded-2xl border border-bad/30 bg-surface">
           <div className="bg-bad px-5 py-6 text-center text-white">
             <p className="font-display text-2xl font-bold">{t("مرفوض", "REJECTED")}</p>
             <p className="mt-1 text-sm">{t(...(MISS[res.reason] ?? MISS.not_found))}</p>
@@ -352,7 +352,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
       )}
 
       {ok && st && (
-        <div className="beam overflow-hidden rounded-2xl border border-line bg-white shadow-[0_24px_60px_-30px_rgba(61,42,36,.45)]" style={{ ["--beam" as string]: ok.status === "valid" ? "#5fd39a" : ok.status === "not_started" ? "#e9cfa6" : "#ff8a80" }}>
+        <div className="beam overflow-hidden rounded-2xl border border-line bg-surface shadow-[0_24px_60px_-30px_rgba(61,42,36,.45)]" style={{ ["--beam" as string]: ok.status === "valid" ? "#5fd39a" : ok.status === "not_started" ? "#e9cfa6" : "#ff8a80" }}>
           <div className={`${st.cls} px-5 py-5 text-center text-white`}>
             <p className="font-display text-4xl font-bold tracking-wide">{t(st.ar, st.en)}</p>
             <p className="num mt-1 text-sm opacity-90">{ok.number} · v{ok.version} · {ok.codeType === "rotating" ? t("رمز متغير حي", "Live rotating code") : ok.codeType === "manual" ? t("رقم مُدخل يدويًا", "Typed permit number") : t("رمز مطبوع", "Printed code")}</p>

@@ -12,7 +12,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
   const code = error.digest ?? "CLIENT";
   return (
     <main className="grid min-h-[70dvh] place-items-center px-4 py-16" dir="rtl">
-      <div className="w-full max-w-md rounded-3xl border border-line bg-white p-8 text-center shadow-[0_24px_60px_-30px_rgba(61,42,36,.35)]">
+      <div className="w-full max-w-md rounded-3xl border border-line bg-surface p-8 text-center shadow-[0_24px_60px_-30px_rgba(61,42,36,.35)]">
         <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-hold-soft text-2xl text-hold" aria-hidden>!</div>
         <h1 className="mt-4 font-display text-xl font-bold text-ink">حدث خلل تقني غير متوقع</h1>
         <p className="mt-2 text-sm text-ink-soft">سُجّل الخلل تلقائيًا لدى الفريق التقني. لم تُفقد بياناتك المحفوظة.</p>

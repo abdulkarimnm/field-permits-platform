@@ -58,7 +58,7 @@ export default function CapacityPicker({
               role="tab"
               aria-selected={day === d}
               onClick={() => setDay(d)}
-              className={`shrink-0 rounded-lg border px-3 py-2 text-start text-xs transition ${day === d ? "border-brand bg-brand text-white" : "border-line bg-white hover:border-rose"}`}
+              className={`shrink-0 rounded-lg border px-3 py-2 text-start text-xs transition ${day === d ? "border-brand bg-brand text-white" : "border-line bg-surface hover:border-rose"}`}
             >
               <span className="block font-semibold">{dayFmt.format(new Date(d + "T00:00:00Z"))}</span>
               <span className={day === d ? "text-cream/80" : "text-ink-soft"}>
@@ -82,12 +82,12 @@ export default function CapacityPicker({
               onClick={() => day && onChange({ date: day, hour: h })}
               aria-pressed={sel}
               className={`rounded-lg border px-1 py-2 text-center transition disabled:cursor-not-allowed ${
-                sel ? "border-brand bg-brand text-white" : ok ? "border-line bg-white hover:border-brand" : "border-transparent bg-mist text-ink-soft/50 line-through"
+                sel ? "border-brand bg-brand text-white" : ok ? "border-line bg-surface hover:border-brand" : "border-transparent bg-mist text-ink-soft/50 line-through"
               }`}
             >
               <span className="num block text-sm font-semibold">{String(h).padStart(2, "0")}:00</span>
-              <span className={`mt-1 block h-1 rounded-full ${sel ? "bg-white/40" : "bg-mist"}`}>
-                <span className={`block h-1 rounded-full ${sel ? "bg-white" : pct > 0.5 ? "bg-ok" : pct > 0.2 ? "bg-wait" : "bg-bad"}`} style={{ width: `${Math.max(0, pct) * 100}%` }} />
+              <span className={`mt-1 block h-1 rounded-full ${sel ? "bg-surface/40" : "bg-mist"}`}>
+                <span className={`block h-1 rounded-full ${sel ? "bg-surface" : pct > 0.5 ? "bg-ok" : pct > 0.2 ? "bg-wait" : "bg-bad"}`} style={{ width: `${Math.max(0, pct) * 100}%` }} />
               </span>
               <span className={`num mt-1 block text-[11px] ${sel ? "text-cream" : ""}`}>
                 {Math.max(0, c.rem)}/{c.cap}

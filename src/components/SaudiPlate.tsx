@@ -17,7 +17,7 @@ export default function SaudiPlate({ plate, kind, size = "md", className = "" }:
   const p = kind === "other" ? null : parseSaPlate(plate);
   if (!p) {
     return (
-      <span dir="ltr" className={`inline-flex items-center rounded-md border-2 border-ink/80 bg-white px-2 font-mono font-bold tracking-wider text-ink ${className}`} style={{ height: s.h, fontSize: s.digit * 0.8 }} aria-label={`Plate ${plate}`}>
+      <span dir="ltr" className={`force-light inline-flex items-center rounded-md border-2 border-ink/80 bg-white px-2 font-mono font-bold tracking-wider text-ink ${className}`} style={{ height: s.h, fontSize: s.digit * 0.8 }} aria-label={`Plate ${plate}`}>
         {plate || "—"}
       </span>
     );
@@ -26,7 +26,7 @@ export default function SaudiPlate({ plate, kind, size = "md", className = "" }:
   const latin = latinOf(visual);
   return (
     <span dir="ltr" role="img" aria-label={`لوحة ${p.letters.join(" ")} ${p.digits} · ${latinOf(p.letters).reverse().join("")} ${p.digits}`}
-      className={`inline-flex select-none items-stretch overflow-hidden rounded-[6px] border-2 border-ink/85 bg-white text-ink shadow-[0_1px_0_rgba(0,0,0,.08),inset_0_0_0_1px_rgba(255,255,255,.6)] ${className}`} style={{ height: s.h }}>
+      className={`force-light inline-flex select-none items-stretch overflow-hidden rounded-[6px] border-2 border-ink/85 bg-white text-ink shadow-[0_1px_0_rgba(0,0,0,.08),inset_0_0_0_1px_rgba(255,255,255,.6)] ${className}`} style={{ height: s.h }}>
       {/* digits */}
       <span className="flex flex-col items-center justify-center border-e-2 border-ink/85" style={{ paddingInline: s.pad }}>
         <span className="font-bold leading-none" style={{ fontSize: s.digit * 0.86, letterSpacing: ".06em" }}>{arabicDigits(p.digits)}</span>

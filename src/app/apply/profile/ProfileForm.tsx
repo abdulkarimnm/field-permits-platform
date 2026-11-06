@@ -8,7 +8,7 @@ import { Icon } from "@/components/icons";
 import type { OrgProfile, Team } from "@/lib/org";
 import { normPlate, type Equipment, type Person, type Vehicle } from "@/lib/validate";
 
-const input = "w-full rounded-lg border border-line bg-white px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
+const input = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
 const label = "mb-1.5 block text-sm font-medium text-ink";
 const ID_RE = /^[12]\d{9}$/;
 type Tab = "people" | "vehicles" | "equipment" | "teams";
@@ -63,8 +63,8 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
       )}
 
       {/* org + representative */}
-      <section className="rounded-2xl border border-line bg-white p-4 sm:p-5">
-        <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-ink"><span className="grid h-8 w-8 place-items-center rounded-lg bg-cream text-brand"><Icon name="user" size={17} /></span>{t("الجهة والممثل", "Organization & representative")}</h2>
+      <section className="rounded-2xl border border-line bg-surface p-4 sm:p-5">
+        <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-ink"><span className="grid h-8 w-8 place-items-center rounded-lg bg-chip text-brand"><Icon name="user" size={17} /></span>{t("الجهة والممثل", "Organization & representative")}</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           <div><label className={label} htmlFor="o-name">{t("اسم الجهة أو الشركة", "Organization name")} *</label><input id="o-name" className={input} value={org.name} onChange={(e) => setOrg({ ...org, name: e.target.value })} /></div>
           <div><label className={label} htmlFor="o-cr">{t("رقم السجل التجاري", "CR number")}</label><input id="o-cr" className={input} dir="ltr" inputMode="numeric" maxLength={10} value={org.cr_number} onChange={(e) => setOrg({ ...org, cr_number: e.target.value.replace(/\D/g, "") })} /></div>
@@ -77,12 +77,12 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
       </section>
 
       {/* roster tabs */}
-      <section className="overflow-hidden rounded-2xl border border-line bg-white">
+      <section className="overflow-hidden rounded-2xl border border-line bg-surface">
         <div className="flex gap-1 overflow-x-auto border-b border-line bg-paper px-2 pt-2" role="tablist">
           {tabs.map(([k, l, n, icon]) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => { setTab(k); setEditing(null); }}
-              className={`flex min-h-11 shrink-0 items-center gap-2 rounded-t-xl px-4 text-sm font-semibold transition ${tab === k ? "bg-white text-brand shadow-[0_-1px_0_var(--color-line),1px_0_0_var(--color-line),-1px_0_0_var(--color-line)]" : "text-ink-soft hover:text-ink"}`}>
-              <Icon name={icon} size={16} />{l}<span className={`num rounded-full px-1.5 text-[11px] ${tab === k ? "bg-cream text-brand" : "bg-mist"}`}>{n}</span>
+              className={`flex min-h-11 shrink-0 items-center gap-2 rounded-t-xl px-4 text-sm font-semibold transition ${tab === k ? "bg-surface text-brand shadow-[0_-1px_0_var(--color-line),1px_0_0_var(--color-line),-1px_0_0_var(--color-line)]" : "text-ink-soft hover:text-ink"}`}>
+              <Icon name={icon} size={16} />{l}<span className={`num rounded-full px-1.5 text-[11px] ${tab === k ? "bg-chip text-brand" : "bg-mist"}`}>{n}</span>
             </button>
           ))}
         </div>
@@ -104,7 +104,7 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
                       <span className="num hidden text-center text-xs text-ink-soft sm:block">{i + 1}</span>
                       <input aria-label={t(`اسم الفرد ${i + 1}`, `Person ${i + 1} name`)} className={`${input} col-span-2 sm:col-span-1`} placeholder={t("الاسم الكامل", "Full name")} value={p.name} onChange={(e) => setPeople(people.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
                       <input aria-label={t(`هوية الفرد ${i + 1}`, `Person ${i + 1} ID`)} aria-invalid={bad} className={input} dir="ltr" inputMode="numeric" maxLength={10} placeholder={t("رقم الهوية", "ID number")} value={p.id_number} onChange={(e) => setPeople(people.map((x, j) => (j === i ? { ...x, id_number: e.target.value.replace(/\D/g, "") } : x)))} />
-                      <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold ${n ? "bg-cream text-brand" : "text-ink-soft/60"}`}>{n ? t(`في ${n} فريق`, `in ${n} team(s)`) : t("خارج الفرق", "no team")}</span>
+                      <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold ${n ? "bg-chip text-brand" : "text-ink-soft/60"}`}>{n ? t(`في ${n} فريق`, `in ${n} team(s)`) : t("خارج الفرق", "no team")}</span>
                       <button type="button" aria-label={t(`حذف الفرد ${i + 1}`, `Remove person ${i + 1}`)} onClick={() => setPeople(people.filter((_, j) => j !== i))} className="grid h-11 w-11 place-items-center rounded-lg text-ink-soft hover:bg-bad-soft hover:text-bad">✕</button>
                     </li>
                   );
@@ -189,7 +189,7 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
       </section>
 
       {/* sticky save bar */}
-      <div className="sticky bottom-[calc(4.6rem+env(safe-area-inset-bottom))] z-10 flex items-center justify-between gap-3 rounded-2xl border border-line bg-white/95 px-4 py-3 shadow-[0_-8px_24px_-18px_rgba(61,42,36,.4)] backdrop-blur md:bottom-3">
+      <div className="sticky bottom-[calc(4.6rem+env(safe-area-inset-bottom))] z-10 flex items-center justify-between gap-3 rounded-2xl border border-line bg-surface/95 px-4 py-3 shadow-[0_-8px_24px_-18px_rgba(61,42,36,.4)] backdrop-blur md:bottom-3">
         <p className="text-xs text-ink-soft">{dirty ? <span className="font-semibold text-hold">● {t("تغييرات غير محفوظة", "Unsaved changes")}</span> : t("التغييرات لا تُحفظ إلا بالضغط على حفظ.", "Changes are saved only when you press Save.")}</p>
         <button disabled={pending || !!editing} className="min-h-11 rounded-xl bg-gradient-to-b from-brand to-brand-deep px-6 text-sm font-bold text-white shadow-[0_8px_20px_-10px_rgba(118,59,48,.8)] disabled:opacity-50">{pending ? t("جارٍ الحفظ…", "Saving…") : t("حفظ الملف", "Save profile")}</button>
       </div>
@@ -207,7 +207,7 @@ function TeamEditor({ team, people, vehicles, equipment, t, onCancel, onSave }: 
   const shown = valid.filter((p) => !q || p.name.includes(q) || p.id_number.includes(q));
   const allOn = shown.length > 0 && shown.every((p) => tm.people.includes(p.id_number));
   return (
-    <div className="space-y-4 rounded-2xl border border-gold/50 bg-cream/30 p-4">
+    <div className="space-y-4 rounded-2xl border border-gold/50 bg-chip/30 p-4">
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-56 flex-1">
           <label className={label} htmlFor="tm-name">{t("اسم الفريق", "Team name")} *</label>
@@ -228,7 +228,7 @@ function TeamEditor({ team, people, vehicles, equipment, t, onCancel, onSave }: 
           {shown.map((p) => {
             const on = tm.people.includes(p.id_number);
             return (
-              <label key={p.id_number} className={`flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xl border px-3 text-sm transition ${on ? "border-brand bg-white" : "border-line bg-white/60 hover:border-rose"}`}>
+              <label key={p.id_number} className={`flex min-h-11 cursor-pointer items-center gap-2.5 rounded-xl border px-3 text-sm transition ${on ? "border-brand bg-surface" : "border-line bg-surface/60 hover:border-rose"}`}>
                 <input type="checkbox" checked={on} onChange={() => toggle("people", p.id_number)} className="h-4 w-4 accent-brand" />
                 <span className="flex-1 truncate">{p.name}</span>
                 <span className="num text-[11px] text-ink-soft">••{p.id_number.slice(-4)}</span>
@@ -247,7 +247,7 @@ function TeamEditor({ team, people, vehicles, equipment, t, onCancel, onSave }: 
               const k = normPlate(v.plate);
               const on = tm.vehicles.includes(k);
               return (
-                <button key={k} type="button" aria-pressed={on} onClick={() => toggle("vehicles", k)} className={`flex items-center gap-2 rounded-xl border p-1.5 pe-3 transition ${on ? "border-brand bg-white ring-2 ring-brand/15" : "border-line bg-white/60 opacity-75 hover:opacity-100"}`}>
+                <button key={k} type="button" aria-pressed={on} onClick={() => toggle("vehicles", k)} className={`flex items-center gap-2 rounded-xl border p-1.5 pe-3 transition ${on ? "border-brand bg-surface ring-2 ring-brand/15" : "border-line bg-surface/60 opacity-75 hover:opacity-100"}`}>
                   <SaudiPlate plate={v.plate} kind={v.kind} size="sm" />
                   <span className="text-xs text-ink-soft">{v.type}</span>
                   <span className={`grid h-5 w-5 place-items-center rounded text-[11px] ${on ? "bg-brand text-white" : "border border-line"}`}>{on ? "✓" : ""}</span>
@@ -265,7 +265,7 @@ function TeamEditor({ team, people, vehicles, equipment, t, onCancel, onSave }: 
             {equipment.filter((x) => x.name).map((x) => {
               const on = tm.equipment.includes(x.name.trim());
               return (
-                <button key={x.name} type="button" aria-pressed={on} onClick={() => toggle("equipment", x.name.trim())} className={`min-h-10 rounded-xl border px-3 text-sm transition ${on ? "border-brand bg-white font-semibold text-brand" : "border-line bg-white/60 text-ink"}`}>
+                <button key={x.name} type="button" aria-pressed={on} onClick={() => toggle("equipment", x.name.trim())} className={`min-h-10 rounded-xl border px-3 text-sm transition ${on ? "border-brand bg-surface font-semibold text-brand" : "border-line bg-surface/60 text-ink"}`}>
                   {on ? "✓ " : ""}{x.name} <span className="num text-xs text-ink-soft">×{x.qty}</span>
                 </button>
               );

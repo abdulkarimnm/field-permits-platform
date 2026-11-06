@@ -21,7 +21,7 @@ export default async function CapacityPage({ searchParams }: { searchParams: Pro
       <PageTitle title={t("سعة المناطق", "Zone capacity")} sub={t("المركبات المحجوزة مقابل السعة لكل ساعة خلال 7 أيام. تُعدَّل السعة من الإعدادات.", "Booked vehicles vs. capacity per hour over 7 days. Edit capacity in Settings.")} />
       <div className="mb-4 flex flex-wrap gap-2">
         {zones.map((z) => (
-          <Link key={z.id} href={`?zone=${z.id}`} className={`rounded-lg border px-3 py-2 text-sm font-medium ${z.id === zone.id ? "border-brand bg-brand text-white" : "border-line bg-white hover:border-rose"}`}>
+          <Link key={z.id} href={`?zone=${z.id}`} className={`rounded-lg border px-3 py-2 text-sm font-medium ${z.id === zone.id ? "border-brand bg-brand text-white" : "border-line bg-surface hover:border-rose"}`}>
             {t(z.name_ar, z.name_en)} <span className="num opacity-75">({z.capacity_per_hour}/{t("س", "h")})</span>
           </Link>
         ))}

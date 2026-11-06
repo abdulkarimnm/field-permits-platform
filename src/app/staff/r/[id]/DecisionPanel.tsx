@@ -53,7 +53,7 @@ export default function DecisionPanel({ id, stage, lang }: { id: number; stage: 
             return (
               <button key={ar} type="button" aria-pressed={on}
                 onClick={() => setReason(on ? reason.replace(txt, "").replace(/\s{2,}/g, " ").trim() : (reason.trim() ? reason.trim() + " " : "") + txt)}
-                className={`min-h-9 rounded-full border px-3 text-start text-xs font-medium transition ${on ? (mode === "reject" ? "border-bad bg-bad-soft text-bad" : "border-hold bg-hold-soft text-hold") : "border-line bg-white text-ink hover:border-gold"}`}>
+                className={`min-h-9 rounded-full border px-3 text-start text-xs font-medium transition ${on ? (mode === "reject" ? "border-bad bg-bad-soft text-bad" : "border-hold bg-hold-soft text-hold") : "border-line bg-surface text-ink hover:border-gold"}`}>
                 {on ? "✓ " : "+ "}{txt}
               </button>
             );

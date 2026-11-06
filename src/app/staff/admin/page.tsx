@@ -56,7 +56,7 @@ export default async function Admin({ searchParams }: { searchParams: Promise<{ 
   return (
     <Shell nav={staffNav(u.roles)} active="/staff/admin" user={u.name} kind="staff" wide>
       <PageTitle title={t("الإعدادات", "Settings")} />
-      <div className="mb-5 flex gap-1 overflow-x-auto rounded-xl bg-white p-1">
+      <div className="mb-5 flex gap-1 overflow-x-auto rounded-xl bg-surface p-1">
         {tabs.map(([k, l]) => (
           <Link key={k} href={`?tab=${k}`} className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold ${tab === k ? "bg-brand text-white" : "text-ink-soft hover:text-ink"}`}>{l}</Link>
         ))}

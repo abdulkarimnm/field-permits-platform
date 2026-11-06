@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "./icons";
 
 type Role = "applicant" | "reviewer" | "approver" | "supervisor" | "verifier" | "admin";
@@ -39,6 +39,37 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [lastSms, setLastSms] = useState<number | null>(null);
   const [flash, setFlash] = useState(false);
+  // "hidden": tucked into a slim edge tab for this session so it never gets in the way
+  const [hidden, setHidden] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    try { setHidden(sessionStorage.getItem("lab:hidden") === "1"); } catch {}
+  }, []);
+  const hide = (v: boolean) => {
+    setHidden(v);
+    setOpen(false);
+    try { v ? sessionStorage.setItem("lab:hidden", "1") : sessionStorage.removeItem("lab:hidden"); } catch {}
+  };
+  // phones: hide while a field has focus (keyboard up)
+  useEffect(() => {
+    const html = document.documentElement;
+    const isField = (e: EventTarget | null) => e instanceof HTMLElement && (/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName) || e.isContentEditable) && !(e as HTMLInputElement).type?.match(/^(checkbox|radio|button|submit|file)$/);
+    const on = (e: FocusEvent) => { if (isField(e.target)) html.dataset.typing = "1"; };
+    const off = () => setTimeout(() => { if (!isField(document.activeElement)) delete html.dataset.typing; }, 50);
+    addEventListener("focusin", on);
+    addEventListener("focusout", off);
+    return () => { removeEventListener("focusin", on); removeEventListener("focusout", off); delete html.dataset.typing; };
+  }, []);
+  // close the panel on navigation, outside tap and Escape
+  useEffect(() => setOpen(false), [path]);
+  useEffect(() => {
+    if (!open) return;
+    const down = (e: PointerEvent) => { if (!root.current?.contains(e.target as Node)) setOpen(false); };
+    const key = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    addEventListener("pointerdown", down);
+    addEventListener("keydown", key);
+    return () => { removeEventListener("pointerdown", down); removeEventListener("keydown", key); };
+  }, [open]);
 
   const load = useCallback(async () => {
     try {
@@ -69,10 +100,10 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
   if (!s.active) {
     if (/^\/(staff|apply)\/login/.test(path)) return null;
     return (
-      <div className="no-print fixed bottom-[calc(5.6rem+env(safe-area-inset-bottom))] start-3 z-[75] md:bottom-5 md:start-5">
-        <Link href="/sandbox" className="flex min-h-12 items-center gap-2.5 rounded-full border border-gold/50 bg-[#2a120d]/95 py-1.5 pe-4 ps-1.5 text-sm text-cream shadow-[0_14px_34px_-12px_rgba(0,0,0,.8)] backdrop-blur-xl transition active:scale-95">
+      <div className="no-print lab-dock fixed bottom-[calc(5.6rem+env(safe-area-inset-bottom))] start-3 z-[45] md:bottom-5 md:start-5">
+        <Link href="/sandbox" aria-label={t("جرّب كل الصلاحيات بحسابات تجريبية جاهزة", "Try every role with ready-made demo accounts")} className="flex min-h-12 items-center gap-2.5 rounded-full border border-gold/50 bg-[#2a120d]/95 py-1.5 pe-4 ps-1.5 text-sm text-cream shadow-[0_14px_34px_-12px_rgba(0,0,0,.8)] backdrop-blur-xl transition active:scale-95">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-[#e9cfa6] text-noir"><Icon name="user" size={17} /></span>
-          <span className="leading-tight text-start">
+          <span className="hidden leading-tight text-start sm:block">
             <span className="block text-[10px] text-gold-soft">{t("حسابات تجريبية جاهزة", "Ready-made demo accounts")}</span>
             <span className="block text-xs font-semibold text-white">{t("جرّب كل الصلاحيات", "Try every role")}</span>
           </span>
@@ -93,8 +124,21 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
   };
   const code = (body: string) => body.match(/(\d{6})/)?.[1];
 
+  const bottom = /^\/apply\/(new|profile)/.test(path) ? "bottom-[calc(10.5rem+env(safe-area-inset-bottom))]" : "bottom-[calc(5.6rem+env(safe-area-inset-bottom))]";
+  if (hidden)
+    return (
+      <button
+        onClick={() => hide(false)}
+        className={`no-print lab-dock fixed start-0 z-[45] grid h-14 w-7 place-items-center rounded-e-2xl border border-s-0 border-gold/50 bg-[#2a120d]/95 text-gold-soft shadow-lg backdrop-blur md:bottom-5 ${bottom}`}
+        aria-label={t("إظهار مختبر الصلاحيات", "Show the roles lab")}
+        title={t("مختبر الصلاحيات", "Roles lab")}
+      >
+        <Icon name={role ? ROLE_META[role].icon : "user"} size={15} />
+      </button>
+    );
+
   return (
-    <div className={`no-print fixed start-3 z-[75] md:bottom-5 md:start-5 ${path.startsWith("/apply/new") ? "bottom-[calc(10.5rem+env(safe-area-inset-bottom))]" : "bottom-[calc(5.6rem+env(safe-area-inset-bottom))]"}`}>
+    <div ref={root} className={`no-print lab-dock fixed start-3 z-[45] md:bottom-5 md:start-5 ${bottom}`}>
       {open && (
         <div className="al-item mb-3 w-[min(23rem,calc(100vw-1.5rem))] overflow-hidden rounded-3xl border border-gold/35 bg-[#2a120d]/97 text-cream shadow-[0_30px_70px_-20px_rgba(0,0,0,.8)] backdrop-blur-xl" role="dialog" aria-label={t("مختبر الصلاحيات", "Roles lab")}>
           <div className="flex items-center justify-between gap-2 border-b border-white/10 px-4 py-3">
@@ -102,7 +146,15 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
               <p className="text-sm font-bold text-white">{t("مختبر الصلاحيات", "Roles lab")}</p>
               <p className="text-[11px] text-cream/55">{t(`${done} من ${all.length} مهمة · بيانات تجريبية`, `${done} of ${all.length} missions · trial data`)}</p>
             </div>
-            <Link href="/sandbox" className="rounded-lg border border-white/15 px-2.5 py-1.5 text-[11px] font-semibold text-gold-soft hover:border-gold/50">{t("صفحة المختبر", "Lab home")}</Link>
+            <div className="flex items-center gap-1">
+              <Link href="/sandbox" className="grid min-h-9 place-items-center rounded-lg border border-white/15 px-2.5 text-[11px] font-semibold text-gold-soft hover:border-gold/50">{t("صفحة المختبر", "Lab home")}</Link>
+              <button onClick={() => hide(true)} className="grid h-9 w-9 place-items-center rounded-lg text-cream/70 hover:bg-white/10 hover:text-white" aria-label={t("إخفاء المختبر إلى طرف الشاشة", "Tuck the lab to the screen edge")} title={t("إخفاء", "Hide")}>
+                <Icon name="minimize" size={16} />
+              </button>
+              <button onClick={() => setOpen(false)} className="grid h-9 w-9 place-items-center rounded-lg text-cream/70 hover:bg-white/10 hover:text-white" aria-label={t("إغلاق", "Close")}>
+                <Icon name="close" size={16} />
+              </button>
+            </div>
           </div>
           <div className="flex gap-1 border-b border-white/10 p-1.5" role="tablist">
             {([["missions", t("المهام", "Missions")], ["roles", t("الأدوار", "Roles")], ["phone", t("الجوال", "Phone")], ["codes", t("رموز البوابة", "Gate codes")]] as const).map(([k, l]) => (
@@ -203,12 +255,14 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className={`flex min-h-12 items-center gap-2.5 rounded-full border border-gold/50 bg-[#2a120d]/95 py-1.5 pe-4 ps-1.5 text-sm text-cream shadow-[0_14px_34px_-12px_rgba(0,0,0,.8)] backdrop-blur-xl transition active:scale-95 ${flash ? "ring-4 ring-[#3aa0c8]/60" : ""}`}
+        aria-label={t(`مختبر الصلاحيات: ${role ? ROLE_META[role].ar : "اختر دورًا"} · ${done} من ${all.length}`, `Roles lab: ${role ? ROLE_META[role].en : "pick a role"} · ${done} of ${all.length}`)}
+        className={`relative flex min-h-12 items-center gap-2.5 rounded-full border border-gold/50 bg-[#2a120d]/95 p-1.5 sm:pe-4 text-sm text-cream shadow-[0_14px_34px_-12px_rgba(0,0,0,.8)] backdrop-blur-xl transition active:scale-95 ${flash ? "ring-4 ring-[#3aa0c8]/60" : ""}`}
       >
         <span className="grid h-9 w-9 place-items-center rounded-full text-noir" style={{ background: role ? ROLE_META[role].tone : "#e9cfa6" }}>
           <Icon name={role ? ROLE_META[role].icon : "user"} size={17} />
         </span>
-        <span className="leading-tight text-start">
+        <span className="num absolute -end-1 -top-1 rounded-full bg-[#3aa0c8] px-1.5 text-[10px] font-bold leading-4 text-white sm:hidden">{done}/{all.length}</span>
+        <span className="hidden leading-tight text-start sm:block">
           <span className="block text-[10px] text-gold-soft">{t("مختبر الصلاحيات", "Roles lab")}</span>
           <span className="block text-xs font-semibold text-white">{role ? t(ROLE_META[role].ar, ROLE_META[role].en) : t("اختر دورًا", "Pick a role")} · <span className="num">{done}/{all.length}</span></span>
         </span>

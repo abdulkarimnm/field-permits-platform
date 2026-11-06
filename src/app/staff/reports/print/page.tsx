@@ -36,7 +36,7 @@ export default async function ReportPrint({ searchParams }: { searchParams: Prom
   const confidential = t("سري — للاستخدام الرسمي", "Confidential — official use");
 
   return (
-    <div className="min-h-dvh bg-mist py-6 print:bg-white print:py-0" dir={lang === "ar" ? "rtl" : "ltr"} lang={lang}>
+    <div className="force-light min-h-dvh bg-mist py-6 print:bg-white print:py-0" dir={lang === "ar" ? "rtl" : "ltr"} lang={lang}>
       {/* landscape A4 with running footer & page numbers (Chrome @page margin boxes) */}
       <style>{`
         @media print {

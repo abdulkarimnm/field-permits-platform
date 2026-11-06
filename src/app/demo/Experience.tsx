@@ -269,7 +269,7 @@ export default function Experience({ lang }: { lang: "ar" | "en" }) {
   };
 
   return (
-    <div className="noir relative flex flex-1 flex-col overflow-hidden">
+    <div className="force-light noir relative flex flex-1 flex-col overflow-hidden">
       <Silk />
       {ch === 4 && <Confetti once={`demo-${permit?.number}`} />}
 

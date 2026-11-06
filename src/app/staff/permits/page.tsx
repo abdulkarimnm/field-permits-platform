@@ -21,7 +21,7 @@ export default async function PermitsPage({ searchParams }: { searchParams: Prom
         sub={t("ابحث بالرقم أو الجهة أو الجوال أو اللوحة أو الهوية.", "Search by number, organization, phone, plate or ID.")}
         action={<a href={`/api/export?${qs}`} className={btn.secondary}>{t("تصدير CSV", "Export CSV")}</a>}
       />
-      <form className="mb-5 grid gap-2 rounded-2xl border border-line bg-white p-3 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr_auto]">
+      <form className="mb-5 grid gap-2 rounded-2xl border border-line bg-surface p-3 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr_auto]">
         <input name="q" defaultValue={f.q} className={input} placeholder={t("رقم، جهة، جوال، لوحة، هوية…", "Number, org, phone, plate, ID…")} aria-label={t("بحث", "Search")} />
         <select name="status" defaultValue={f.status ?? ""} className={input} aria-label={t("الحالة", "Status")}>
           <option value="">{t("كل الحالات", "All statuses")}</option>

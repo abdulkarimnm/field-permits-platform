@@ -235,8 +235,8 @@ export default async function Workspace() {
             <ul className="grid gap-2">
               {shortcuts.map((n) => (
                 <li key={n.href}>
-                  <Link href={n.href} className="group flex items-center gap-3 rounded-xl border border-line p-2.5 transition hover:border-gold hover:bg-cream/40">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-cream text-brand"><Icon name={n.icon as IconName} size={18} /></span>
+                  <Link href={n.href} className="group flex items-center gap-3 rounded-xl border border-line p-2.5 transition hover:border-gold hover:bg-chip/40">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-chip text-brand"><Icon name={n.icon as IconName} size={18} /></span>
                     <span className="min-w-0">
                       <span className="block text-sm font-semibold text-ink">{t(n.ar, n.en)}</span>
                       {DESC[n.href] && <span className="block truncate text-xs text-ink-soft">{t(...DESC[n.href])}</span>}
@@ -256,7 +256,7 @@ export default async function Workspace() {
 
 function Stat({ k, v, tone = "text-ink", sub }: { k: string; v: number; tone?: string; sub?: string }) {
   return (
-    <div className="rounded-2xl border border-line bg-white p-4">
+    <div className="rounded-2xl border border-line bg-surface p-4">
       <p className="text-xs text-ink-soft">{k}</p>
       <p className={`num mt-1 font-display text-3xl font-bold ${tone}`}>{v}</p>
       {sub && <p className="mt-0.5 text-xs text-ink-soft">{sub}</p>}
