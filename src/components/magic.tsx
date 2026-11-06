@@ -35,13 +35,19 @@ export function ScrollProgress() {
     const on = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
+        // the bar may be gone by now (navigated away while a frame was pending)
+        const el = ref.current;
+        if (!el) return;
         const h = document.documentElement.scrollHeight - innerHeight;
-        ref.current!.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
+        el.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
       });
     };
     on();
     addEventListener("scroll", on, { passive: true });
-    return () => removeEventListener("scroll", on);
+    return () => {
+      removeEventListener("scroll", on);
+      cancelAnimationFrame(raf);
+    };
   }, []);
   return <div ref={ref} aria-hidden className="fixed inset-x-0 top-0 z-[80] h-[3px] origin-right bg-gradient-to-l from-gold-soft via-gold to-brand ltr:origin-left" style={{ transform: "scaleX(0)" }} />;
 }
