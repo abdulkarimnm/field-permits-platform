@@ -9,7 +9,7 @@ type Result = {
   found: true;
   offline?: boolean;
   checkId?: number;
-  codeType: "static" | "rotating";
+  codeType: "static" | "rotating" | "manual";
   status: string;
   number: string;
   version: number;
@@ -202,7 +202,9 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
 
   const ok = res?.found ? res : null;
   const st = ok ? STATUS[ok.status] : null;
-  const otpNeeded = repOtpMode === "required" && !ok?.offline;
+  // the server raises the mode to "required" for a typed permit number
+  const otpMode = ok && "repOtpMode" in ok && ok.repOtpMode ? ok.repOtpMode : repOtpMode;
+  const otpNeeded = otpMode === "required" && !ok?.offline;
   const allowDisabled = !ok?.canAllow || matched.people.size === 0 || (otpNeeded && otp.state !== "verified") || !!flash;
   const fmt = (d: string) => new Intl.DateTimeFormat(lang === "ar" ? "ar-SA-u-ca-gregory-nu-latn" : "en-GB", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Riyadh" }).format(new Date(d));
 
@@ -268,7 +270,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
               if (manual.trim()) check(manual.trim());
             }}
           >
-            <input className={input} dir="ltr" value={manual} onChange={(e) => setManual(e.target.value)} placeholder={t("أو الصق الرمز يدويًا", "Or paste the code")} aria-label={t("الرمز", "Code")} />
+            <input className={input} dir="ltr" value={manual} onChange={(e) => setManual(e.target.value)} placeholder={t("أو اكتب رقم التصريح: PRM-2026-000002", "Or type the permit number: PRM-2026-000002")} aria-label={t("الرمز", "Code")} />
             <button className={btn.secondary}>{dir === "out" ? t("خروج", "Exit") : t("تحقق", "Check")}</button>
           </form>
           <p className="text-center text-xs text-ink-soft">{t("الماسح لا يفتح أي رابط داخل الرمز؛ يبحث عن المعرّف في النظام فقط.", "The scanner never opens links inside the code; it only looks up the identifier.")}</p>
@@ -353,7 +355,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
         <div className="beam overflow-hidden rounded-2xl border border-line bg-white shadow-[0_24px_60px_-30px_rgba(61,42,36,.45)]" style={{ ["--beam" as string]: ok.status === "valid" ? "#5fd39a" : ok.status === "not_started" ? "#e9cfa6" : "#ff8a80" }}>
           <div className={`${st.cls} px-5 py-5 text-center text-white`}>
             <p className="font-display text-4xl font-bold tracking-wide">{t(st.ar, st.en)}</p>
-            <p className="num mt-1 text-sm opacity-90">{ok.number} · v{ok.version} · {ok.codeType === "rotating" ? t("رمز متغير حي", "Live rotating code") : t("رمز مطبوع", "Printed code")}</p>
+            <p className="num mt-1 text-sm opacity-90">{ok.number} · v{ok.version} · {ok.codeType === "rotating" ? t("رمز متغير حي", "Live rotating code") : ok.codeType === "manual" ? t("رقم مُدخل يدويًا", "Typed permit number") : t("رمز مطبوع", "Printed code")}</p>
             {ok.statusReason && <p className="mt-1 text-sm">{ok.statusReason}</p>}
           </div>
 
@@ -426,11 +428,11 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
             </MatchList>
           )}
 
-          {repOtpMode !== "off" && !ok.offline && ok.canAllow && (
+          {otpMode !== "off" && !ok.offline && ok.canAllow && (
             <div className="border-t border-line p-4">
               <p className="text-sm font-semibold">
                 {t("رمز الممثل المؤقت", "Representative's temporary code")}{" "}
-                <span className="text-xs font-normal text-ink-soft">({repOtpMode === "required" ? t("إلزامي", "required") : t("اختياري", "optional")})</span>
+                <span className="text-xs font-normal text-ink-soft">({otpMode === "required" ? t("إلزامي", "required") : t("اختياري", "optional")}){ok.codeType === "manual" && <span className="ms-1 text-xs font-normal text-hold">{t("· لأن الرقم كُتب يدويًا", "· because the number was typed")}</span>}</span>
               </p>
               <p className="mt-0.5 text-xs text-ink-soft">{t(`يُرسل إلى جوال ${ok.repName} المسجل في التصريح (${ok.repPhoneMasked}) — يثبت أن الحامل هو الممثل نفسه.`, `Sent to ${ok.repName}'s registered phone (${ok.repPhoneMasked}) — proves the holder is the representative.`)}</p>
               {otp.state === "verified" ? (
