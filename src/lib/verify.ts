@@ -10,7 +10,21 @@ import { checkOtp, sendOtp, type StaffUser } from "./auth";
 export type Parsed =
   | { type: "static"; token: string; printedVersion: number | null }
   | { type: "rotating"; number: string; window: number; code: string }
+  | { type: "manual"; number: string }
   | { type: "invalid" };
+
+/** Arabic-Indic and Persian digits → ASCII, so a number typed on an Arabic keyboard still matches. */
+function asciiDigits(s: string) {
+  return s.replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660)).replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 0x06f0));
+}
+
+/** A permit number typed by hand at the gate: PRM-2026-000002, prm 2026 2, 2026-000002, ٢٠٢٦-٢ … → PRM-2026-000002. */
+export function parsePermitNumber(raw: string): string | null {
+  const s = asciiDigits(raw).toUpperCase().replace(/[\s_./\\‐-―-]+/g, "");
+  const m = s.match(/^(?:PRM)?(20\d{2})(\d{1,6})$/);
+  if (!m || Number(m[2]) === 0) return null;
+  return `PRM-${m[1]}-${m[2].padStart(6, "0")}`;
+}
 
 /** The scanner never follows the URL inside a QR – it only extracts an identifier and looks it up here. */
 export function parsePayload(raw: string): Parsed {
@@ -19,6 +33,9 @@ export function parsePayload(raw: string): Parsed {
   if (rot) return { type: "rotating", number: rot[1], window: Number(rot[2]), code: rot[3] };
   const st = s.match(/\/v\/([A-Za-z0-9_-]{43})(?:\.(\d+))?$/) || s.match(/^([A-Za-z0-9_-]{43})(?:\.(\d+))?$/);
   if (st) return { type: "static", token: st[1], printedVersion: st[2] ? Number(st[2]) : null };
+  // A typed permit number is guessable (sequential), so it never stands alone: the representative code becomes mandatory.
+  const n = parsePermitNumber(s);
+  if (n) return { type: "manual", number: n };
   return { type: "invalid" };
 }
 
@@ -27,7 +44,7 @@ export type LookupResult =
   | {
       found: true;
       checkId: number;
-      codeType: "static" | "rotating";
+      codeType: "static" | "rotating" | "manual";
       status: LiveStatus;
       statusLabel: [string, string];
       statusReason: string | null;
@@ -67,6 +84,8 @@ export async function lookup(u: StaffUser, raw: string, gateId: number): Promise
   let p: PermitRow | undefined;
   if (parsed.type === "static") {
     p = await q1<PermitRow>(`SELECT * FROM permits WHERE token=$1`, [parsed.token]);
+  } else if (parsed.type === "manual") {
+    p = await q1<PermitRow>(`SELECT * FROM permits WHERE number=$1`, [parsed.number]);
   } else {
     p = await q1<PermitRow>(`SELECT * FROM permits WHERE number=$1`, [parsed.number]);
     if (p) {
@@ -105,7 +124,8 @@ export async function lookup(u: StaffUser, raw: string, gateId: number): Promise
     equipment: p.data.equipment,
     repName: p.data.rep_name,
     repPhoneMasked: maskId(p.rep_phone),
-    repOtpMode: mode,
+    // a typed number proves nothing on its own: the representative code is required for it
+    repOtpMode: parsed.type === "manual" ? "required" : mode,
     canAllow: status === "valid" && inScope,
     insidePeople: (await insideOf(p.id)).people,
   };
@@ -155,7 +175,7 @@ export async function recordDecision(
   input: { decision: "allowed" | "denied"; matched: { people: number[]; vehicles: number[]; equipment: number[] }; denyReason?: string },
 ) {
   return tx(async (e) => {
-    const c = (await e.query<{ id: number; permit_id: number | null; verifier_id: number; decision: string | null; rep_otp: string | null; gate_id: number }>(`SELECT * FROM checks WHERE id=$1 FOR UPDATE`, [checkId]))[0];
+    const c = (await e.query<{ id: number; permit_id: number | null; verifier_id: number; decision: string | null; rep_otp: string | null; gate_id: number; code_type: string }>(`SELECT * FROM checks WHERE id=$1 FOR UPDATE`, [checkId]))[0];
     if (!c || c.verifier_id !== u.id) throw new Error("not_found");
     if (c.decision) throw new Error("already_decided");
     if (input.decision === "allowed") {
@@ -164,7 +184,7 @@ export async function recordDecision(
       const gate = (await e.query<{ zone_ids: number[] }>(`SELECT zone_ids FROM gates WHERE id=$1`, [c.gate_id]))[0];
       if (liveStatus(p) !== "valid") throw new Error("permit_not_valid");
       if (!p.zones.some((z) => gate?.zone_ids.includes(z))) throw new Error("out_of_scope");
-      if ((await getSetting("rep_otp_mode")) === "required" && c.rep_otp !== "verified") throw new Error("rep_otp_required");
+      if ((c.code_type === "manual" || (await getSetting("rep_otp_mode")) === "required") && c.rep_otp !== "verified") throw new Error("rep_otp_required");
       if (!input.matched.people.length) throw new Error("no_people_matched");
     } else if (!input.denyReason?.trim()) throw new Error("reason_required");
     await e.query(`UPDATE checks SET decision=$2, matched=$3, deny_reason=$4 WHERE id=$1`, [checkId, input.decision, JSON.stringify(input.matched), input.denyReason || null]);
@@ -220,6 +240,8 @@ export async function recordExit(u: StaffUser, raw: string, gateId: number): Pro
   }
   let p: PermitRow | undefined;
   if (parsed.type === "static") p = await q1<PermitRow>(`SELECT * FROM permits WHERE token=$1`, [parsed.token]);
+  // exit is never blocked, so a typed number is enough to record people leaving
+  else if (parsed.type === "manual") p = await q1<PermitRow>(`SELECT * FROM permits WHERE number=$1`, [parsed.number]);
   else {
     p = await q1<PermitRow>(`SELECT * FROM permits WHERE number=$1`, [parsed.number]);
     if (p) {

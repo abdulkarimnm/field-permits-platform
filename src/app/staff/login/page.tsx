@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { AuthLayout } from "@/components/AuthLayout";
 import { i18n } from "@/lib/i18n";
 import { getStaff } from "@/lib/auth";
+import { getSetting } from "@/lib/settings";
+import DemoAccounts from "@/components/DemoAccounts";
 import StaffLoginForm from "./StaffLoginForm";
 
 export default async function StaffLogin({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
@@ -9,6 +11,7 @@ export default async function StaffLogin({ searchParams }: { searchParams: Promi
   const { next } = await searchParams;
   if (u) redirect(next?.startsWith("/") ? next : u.roles.includes("verifier") && u.roles.length === 1 ? "/verify" : "/staff");
   const { t, lang } = await i18n();
+  const demo = await getSetting("demo_mode");
   return (
     <AuthLayout
       eyebrow={t("دخول مخصص للمخولين", "Authorized access only")}
@@ -18,7 +21,13 @@ export default async function StaffLogin({ searchParams }: { searchParams: Promi
     >
       <h1 className="font-display text-[1.75rem] font-bold text-white">{t("دخول الموظفين", "Staff sign in")}</h1>
       <p className="mt-1.5 text-sm text-ink-soft">{t("المراجعون والمعتمدون والمشرفون والمتحققون الميدانيون", "Reviewers, approvers, supervisors and field verifiers")}</p>
-      <div className="mt-7">
+      {demo && (
+        <div className="mt-6">
+          <DemoAccounts lang={lang} first={next?.startsWith("/verify") ? "verifier" : "reviewer"} />
+          <p className="mt-5 flex items-center gap-3 text-[11px] text-cream/45"><span className="h-px flex-1 bg-white/10" />{t("أو ادخل باسم مستخدم وكلمة مرور", "or sign in with a username and password")}<span className="h-px flex-1 bg-white/10" /></p>
+        </div>
+      )}
+      <div className={demo ? "mt-5" : "mt-7"}>
         <StaffLoginForm lang={lang} next={next} />
       </div>
     </AuthLayout>
