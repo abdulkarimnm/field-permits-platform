@@ -48,12 +48,20 @@ export default function TabBar({
             const on = current === t.href;
             if (t.primary)
               return (
-                <li key={t.href} className="flex flex-1 justify-center">
-                  <Link href={t.href} onClick={tap} aria-current={on ? "page" : undefined} className="group -mt-5 flex flex-col items-center gap-1 pb-2 active:scale-95">
-                    <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-b from-gold-soft to-gold text-noir shadow-[0_10px_24px_-8px_rgba(201,166,107,.8)] ring-4 ring-noir">
-                      <Icon name={t.icon} size={26} strokeWidth={2.2} />
+                <li key={t.href} className="flex flex-1">
+                  {/* The main action sits in the bar like its siblings (same height, same baseline);
+                      the gold pill alone marks it as primary. */}
+                  <Link
+                    href={t.href}
+                    onClick={tap}
+                    aria-current={on ? "page" : undefined}
+                    className="relative flex min-h-[3.75rem] w-full flex-col items-center justify-center gap-1 transition active:scale-95"
+                  >
+                    {on && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-gold" />}
+                    <span className={`grid h-8 w-12 place-items-center rounded-full bg-gradient-to-b from-gold-soft to-gold text-noir shadow-[0_4px_12px_-4px_rgba(201,166,107,.7)] transition ${on ? "ring-2 ring-gold-soft/40" : ""}`}>
+                      <Icon name={t.icon} size={20} strokeWidth={2.4} />
                     </span>
-                    <span className={`text-[11px] font-semibold ${on ? "text-gold-soft" : "text-cream/60"}`}>{t.label}</span>
+                    <span className={`text-[11px] font-semibold ${on ? "text-gold-soft" : "text-cream/75"}`}>{t.label}</span>
                   </Link>
                 </li>
               );
