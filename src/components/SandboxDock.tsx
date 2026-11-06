@@ -64,7 +64,22 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
     setLastSms(top);
   }, [s, lastSms]);
 
-  if (!s || !s.active || HIDE.some((r) => r.test(path))) return null;
+  if (!s || HIDE.some((r) => r.test(path))) return null;
+  // No lab session yet: a small, always-visible invitation (login pages already show the accounts panel).
+  if (!s.active) {
+    if (/^\/(staff|apply)\/login/.test(path)) return null;
+    return (
+      <div className="no-print fixed bottom-[calc(5.6rem+env(safe-area-inset-bottom))] start-3 z-[75] md:bottom-5 md:start-5">
+        <Link href="/sandbox" className="flex min-h-12 items-center gap-2.5 rounded-full border border-gold/50 bg-[#2a120d]/95 py-1.5 pe-4 ps-1.5 text-sm text-cream shadow-[0_14px_34px_-12px_rgba(0,0,0,.8)] backdrop-blur-xl transition active:scale-95">
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-[#e9cfa6] text-noir"><Icon name="user" size={17} /></span>
+          <span className="leading-tight text-start">
+            <span className="block text-[10px] text-gold-soft">{t("حسابات تجريبية جاهزة", "Ready-made demo accounts")}</span>
+            <span className="block text-xs font-semibold text-white">{t("جرّب كل الصلاحيات", "Try every role")}</span>
+          </span>
+        </Link>
+      </div>
+    );
+  }
   const role = s.role;
   const ms = role ? s.missions[role] : [];
   const all = ORDER.flatMap((r) => s.missions[r]);
