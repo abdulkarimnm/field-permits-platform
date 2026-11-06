@@ -56,19 +56,19 @@ export default async function Errors({ searchParams }: { searchParams: Promise<{
           [t("جديدة آخر 24 ساعة", "New (24h)"), st.today, "text-ink"],
           [t("مفتوحة: خادم / متصفح", "Open: server / browser"), `${st.server} / ${st.client}`, "text-ink"],
         ].map(([k, v, c]) => (
-          <div key={String(k)} className="rounded-2xl border border-line bg-white p-4">
+          <div key={String(k)} className="rounded-2xl border border-line bg-surface p-4">
             <p className="text-xs text-ink-soft">{k}</p>
             <p className={`num mt-1 font-display text-3xl font-bold ${c}`}>{v}</p>
           </div>
         ))}
       </div>
 
-      <form method="get" className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-white p-3">
+      <form method="get" className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-line bg-surface p-3">
         <input type="hidden" name="status" value={status} />
         {[["open", t("مفتوحة", "Open")], ["resolved", t("معالجة", "Resolved")], ["all", t("الكل", "All")]].map(([k, l]) => (
           <Link key={k} href={link({ status: k })} aria-current={status === k ? "page" : undefined} className={`min-h-9 content-center rounded-full border px-3.5 text-xs font-semibold ${status === k ? "border-brand bg-brand text-white" : "border-line text-ink hover:border-gold"}`}>{l}</Link>
         ))}
-        <select name="source" defaultValue={sp.source ?? ""} aria-label={t("المصدر", "Source")} className="min-h-9 rounded-lg border border-line bg-white px-2 text-sm">
+        <select name="source" defaultValue={sp.source ?? ""} aria-label={t("المصدر", "Source")} className="min-h-9 rounded-lg border border-line bg-surface px-2 text-sm">
           <option value="">{t("كل المصادر", "All sources")}</option>
           {Object.entries(SRC).map(([k, v]) => <option key={k} value={k}>{t(...v)}</option>)}
         </select>

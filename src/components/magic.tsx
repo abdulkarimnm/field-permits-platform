@@ -169,7 +169,7 @@ export function PhonePass({ t }: { t: { valid: string; pass: string; org: string
     return h - Math.floor(h) > 0.52;
   };
   return (
-    <div className="flex h-full flex-col bg-gradient-to-b from-[#fffaf5] to-[#f6ece4] px-4 pb-5 pt-12 text-ink">
+    <div className="force-light flex h-full flex-col bg-gradient-to-b from-[#fffaf5] to-[#f6ece4] px-4 pb-5 pt-12 text-ink">
       <div className="flex items-center justify-between">
         <span className="text-[10px] text-ink-soft">{t.pass}</span>
         <span className="rounded-full bg-ok px-2 py-0.5 text-[10px] font-bold text-white">● {t.valid}</span>

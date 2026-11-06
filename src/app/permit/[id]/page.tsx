@@ -35,7 +35,7 @@ export default async function PermitDoc({ params }: { params: Promise<{ id: stri
   );
 
   return (
-    <div className="min-h-dvh bg-mist py-6 print:bg-white print:py-0" dir="rtl" lang="ar">
+    <div className="force-light min-h-dvh bg-mist py-6 print:bg-white print:py-0" dir="rtl" lang="ar">
       <div className="no-print mx-auto mb-4 flex max-w-[210mm] flex-wrap items-center justify-between gap-2 px-4">
         <BackButton />
         <PrintButton />

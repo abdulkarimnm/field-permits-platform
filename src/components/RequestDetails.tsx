@@ -33,7 +33,7 @@ export async function RequestDetails({ r, mask = false }: { r: RequestRow; mask?
         </dl>
         <div className="mt-4 flex flex-wrap gap-2">
           {zn.map((z) => (
-            <span key={z.id} className={`rounded-full px-3 py-1 text-xs font-semibold ${z.sensitive ? "bg-hold-soft text-hold" : "bg-cream text-brand"}`}>
+            <span key={z.id} className={`rounded-full px-3 py-1 text-xs font-semibold ${z.sensitive ? "bg-hold-soft text-hold" : "bg-chip text-brand"}`}>
               {t(z.name_ar, z.name_en)}
             </span>
           ))}

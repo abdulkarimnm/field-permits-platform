@@ -6,6 +6,7 @@ import AppRuntime from "@/components/AppRuntime";
 import SandboxDock from "@/components/SandboxDock";
 import ClientErrorReporter from "@/components/ClientErrorReporter";
 import { getSetting } from "@/lib/settings";
+import { cookies } from "next/headers";
 
 const plex = IBM_Plex_Sans_Arabic({ variable: "--font-plex", subsets: ["arabic", "latin"], weight: ["400", "500", "600", "700"] });
 
@@ -24,15 +25,32 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#fffaf5",
-  colorScheme: "light",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fffaf5" },
+    { media: "(prefers-color-scheme: dark)", color: "#16110f" },
+  ],
+  colorScheme: "light dark",
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const lang = await getLang();
   const demo = await getSetting("demo_mode");
+  const c = (await cookies()).get("theme")?.value;
+  const pref = c === "dark" || c === "light" ? c : "system";
   return (
-    <html lang={lang} dir={lang === "ar" ? "rtl" : "ltr"} className={`${plex.variable}`}>
+    <html
+      lang={lang}
+      dir={lang === "ar" ? "rtl" : "ltr"}
+      className={`${plex.variable}`}
+      data-theme-pref={pref}
+      data-theme={pref === "system" ? undefined : pref}
+      style={pref === "system" ? undefined : { colorScheme: pref }}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Runs before first paint: resolves "system" from the device and follows it live, so there is never a light flash. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+      </head>
       <body className="antialiased min-h-dvh">
         {children}
         <AppRuntime lang={lang} />
@@ -42,3 +60,5 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     </html>
   );
 }
+
+const THEME_BOOT = `(function(){try{var h=document.documentElement,m=matchMedia("(prefers-color-scheme: dark)");function s(){if(h.dataset.themePref!=="system")return;var d=m.matches;h.dataset.theme=d?"dark":"light";h.style.colorScheme=d?"dark":"light";}s();m.addEventListener("change",s);}catch(e){}})();`;

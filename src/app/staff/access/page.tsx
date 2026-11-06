@@ -70,9 +70,9 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
             <caption className="sr-only">{t("مصفوفة الصلاحيات", "Permission matrix")}</caption>
             <thead>
               <tr>
-                <th scope="col" className="sticky start-0 bg-white px-3 py-3 text-start text-xs font-semibold text-ink-soft">{t("الصلاحية", "Permission")}</th>
+                <th scope="col" className="sticky start-0 bg-surface px-3 py-3 text-start text-xs font-semibold text-ink-soft">{t("الصلاحية", "Permission")}</th>
                 {ROLES.map((r) => (
-                  <th key={r} scope="col" className={`px-2 py-3 text-center text-xs font-bold ${u.roles.includes(r) ? "rounded-t-xl bg-cream text-brand" : "text-ink"}`}>
+                  <th key={r} scope="col" className={`px-2 py-3 text-center text-xs font-bold ${u.roles.includes(r) ? "rounded-t-xl bg-chip text-brand" : "text-ink"}`}>
                     <span className="mx-auto mb-1 block h-1.5 w-8 rounded-full" style={{ background: ROLE_INFO[r].tone }} />
                     {t(ROLE_INFO[r].ar, ROLE_INFO[r].en)}
                     {u.roles.includes(r) && <span className="block text-[10px] font-semibold text-brand/70">{t("دورك", "your role")}</span>}
@@ -86,11 +86,11 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
                   <tr><th colSpan={ROLES.length + 1} scope="colgroup" className="border-t border-line bg-paper px-3 py-1.5 text-start text-[11px] font-bold uppercase tracking-wide text-ink-soft">{t(g.ar, g.en)}</th></tr>
                   {capList.filter((c) => CAPS[c].group === g.id).map((c) => (
                     <tr key={c} className="group">
-                      <th scope="row" className="sticky start-0 border-t border-line bg-white px-3 py-2 text-start font-medium text-ink group-hover:bg-paper">{t(CAPS[c].ar, CAPS[c].en)}</th>
+                      <th scope="row" className="sticky start-0 border-t border-line bg-surface px-3 py-2 text-start font-medium text-ink group-hover:bg-paper">{t(CAPS[c].ar, CAPS[c].en)}</th>
                       {ROLES.map((r) => {
                         const on = ROLE_CAPS[r].includes(c);
                         return (
-                          <td key={r} className={`border-t border-line px-2 py-2 text-center group-hover:bg-paper ${u.roles.includes(r) ? "bg-cream/50" : ""}`}>
+                          <td key={r} className={`border-t border-line px-2 py-2 text-center group-hover:bg-paper ${u.roles.includes(r) ? "bg-chip/50" : ""}`}>
                             {on ? <span className="inline-grid h-6 w-6 place-items-center rounded-full bg-ok text-xs font-bold text-white" aria-label={t("مسموح", "allowed")}>✓</span> : <span className="text-ink-soft/40" aria-label={t("غير مسموح", "not allowed")}>—</span>}
                           </td>
                         );

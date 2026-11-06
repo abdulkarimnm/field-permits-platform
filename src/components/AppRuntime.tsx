@@ -84,7 +84,7 @@ export default function AppRuntime({ lang }: { lang: "ar" | "en" }) {
       )}
 
       {show && (bip || ios) && (
-        <div className="no-print fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[70] md:inset-x-auto md:bottom-6 md:end-6 md:w-96">
+        <div className="no-print float-chrome fixed inset-x-3 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] z-[70] md:inset-x-auto md:bottom-6 md:end-6 md:w-96">
           <div className="rise noir beam overflow-hidden rounded-3xl border border-gold/30 p-4 shadow-2xl">
             <div className="flex items-start gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}

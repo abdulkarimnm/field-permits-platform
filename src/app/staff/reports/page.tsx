@@ -55,8 +55,8 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
           const on = x.id === id;
           return (
             <Link key={x.id} href={`/staff/reports?${qs({ r: x.id })}`} aria-current={on ? "page" : undefined}
-              className={`group flex min-h-24 flex-col gap-2 rounded-2xl border p-3 transition ${on ? "border-brand bg-gradient-to-b from-brand to-brand-deep text-white shadow-[0_14px_30px_-18px_rgba(118,59,48,.9)]" : "border-line bg-white hover:border-gold"}`}>
-              <span className={`grid h-8 w-8 place-items-center rounded-lg ${on ? "bg-white/15 text-gold-soft" : "bg-cream text-brand"}`}><Icon name={x.icon as IconName} size={18} /></span>
+              className={`group flex min-h-24 flex-col gap-2 rounded-2xl border p-3 transition ${on ? "border-brand bg-gradient-to-b from-brand to-brand-deep text-white shadow-[0_14px_30px_-18px_rgba(118,59,48,.9)]" : "border-line bg-surface hover:border-gold"}`}>
+              <span className={`grid h-8 w-8 place-items-center rounded-lg ${on ? "bg-white/15 text-gold-soft" : "bg-chip text-brand"}`}><Icon name={x.icon as IconName} size={18} /></span>
               <span className="text-sm font-bold leading-snug">{t(x.ar, x.en)}</span>
             </Link>
           );
@@ -64,7 +64,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
       </nav>
 
       {/* filters */}
-      <form method="get" className="mt-4 rounded-2xl border border-line bg-white p-4">
+      <form method="get" className="mt-4 rounded-2xl border border-line bg-surface p-4">
         <input type="hidden" name="r" value={id} />
         <div className="flex flex-wrap items-end gap-3">
           <div>
@@ -77,7 +77,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
           </div>
           <div>
             <label htmlFor="zone" className="mb-1 block text-xs font-medium text-ink-soft">{t("المنطقة", "Zone")}</label>
-            <select id="zone" name="zone" defaultValue={f.zone ?? ""} className="min-h-11 rounded-lg border border-line bg-white px-3 text-sm">
+            <select id="zone" name="zone" defaultValue={f.zone ?? ""} className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm">
               <option value="">{t("كل المناطق", "All zones")}</option>
               {zones.map((z) => <option key={z.id} value={z.id}>{t(z.name_ar, z.name_en)}</option>)}
             </select>
@@ -85,7 +85,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
           {usesGate && (
             <div>
               <label htmlFor="gate" className="mb-1 block text-xs font-medium text-ink-soft">{t("البوابة", "Gate")}</label>
-              <select id="gate" name="gate" defaultValue={f.gate ?? ""} className="min-h-11 rounded-lg border border-line bg-white px-3 text-sm">
+              <select id="gate" name="gate" defaultValue={f.gate ?? ""} className="min-h-11 rounded-lg border border-line bg-surface px-3 text-sm">
                 <option value="">{t("كل البوابات", "All gates")}</option>
                 {gates.map((g) => <option key={g.id} value={g.id}>{t(g.name_ar, g.name_en)}</option>)}
               </select>
@@ -144,7 +144,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
                 <tr><td colSpan={r.cols.length} className="px-3 py-8 text-center text-ink-soft">{t("لا توجد بيانات ضمن الفترة والتصفية المحددة", "No data for the selected period and filters")}</td></tr>
               )}
               {r.rows.slice(0, PREVIEW).map((row, i) => (
-                <tr key={i} className="border-t border-line odd:bg-white even:bg-paper/60">
+                <tr key={i} className="border-t border-line odd:bg-surface even:bg-paper/60">
                   {row.map((v, j) => {
                     const k = r.cols[j].kind;
                     const numeric = typeof v === "number" || k === "num" || k === "hours";

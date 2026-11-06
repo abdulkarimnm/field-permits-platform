@@ -17,7 +17,7 @@ export default async function Denied({ searchParams }: { searchParams: Promise<{
   return (
     <Shell nav={staffNav(u.roles)} active="" user={u.name} kind="staff">
       <div className="mx-auto max-w-lg py-10 text-center">
-        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-cream text-brand" aria-hidden>
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-chip text-brand" aria-hidden>
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4" /></svg>
         </div>
         <h1 className="mt-5 font-display text-2xl font-bold text-ink">{t("هذا القسم خارج صلاحيات دورك", "This section is outside your role")}</h1>

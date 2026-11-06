@@ -67,7 +67,7 @@ export default function RotatingPass(props: {
           <span className="text-xs text-cream/70">{t("بطاقة دخول رقمية", "Digital entry pass")}</span>
         </div>
 
-        <div className="beam mt-4 overflow-hidden rounded-3xl bg-white text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
+        <div className="force-light beam mt-4 overflow-hidden rounded-3xl bg-white text-ink shadow-[0_30px_80px_-30px_rgba(0,0,0,.8)]">
           <div className="flex items-center justify-between gap-3 bg-cream px-5 py-3">
             <Image src="/brand/logo.png" alt="" width={120} height={28} className="h-7 w-auto" />
             <span className={`rounded-full px-3 py-1 text-xs font-bold text-white ${tone}`}>{props.statusLabel}</span>

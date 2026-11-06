@@ -45,7 +45,7 @@ export async function Shell({
             user && kind ? (
               <form action={logoutAction} data-logout className={`items-center gap-1 ${nav.length ? "hidden md:flex" : "flex"}`}>
                 <input type="hidden" name="kind" value={kind} />
-                <span className="hidden max-w-44 truncate rounded-lg bg-cream/70 px-3 py-2 text-sm font-medium text-brand lg:inline">{user}</span>
+                <span className="hidden max-w-44 truncate rounded-lg bg-chip/70 px-3 py-2 text-sm font-medium text-brand lg:inline">{user}</span>
                 <button className="min-h-10 rounded-lg px-3 text-sm font-medium text-ink-soft hover:text-bad">{t("خروج", "Sign out")}</button>
               </form>
             ) : null

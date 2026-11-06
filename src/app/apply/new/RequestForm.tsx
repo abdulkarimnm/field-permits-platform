@@ -3,7 +3,9 @@ import Link from "next/link";
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import { submitAction, type SubmitState } from "./actions";
 import CapacityPicker from "./CapacityPicker";
-import { formatSaPlate, parseSaPlate } from "@/lib/plates";
+import RosterImport from "./RosterImport";
+import { useOverlay } from "@/components/useOverlay";
+import { Icon } from "@/components/icons";
 import { btn, input, label } from "@/components/ui";
 import { LIMITS, normPlate, validateRequest, type Equipment, type Person, type RequestInput, type Vehicle } from "@/lib/validate";
 import { EquipmentInput, PlateInput } from "@/components/AssetInputs";
@@ -31,23 +33,13 @@ const MAX_FILE = 5 * 1024 * 1024;
 const OK_TYPES = ["application/pdf", "image/jpeg", "image/png"];
 const ID_RE = /^[12]\d{9}$/;
 
-function parseRows(text: string): string[][] {
-  return text
-    .split(/\r?\n/)
-    .map((l) => l.split(/\t|,|؛|;/).map((c) => c.trim()))
-    .filter((r) => r.some(Boolean));
-}
-const parsePeople = (rows: string[][]): Person[] =>
-  rows.map(([a = "", b = ""]) => (/^\d{10}$/.test(a.replace(/\D/g, "")) && !/\D{2,}/.test(a) ? { name: b, id_number: a.replace(/\D/g, "") } : { name: a, id_number: b.replace(/\D/g, "") }));
-const parseVehicles = (rows: string[][]): Vehicle[] =>
-  rows.map(([a = "", b = ""]) => { const sp = parseSaPlate(a); return sp ? { plate: formatSaPlate(sp), type: b, kind: "sa" as const } : { plate: a.toUpperCase(), type: b, kind: "other" as const }; });
 
 function Sec({ n, title, children, hint, done }: { n: number; title: string; children: React.ReactNode; hint?: React.ReactNode; done?: boolean }) {
   return (
-    <section id={`s${n}`} className="scroll-mt-28 rounded-2xl border border-line bg-white">
+    <section id={`s${n}`} className="scroll-mt-28 rounded-2xl border border-line bg-surface">
       <header className="flex items-center gap-3 border-b border-line px-4 py-3 sm:px-5">
         <span
-          className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-bold transition ${done ? "bg-ok text-white" : "bg-cream text-brand"}`}
+          className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-bold transition ${done ? "bg-ok text-white" : "bg-chip text-brand"}`}
           aria-label={done ? `${n} ✓` : String(n)}
         >
           {done ? "✓" : n}
@@ -86,9 +78,9 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
   const [declaration, setDeclaration] = useState(false);
   const [files, setFiles] = useState<{ key: number; label: string; name?: string; size?: number; err?: string }[]>([{ key: 1, label: "" }]);
   const [paste, setPaste] = useState<null | "people" | "vehicles">(null);
-  const [pasteText, setPasteText] = useState("");
   const [touched, setTouched] = useState(false);
   const [review, setReview] = useState(false);
+  useOverlay(review, () => setReview(false));
 
   /* ───── Draft: kept in this tab only (sessionStorage) so ID numbers never persist on a shared device ───── */
   const draftKey = `vp_draft:${init.mode}:${init.id ?? init.permitId ?? "new"}`;
@@ -212,16 +204,6 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
   }
   const spanHours = f.from && f.to ? Math.round((+new Date(fromLocal(f.to)) - +new Date(fromLocal(f.from))) / 3600_000) : null;
 
-  /* ───── Paste preview ───── */
-  const pasteRows = parseRows(pasteText);
-  const pastePreview = paste === "people" ? parsePeople(pasteRows) : [];
-  const pasteBad = paste === "people" ? pastePreview.filter((p) => !p.name || !ID_RE.test(p.id_number)).length : parseVehicles(pasteRows).filter((v) => v.plate.replace(/\s/g, "").length < 4).length;
-  function applyPaste() {
-    if (paste === "people") addPeople(pastePreview);
-    else if (paste === "vehicles") addVehicles(parseVehicles(pasteRows));
-    setPaste(null);
-    setPasteText("");
-  }
 
   const zoneName = (id: number) => { const z = zones.find((x) => x.id === id); return z ? t(z.name_ar, z.name_en) : String(id); };
   const filledPeople = people.filter((p) => p.name || p.id_number).length;
@@ -269,13 +251,13 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
           <div className="mt-2 grid grid-cols-8 gap-1" aria-hidden>
             {secDone.map((d, i) => (
-              <a key={i} href={`#s${i + 1}`} className={`h-1.5 rounded-full transition-colors ${d ? "bg-ok" : touched && secBad[i] ? "bg-bad" : "bg-line"}`} />
+              <a key={i} href={`#s${i + 1}`} tabIndex={-1} title={sections[i]} className={`h-1.5 rounded-full transition-colors ${d ? "bg-ok" : touched && secBad[i] ? "bg-bad" : "bg-line"}`} />
             ))}
           </div>
         </div>
 
         {draft && (
-          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gold/40 bg-cream/60 px-4 py-3 text-sm" role="status">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gold/40 bg-chip/60 px-4 py-3 text-sm" role="status">
             <span className="flex-1 text-ink">
               {t("لديك مسودة غير مرسلة من هذه الجلسة", "You have an unsent draft from this session")}{" "}
               <span className="text-ink-soft num">({new Date(draft.at).toLocaleTimeString(lang === "ar" ? "ar-SA" : "en-GB", { hour: "2-digit", minute: "2-digit" })})</span>
@@ -293,7 +275,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
         )}
         {init.mode === "amend" && (
-          <div className="rounded-xl bg-cream px-4 py-3 text-sm text-brand">
+          <div className="rounded-xl bg-chip px-4 py-3 text-sm text-brand">
             {t(
               "طلب التعديل يحصل على رقم مرجعي جديد ويمر بالمرحلتين. يبقى التصريح الحالي ساريًا ببياناته المعتمدة حتى اعتماد التعديل.",
               "An amendment gets a new reference and goes through both stages. The current permit stays valid with its approved data until then.",
@@ -354,7 +336,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
             <div className="mb-3 flex flex-wrap gap-2" role="group" aria-label={t("اختيار سريع للمدة", "Quick duration")}>
               {durations.map(([ar, en, h]) => (
                 <button key={h} type="button" onClick={() => setDuration(h)} aria-pressed={spanHours === h}
-                  className={`min-h-10 rounded-full border px-4 text-sm font-semibold transition ${spanHours === h ? "border-brand bg-brand text-white" : "border-line bg-white text-ink hover:border-gold"}`}>
+                  className={`min-h-10 rounded-full border px-4 text-sm font-semibold transition ${spanHours === h ? "border-brand bg-brand text-white" : "border-line bg-surface text-ink hover:border-gold"}`}>
                   {t(ar, en)}
                 </button>
               ))}
@@ -385,7 +367,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
               {zones.map((z) => {
                 const on = zoneIds.includes(z.id);
                 return (
-                  <label key={z.id} className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition ${on ? "border-brand bg-cream/50" : "border-line hover:border-rose"}`}>
+                  <label key={z.id} className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2.5 transition ${on ? "border-brand bg-chip/50" : "border-line hover:border-rose"}`}>
                     <input type="checkbox" className="h-4 w-4 accent-brand" checked={on} onChange={() => setZoneIds(on ? zoneIds.filter((x) => x !== z.id) : [...zoneIds, z.id])} />
                     <span className="flex-1 text-sm font-medium">{t(z.name_ar, z.name_en)}</span>
                     {z.sensitive && <span className="rounded-full bg-hold-soft px-2 py-0.5 text-[11px] font-semibold text-hold">{t("حساسة · مراجعة أدق", "Sensitive · closer review")}</span>}
@@ -400,7 +382,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
         <Sec n={4} title={sections[3]} done={secDone[3]} hint={<span className="num">{filledPeople}/{LIMITS.people}</span>}>
           <div data-field="people" className="space-y-2">
             {teams.length > 0 && (
-              <div className="rounded-2xl border border-brand/25 bg-gradient-to-b from-cream/70 to-white p-3">
+              <div className="rounded-2xl border border-brand/25 bg-gradient-to-b from-chip/70 to-white p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-bold text-ink">{t("اختر فريق عمل من ملف الجهة", "Pick a work team from your profile")}</p>
                   <Link href="/apply/profile" className="text-xs font-semibold text-brand">{t("إدارة الفرق", "Manage teams")}</Link>
@@ -410,7 +392,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                     const on = activeTeam === tm.id;
                     return (
                       <button key={tm.id} type="button" role="radio" aria-checked={on} onClick={() => applyTeam(tm)}
-                        className={`min-h-11 rounded-xl border px-3.5 text-start transition ${on ? "border-brand bg-brand text-white shadow-[0_8px_20px_-12px_rgba(118,59,48,.9)]" : "border-line bg-white text-ink hover:border-gold"}`}>
+                        className={`min-h-11 rounded-xl border px-3.5 text-start transition ${on ? "border-brand bg-brand text-white shadow-[0_8px_20px_-12px_rgba(118,59,48,.9)]" : "border-line bg-surface text-ink hover:border-gold"}`}>
                         <span className="block text-sm font-bold">{on ? "✓ " : ""}{tm.name}</span>
                         <span className={`block text-[11px] tabular-nums ${on ? "text-white/80" : "text-ink-soft"}`}>{tm.people.length} {t("فرد", "ppl")} · {tm.vehicles.length} {t("مركبة", "veh")} · {tm.equipment.length} {t("معدة", "equip")}</span>
                       </button>
@@ -426,7 +408,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
               </div>
             )}
             {savedPeople.length > 0 && people.length < LIMITS.people && (
-              <div className="rounded-xl border border-gold/40 bg-cream/40 p-3">
+              <div className="rounded-xl border border-gold/40 bg-chip/40 p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-ink">{t("من فريقك المحفوظ", "From your saved team")} <span className="num text-ink-soft">({savedPeople.length})</span></p>
                   <button type="button" className={`${btn.secondary} min-h-9 px-3 py-1.5`} onClick={() => addPeople(savedPeople)}>{t("إضافة الكل", "Add all")}</button>
@@ -434,7 +416,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {savedPeople.slice(0, 24).map((p) => (
                     <button key={p.id_number} type="button" onClick={() => addPeople([p])}
-                      className="min-h-9 rounded-full border border-line bg-white px-3 text-xs font-medium text-ink transition hover:border-brand hover:text-brand">
+                      className="min-h-9 rounded-full border border-line bg-surface px-3 text-xs font-medium text-ink transition hover:border-brand hover:text-brand">
                       + {p.name} <span className="num text-ink-soft">••{p.id_number.slice(-4)}</span>
                     </button>
                   ))}
@@ -468,7 +450,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
             ))}
             <div className="flex flex-wrap gap-2 pt-1">
               <button type="button" className={btn.secondary} disabled={people.length >= LIMITS.people} onClick={() => setPeople([...people, { name: "", id_number: "" }])}>+ {t("إضافة فرد", "Add person")}</button>
-              <button type="button" className={btn.ghost} onClick={() => setPaste("people")}>{t("لصق قائمة من Excel", "Paste from Excel")}</button>
+              <button type="button" className={btn.ghost} onClick={() => setPaste("people")}><Icon name="sheet" size={16} /> {t("استيراد من Excel", "Import from Excel")}</button>
               {filledPeople > 0 && <button type="button" className={btn.ghost} onClick={() => setTeamSave({ open: !teamSave.open, name: teams.find((x) => x.id === activeTeam)?.name ?? "" })}>{t("حفظ القائمة كفريق", "Save list as a team")}</button>}
             </div>
             {teamSave.open && (
@@ -487,10 +469,10 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           <div data-field="vehicles" className="space-y-2">
             {vehicles.length === 0 && <p className="text-sm text-ink-soft">{t("لا توجد مركبات؟ تجاوز هذا القسم.", "No vehicles? Skip this section.")}</p>}
             {savedVehicles.length > 0 && vehicles.length < LIMITS.vehicles && (
-              <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-gold/40 bg-cream/40 p-3">
+              <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-gold/40 bg-chip/40 p-3">
                 <span className="me-1 text-sm font-semibold text-ink">{t("مركباتك المحفوظة:", "Saved vehicles:")}</span>
                 {savedVehicles.slice(0, 16).map((v) => (
-                  <button key={v.plate} type="button" onClick={() => addVehicles([v])} className="min-h-9 rounded-full border border-line bg-white px-3 text-xs font-medium hover:border-brand hover:text-brand">
+                  <button key={v.plate} type="button" onClick={() => addVehicles([v])} className="min-h-9 rounded-full border border-line bg-surface px-3 text-xs font-medium hover:border-brand hover:text-brand">
                     + <span className="num">{v.plate}</span> {v.type && <span className="text-ink-soft">· {v.type}</span>}
                   </button>
                 ))}
@@ -506,7 +488,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
             ))}
             <div className="flex flex-wrap gap-2 pt-1">
               <button type="button" className={btn.secondary} disabled={vehicles.length >= LIMITS.vehicles} onClick={() => setVehicles([...vehicles, { plate: "", type: "", kind: "sa" }])}>+ {t("إضافة مركبة", "Add vehicle")}</button>
-              <button type="button" className={btn.ghost} onClick={() => setPaste("vehicles")}>{t("لصق قائمة من Excel", "Paste from Excel")}</button>
+              <button type="button" className={btn.ghost} disabled={vehicles.length >= LIMITS.vehicles} onClick={() => setPaste("vehicles")}><Icon name="sheet" size={16} /> {t("استيراد من Excel", "Import from Excel")}</button>
             </div>
           </div>
           {vehicles.length > 0 && (
@@ -527,10 +509,10 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           <div data-field="equipment" className="space-y-2">
             {equipment.length === 0 && <p className="text-sm text-ink-soft">{t("لا توجد معدات؟ تجاوز هذا القسم.", "No equipment? Skip this section.")}</p>}
             {savedEquipment.length > 0 && equipment.length < LIMITS.equipment && (
-              <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-gold/40 bg-cream/40 p-3">
+              <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-gold/40 bg-chip/40 p-3">
                 <span className="me-1 text-sm font-semibold text-ink">{t("معداتك المحفوظة:", "Saved equipment:")}</span>
                 {savedEquipment.slice(0, 16).map((x) => (
-                  <button key={x.name} type="button" onClick={() => setEquipment([...equipment, x].slice(0, LIMITS.equipment))} className="min-h-9 rounded-full border border-line bg-white px-3 text-xs font-medium hover:border-brand hover:text-brand">
+                  <button key={x.name} type="button" onClick={() => setEquipment([...equipment, x].slice(0, LIMITS.equipment))} className="min-h-9 rounded-full border border-line bg-surface px-3 text-xs font-medium hover:border-brand hover:text-brand">
                     + {x.name} <span className="num text-ink-soft">×{x.qty}</span>
                   </button>
                 ))}
@@ -556,7 +538,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                   onChange={(e) => setFiles(files.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
                 <div>
                   <input name="files" type="file" aria-label={t(`ملف المرفق ${i + 1}`, `File ${i + 1}`)} accept="application/pdf,image/jpeg,image/png"
-                    className="block w-full text-sm file:me-3 file:min-h-10 file:rounded-lg file:border-0 file:bg-cream file:px-3 file:py-2 file:font-semibold file:text-brand"
+                    className="block w-full text-sm file:me-3 file:min-h-10 file:rounded-lg file:border-0 file:bg-chip file:px-3 file:py-2 file:font-semibold file:text-brand"
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       let err: string | undefined;
@@ -617,7 +599,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
       </div>
 
       <aside className="hidden lg:block">
-        <div className="sticky top-4 space-y-3 rounded-2xl border border-line bg-white p-4">
+        <div className="sticky top-4 space-y-3 rounded-2xl border border-line bg-surface p-4">
           <div>
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-ink">{t("التقدم", "Progress")}</span>
@@ -630,7 +612,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           <ol className="space-y-1 text-sm">
             {sections.map((s, i) => (
               <li key={s}>
-                <a href={`#s${i + 1}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-cream/50">
+                <a href={`#s${i + 1}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-chip/50">
                   <span className={`grid h-4 w-4 place-items-center rounded-full text-[9px] font-bold text-white ${secDone[i] ? "bg-ok" : touched && secBad[i] ? "bg-bad" : "bg-rose-soft"}`}>{secDone[i] ? "✓" : ""}</span>
                   <span className={secDone[i] ? "text-ink-soft" : "text-ink"}>{s}</span>
                 </a>
@@ -645,8 +627,8 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
 
       {/* Review sheet: one look at what will be sent — fewer returns for completion */}
       {review && (
-        <div className="fixed inset-0 z-50 grid place-items-end bg-ink/45 p-0 sm:place-items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="rv-h" onClick={() => setReview(false)}>
-          <div className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[90] grid place-items-end bg-ink/45 p-0 sm:place-items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="rv-h" onClick={() => setReview(false)}>
+          <div className="max-h-[92dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl bg-surface p-5 pb-0 sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
             <h3 id="rv-h" className="font-sans text-lg font-bold text-ink">{t("راجع طلبك قبل الإرسال", "Review before sending")}</h3>
             <p className="mt-1 text-xs text-ink-soft">{t("بعد الإرسال يمر الطلب بالمراجعة الأولية ثم الاعتماد النهائي.", "After sending, it goes to initial review then final approval.")}</p>
             <dl className="mt-4 divide-y divide-line rounded-2xl border border-line text-sm">
@@ -669,7 +651,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                 </div>
               ))}
             </dl>
-            <div className="mt-5 grid grid-cols-[1fr_2fr] gap-2">
+            <div className="sticky bottom-0 -mx-5 mt-5 grid grid-cols-[1fr_2fr] gap-2 border-t border-line bg-surface px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-3">
               <button type="button" className={btn.secondary} onClick={() => setReview(false)}>{t("رجوع", "Back")}</button>
               <button
                 type="button"
@@ -686,25 +668,13 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
       )}
 
       {paste && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" role="dialog" aria-modal="true" aria-labelledby="ps-h" onClick={() => setPaste(null)}>
-          <div className="w-full max-w-lg rounded-2xl bg-white p-5" onClick={(e) => e.stopPropagation()}>
-            <h3 id="ps-h" className="font-sans text-base font-semibold">{paste === "people" ? t("لصق قائمة الأفراد", "Paste people list") : t("لصق قائمة المركبات", "Paste vehicle list")}</h3>
-            <p className="mt-1 text-xs text-ink-soft">
-              {paste === "people"
-                ? t("انسخ عمودين من Excel: الاسم ورقم الهوية بأي ترتيب (سطر لكل فرد).", "Copy two Excel columns: name and ID in any order (one per line).")
-                : t("انسخ عمودين: رقم اللوحة ثم النوع.", "Copy two columns: plate then type.")}
-            </p>
-            <textarea autoFocus rows={8} dir="auto" className={`${input} mt-3 font-mono text-sm`} value={pasteText} onChange={(e) => setPasteText(e.target.value)} />
-            <p className="mt-1 text-xs num">
-              <span className="text-ink-soft">{pasteRows.length} {t("سطر", "rows")}</span>
-              {pasteRows.length > 0 && (pasteBad ? <span className="ms-2 text-hold">· {pasteBad} {t("تحتاج تصحيحًا بعد الإضافة", "need fixing after adding")}</span> : <span className="ms-2 text-ok">· {t("كلها سليمة", "all valid")} ✓</span>)}
-            </p>
-            <div className="mt-4 flex justify-end gap-2">
-              <button type="button" className={btn.secondary} onClick={() => setPaste(null)}>{t("إلغاء", "Cancel")}</button>
-              <button type="button" className={btn.primary} disabled={!pasteRows.length} onClick={applyPaste}>{t(`إضافة ${pasteRows.length}`, `Add ${pasteRows.length}`)}</button>
-            </div>
-          </div>
-        </div>
+        <RosterImport
+          kind={paste}
+          t={t}
+          room={paste === "people" ? LIMITS.people - filledPeople : LIMITS.vehicles - vehicles.length}
+          onClose={() => setPaste(null)}
+          onAdd={(rows) => { if (paste === "people") addPeople(rows as Person[]); else addVehicles(rows as Vehicle[]); setPaste(null); }}
+        />
       )}
     </form>
   );
