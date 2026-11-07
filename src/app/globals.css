@@ -89,15 +89,25 @@ input, select, textarea { font: inherit; }
 .noir {
   /* Brand brick-maroon (approved): #6a3226 → #45201a, warm glow, rose-gold under-light, gold arch pattern */
   --arch-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='96' viewBox='0 0 84 96'%3E%3Cpath d='M6 96V40a36 36 0 0 1 72 0v56' fill='none' stroke='%23e9cfa6' stroke-opacity='.07' stroke-width='1'/%3E%3Cpath d='M42 6v8M38 10h8' stroke='%23e9cfa6' stroke-opacity='.09' stroke-width='1'/%3E%3C/svg%3E");
+  /* the maroon itself is tokenised so the night theme can deepen it (see :root[data-theme="dark"] below) */
+  --noir-top: #6a3226; --noir-mid: #57281e; --noir-end: #45201a;
+  --noir-glow: rgba(150, 72, 54, .55); --noir-shade: rgba(74, 32, 24, .55); --noir-under: rgba(228, 191, 188, .12);
   background:
-    radial-gradient(110% 70% at 80% -15%, rgba(150, 72, 54, .55), transparent 62%),
-    radial-gradient(70% 55% at 5% 0%, rgba(74, 32, 24, .55), transparent 70%),
-    radial-gradient(90% 60% at 50% 115%, rgba(228, 191, 188, .12), transparent 65%),
-    linear-gradient(180deg, transparent 0%, transparent 50%, #45201a 100%),
+    radial-gradient(110% 70% at 80% -15%, var(--noir-glow), transparent 62%),
+    radial-gradient(70% 55% at 5% 0%, var(--noir-shade), transparent 70%),
+    radial-gradient(90% 60% at 50% 115%, var(--noir-under), transparent 65%),
+    linear-gradient(180deg, transparent 0%, transparent 50%, var(--noir-end) 100%),
     var(--arch-pattern) 0 0 / 84px 96px,
-    linear-gradient(180deg, #6a3226 0%, #57281e 50%, #45201a 100%);
+    linear-gradient(180deg, var(--noir-top) 0%, var(--noir-mid) 50%, var(--noir-end) 100%);
   color: #fbf1ea;
 }
+/* Night maroon: the same brand, lit lower. The hero no longer glows brighter than the dark page around it,
+   and it settles into the page colour at the bottom instead of ending on a hard edge. Gold stays as is. */
+:root[data-theme="dark"] .noir:not(.force-light) {
+  --noir-top: #3f1d17; --noir-mid: #2e1712; --noir-end: #1b1310;
+  --noir-glow: rgba(144, 62, 47, .42); --noir-shade: rgba(20, 10, 8, .5); --noir-under: rgba(201, 166, 107, .07);
+}
+:root[data-theme="dark"] .noir .silk { opacity: .32; }
 .gold-line { background: linear-gradient(90deg, transparent, var(--color-gold), transparent); height: 1px; }
 .text-gold-grad {
   background: linear-gradient(100deg, #f6e2c4 0%, #c9a66b 35%, #fff3df 50%, #c9a66b 65%, #e9cfa6 100%);
@@ -109,7 +119,7 @@ input, select, textarea { font: inherit; }
 
 /* Silk light: slow drifting blurred blobs in brand colours */
 .silk { position: absolute; inset: -20%; filter: blur(90px); opacity: .55; pointer-events: none; }
-.fade-b { position: absolute; inset-inline: 0; bottom: 0; height: 40%; background: linear-gradient(to bottom, transparent, #45201a); pointer-events: none; }
+.fade-b { position: absolute; inset-inline: 0; bottom: 0; height: 40%; background: linear-gradient(to bottom, transparent, var(--noir-end, #45201a)); pointer-events: none; }
 .silk span { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: drift 22s ease-in-out infinite alternate; }
 .silk span:nth-child(1) { width: 55%; height: 60%; left: 40%; top: 0%; background: #8a3f31; }
 .silk span:nth-child(2) { width: 45%; height: 50%; left: 5%; top: 35%; background: #5a2b23; animation-duration: 28s; animation-delay: -6s; }
@@ -179,7 +189,7 @@ nav a, nav button { -webkit-touch-callout: none; }
 
 @media print {
   @page { size: A4; margin: 0; }
-  body { background: #fff; }
+  body, :root body { background: #fff !important; }
   .no-print { display: none !important; }
 }
 
@@ -190,6 +200,13 @@ nav a, nav button { -webkit-touch-callout: none; }
     linear-gradient(90deg, #57281e 0%, #763b30 50%, #57281e 100%);
   box-shadow: inset 0 -1px 0 rgba(201, 166, 107, .45);
   color: #f7ede6;
+}
+/* night band: a deep maroon strip with the gold hairline, instead of a bright bar across a dark page */
+:root[data-theme="dark"] .band {
+  background:
+    linear-gradient(180deg, rgba(255, 236, 220, .04), transparent 60%),
+    linear-gradient(90deg, #2e1712 0%, #4a2119 50%, #2e1712 100%);
+  box-shadow: inset 0 -1px 0 rgba(201, 166, 107, .32), 0 10px 24px -18px rgb(0 0 0 / .8);
 }
 
 /* ───────── Magic UI–style effects (CSS, no motion library) ───────── */
@@ -381,11 +398,21 @@ nav a, nav button { -webkit-touch-callout: none; }
   --color-rose-soft: #482d2b;
   --color-brand: #903e2f;        /* the maroon fill, one step lighter so buttons don't sink into the page */
   --color-brand-deep: #6e2f24;
+  --color-noir: #2c1612;          /* always-dark fills (tab bar, camera, code): a night maroon, not the bright brick */
+  --color-noir-2: #22110d;
   --color-focus: #e9cfa6;        /* gold focus ring: maroon would be invisible on cocoa */
   --color-ok-soft: #143320; --color-wait-soft: #3b2b0d; --color-off-soft: #322c29; --color-hold-soft: #412714; --color-bad-soft: #451e1c;
   --color-info: #8dceee; --color-info-soft: #16303c;
   --shadow-card: inset 0 1px 0 rgb(255 236 220 / .045), 0 1px 2px rgb(0 0 0 / .35), 0 18px 40px -22px rgb(0 0 0 / .75);
   --shadow-raised: inset 0 1px 0 rgb(255 236 220 / .06), 0 4px 10px rgb(0 0 0 / .35), 0 28px 56px -24px rgb(0 0 0 / .8);
+}
+/* light page: the faintest gold dawn under the masthead, so the page has a light source (cards keep the white) */
+:root:not([data-theme="dark"]) body {
+  background:
+    radial-gradient(1100px 480px at 85% -140px, rgb(201 166 107 / .10), transparent 70%),
+    radial-gradient(800px 420px at 0% -160px, rgb(118 59 48 / .05), transparent 70%),
+    var(--color-paper);
+  background-repeat: no-repeat;
 }
 /* the page itself: a faint maroon dawn at the top instead of a flat void */
 :root[data-theme="dark"] body {
@@ -439,6 +466,7 @@ nav a, nav button { -webkit-touch-callout: none; }
   --color-ok: #1f7a4d; --color-ok-soft: #e3f3ea; --color-wait: #8a5900; --color-wait-soft: #fbf0da;
   --color-off: #66605d; --color-off-soft: #eeeceb; --color-hold: #a34a00; --color-hold-soft: #fde9d9;
   --color-bad: #b3261e; --color-bad-soft: #fbe4e2; --color-info: #2b6f93; --color-info-soft: #e3f0f6;
+  --color-noir: #4a2119; --color-noir-2: #3d1b14;
 }
 :root[data-theme="dark"] .force-light .text-brand { color: var(--color-brand); }
 :root[data-theme="dark"] .force-light .logo-adapt { filter: none; }

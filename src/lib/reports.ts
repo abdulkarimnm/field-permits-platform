@@ -76,7 +76,11 @@ export async function runReport(id: ReportId, f: Filters, lang: Lang): Promise<R
   const cols = (c: Col[]) => c.map((x) => ({ key: x.key, label: t(x.ar, x.en), kind: x.kind ?? "text", width: x.width ?? (x.kind === "num" || x.kind === "pct" || x.kind === "hours" ? 12 : x.kind === "datetime" ? 19 : x.kind === "date" ? 13 : 22) }));
   const zoneSql = (alias: string, idx: number) => (f.zone ? ` AND $${idx} = ANY(${alias}.zones)` : "");
   const pct = (a: number, b: number) => (b ? Math.round((a / b) * 1000) / 10 : 0);
-  const hrs = (v: number | null) => (v == null ? "—" : v < 1 ? t(`${Math.round(v * 60)} دقيقة`, `${Math.round(v * 60)} min`) : t(`${v.toFixed(1)} ساعة`, `${v.toFixed(1)} h`));
+  const hrs = (raw: number | string | null) => {
+    const v = raw == null ? NaN : Number(raw);
+    if (!Number.isFinite(v)) return "—";
+    return v < 1 ? t(`${Math.round(v * 60)} دقيقة`, `${Math.round(v * 60)} min`) : t(`${v.toFixed(1)} ساعة`, `${v.toFixed(1)} h`);
+  };
   const zp = f.zone ? [f.zone] : [];
   const checksWhere = (alias = "c", next = 3) => {
     const parts: string[] = [];
@@ -90,9 +94,9 @@ export async function runReport(id: ReportId, f: Filters, lang: Lang): Promise<R
   switch (id) {
     case "kpi": {
       const k = (await q1<{ s1: number | null; s2: number | null; tot: number | null; submitted: number; rejected: number; amendments: number; approved: number }>(
-        `SELECT avg(extract(epoch FROM r.stage1_at - r.submitted_at))/3600 s1,
-                avg(extract(epoch FROM r.stage2_at - r.stage1_at))/3600 s2,
-                avg(extract(epoch FROM r.stage2_at - r.submitted_at))/3600 tot,
+        `SELECT (avg(extract(epoch FROM r.stage1_at - r.submitted_at))/3600)::float8 s1,
+                (avg(extract(epoch FROM r.stage2_at - r.stage1_at))/3600)::float8 s2,
+                (avg(extract(epoch FROM r.stage2_at - r.submitted_at))/3600)::float8 tot,
                 count(*)::int submitted,
                 count(*) FILTER (WHERE r.status='rejected')::int rejected,
                 count(*) FILTER (WHERE r.kind='amendment')::int amendments,

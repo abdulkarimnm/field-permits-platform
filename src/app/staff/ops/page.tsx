@@ -56,9 +56,9 @@ export default async function Ops() {
     [todayStr, hour],
   );
   const kpi = (await q1<{ s1_h: number | null; s2_h: number | null; total_h: number | null; submitted: number; returned: number; rejected: number; amendments: number; issued: number }>(
-    `SELECT avg(extract(epoch FROM stage1_at - submitted_at))/3600 s1_h,
-            avg(extract(epoch FROM stage2_at - stage1_at))/3600 s2_h,
-            avg(extract(epoch FROM stage2_at - submitted_at))/3600 total_h,
+    `SELECT (avg(extract(epoch FROM stage1_at - submitted_at))/3600)::float8 s1_h,
+            (avg(extract(epoch FROM stage2_at - stage1_at))/3600)::float8 s2_h,
+            (avg(extract(epoch FROM stage2_at - submitted_at))/3600)::float8 total_h,
             count(*)::int submitted,
             (SELECT count(DISTINCT request_id)::int FROM request_events WHERE action='returned') returned,
             count(*) FILTER (WHERE status='rejected')::int rejected,
@@ -78,7 +78,7 @@ export default async function Ops() {
   const cmd = await commandData();
 
   const pct = (a: number, b: number) => (b ? Math.round((a / b) * 100) : 0);
-  const hrs = (v: number | null) => (v == null ? "—" : v < 1 ? `${Math.round(v * 60)}${t("د", "m")}` : `${v.toFixed(1)}${t("س", "h")}`);
+  const hrs = (raw: number | string | null) => { const v = raw == null ? NaN : Number(raw); return !Number.isFinite(v) ? "—" : v < 1 ? `${Math.round(v * 60)}${t("د", "m")}` : `${v.toFixed(1)}${t("س", "h")}`; };
   const maxH = Math.max(1, ...hourly.map((h) => h.n));
   const gateName = (id: number) => {
     const g = gates.find((x) => x.id === id);
