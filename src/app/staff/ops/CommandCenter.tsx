@@ -209,7 +209,7 @@ export default function CommandCenter({ data, lang, aerial }: { data: CommandDat
             </div>
           )}
           {aerial && view === "real" ? (
-            <Field3D src={aerial} zones={zoneView} gates={gates} slot={slot} layer={layer} future={mode === "future"} maxPresence={maxPresence} sel={sel} onSelect={setSel} t={t} />
+            <Field3D src={aerial} zones={zoneView} gates={gates} slot={slot} layer={layer} future={mode === "future"} maxPresence={maxPresence} sel={sel} onSelect={setSel} onUnavailable={() => pickView("plan")} t={t} />
           ) : (
           <svg viewBox="0 0 1000 690" className="h-auto w-full" role="img" aria-label={t("مخطط الميدان بمستويات الازدحام والتواجد", "Field plan with congestion and presence levels")}>
             <defs>

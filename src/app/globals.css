@@ -494,11 +494,22 @@ html[data-overlay] .lab-dock, html[data-overlay] .tabbar, html[data-overlay] .fl
 /* programmatic focus targets (step headings) move the reader, not the eye: no ring */
 [tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; }
 
-/* ───────── Ops room: 3D aerial view (Field3D) ─────────
-   The photo lies on a tilted plane; pins counter-rotate so they stand upright on it. */
-.f3d { --rx: 34deg; --rz: 0deg; perspective: 1500px; perspective-origin: 50% 20%; }
-.f3d-plane { transform-style: preserve-3d; transform-origin: 50% 60%; transform: rotateX(var(--rx)) rotateZ(var(--rz)); transition: transform .2s linear; }
-.f3d-anchor { width: 0; height: 0; transform-style: preserve-3d; }
-.f3d-pin { transform-origin: 50% 100%; transform: rotateX(calc(-1 * var(--rx))) rotateZ(calc(-1 * var(--rz))); }
-.f3d-anchor:focus-visible .f3d-pin > span:first-child { outline: 2px solid #e9cfa6; outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .f3d-plane { transition: none; } }
+/* ───────── Ops room: 3D diorama (Field3D, three.js) ───────── */
+.f3d-gl { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; touch-action: pan-y; cursor: grab; }
+.f3d-gl:active { cursor: grabbing; }
+.f3d-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.f3d-pin { pointer-events: auto; --pin: #e9cfa6; display: flex; flex-direction: column; align-items: center; min-height: 0; padding: .3rem .6rem; border-radius: .75rem;
+  border: 1px solid var(--pin); background: rgb(42 18 13 / .86); color: #fbf1ea; backdrop-filter: blur(4px); box-shadow: 0 10px 24px -12px rgb(0 0 0 / .9); white-space: nowrap; line-height: 1.15;
+  left: 0; top: 0; /* CSS2D positions by transform; in an RTL page the static position would start at the right edge */
+  transition: background .2s, border-color .2s; }
+.f3d-pin::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: .9rem; background: linear-gradient(var(--pin), transparent); }
+.f3d-pin-name { font-size: 12px; font-weight: 700; }
+.f3d-pin-val { font-size: 11px; font-weight: 600; color: var(--pin); }
+.f3d-pin-gate { flex-direction: row; gap: .4rem; border-radius: 999px; border-color: rgb(201 166 107 / .5); padding: .2rem .55rem; }
+.f3d-pin-gate .f3d-pin-name { font-size: 11px; font-weight: 600; }
+.f3d-pin-gate .f3d-pin-val { min-width: 1.25rem; padding: 0 .3rem; border-radius: 999px; background: #c9a66b; color: #3d1b14; font-size: 10px; font-weight: 700; text-align: center; }
+.f3d-pin-gate.is-alarm .f3d-pin-val { background: #c2392f; color: #fff; }
+.f3d-pin.is-on { background: #ffecdc; color: #3d1b14; border-color: #ffecdc; }
+.f3d-pin.is-on .f3d-pin-val { color: #3d1b14; }
+.f3d-pin:focus-visible { outline: 2px solid #e9cfa6; outline-offset: 2px; }
+@media (max-width: 639px) { .f3d-pin-name { font-size: 11px; } .f3d-pin-zone .f3d-pin-name { display: none; } .f3d-pin-zone.is-on .f3d-pin-name { display: block; } .f3d-pin-gate .f3d-pin-name { display: none; } .f3d-pin-gate.is-on .f3d-pin-name { display: inline; } }
