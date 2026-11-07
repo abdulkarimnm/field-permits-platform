@@ -490,3 +490,6 @@ html[data-overlay] .lab-dock, html[data-overlay] .tabbar, html[data-overlay] .fl
 
 /* Phones: while typing, the roles-lab bubble steps aside so it never covers a field or the keyboard bar */
 @media (max-width: 767px) { html[data-typing] .lab-dock, html[data-typing] .float-chrome { opacity: 0; pointer-events: none; transform: translateY(12px); } }
+
+/* programmatic focus targets (step headings) move the reader, not the eye: no ring */
+[tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; }

@@ -33,10 +33,14 @@ const MAX_FILE = 5 * 1024 * 1024;
 const OK_TYPES = ["application/pdf", "image/jpeg", "image/png"];
 const ID_RE = /^[12]\d{9}$/;
 
+/** Which validation fields belong to which step (same order as the steps). */
+const SEC_KEYS = [["org_name", "cr_number"], ["rep_"], ["purpose", "valid_", "zones"], ["people"], ["vehicles", "slot"], ["equipment"], ["__files"], ["declaration"]];
+const secOf = (field: string) => Math.max(0, SEC_KEYS.findIndex((keys) => keys.some((k) => field.startsWith(k))));
 
-function Sec({ n, title, children, hint, done }: { n: number; title: string; children: React.ReactNode; hint?: React.ReactNode; done?: boolean }) {
+
+function Sec({ n, title, children, hint, done, hidden }: { n: number; title: string; children: React.ReactNode; hint?: React.ReactNode; done?: boolean; hidden?: boolean }) {
   return (
-    <section id={`s${n}`} className="scroll-mt-28 rounded-2xl border border-line bg-surface">
+    <section id={`s${n}`} hidden={hidden} aria-labelledby={`s${n}-h`} className="rise scroll-mt-28 rounded-2xl border border-line bg-surface">
       <header className="flex items-center gap-3 border-b border-line px-4 py-3 sm:px-5">
         <span
           className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-bold transition ${done ? "bg-ok text-white" : "bg-chip text-brand"}`}
@@ -44,7 +48,7 @@ function Sec({ n, title, children, hint, done }: { n: number; title: string; chi
         >
           {done ? "✓" : n}
         </span>
-        <h2 className="text-base font-semibold text-ink">{title}</h2>
+        <h2 id={`s${n}-h`} tabIndex={-1} className="text-base font-semibold text-ink outline-none">{title}</h2>
         {hint && <span className="ms-auto text-xs text-ink-soft">{hint}</span>}
       </header>
       <div className="space-y-4 p-4 sm:p-5">{children}</div>
@@ -80,6 +84,9 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
   const [paste, setPaste] = useState<null | "people" | "vehicles">(null);
   const [touched, setTouched] = useState(false);
   const [review, setReview] = useState(false);
+  const [step, setStep] = useState(0);
+  const [reached, setReached] = useState(init.mode === "new" ? 0 : 7); // returned/amend requests are already filled in
+  const [tried, setTried] = useState<number[]>([]);
   useOverlay(review, () => setReview(false));
 
   /* ───── Draft: kept in this tab only (sessionStorage) so ID numbers never persist on a shared device ───── */
@@ -122,7 +129,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
     people, vehicles, equipment, declaration,
   };
   const liveErrors = useMemo(() => validateRequest(payload), [JSON.stringify(payload)]); // eslint-disable-line react-hooks/exhaustive-deps
-  const errors = touched ? liveErrors : state.errors;
+  const errors = touched ? liveErrors : tried.length ? liveErrors.filter((e) => tried.includes(secOf(e.field))) : state.errors;
   const errOf = (field: string) => errors.find((e) => e.field === field || e.field.startsWith(field + "."));
   const fieldMsg = (field: string) => {
     const e = errOf(field);
@@ -136,17 +143,50 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
     t("الجهة", "Organization"), t("الممثل", "Representative"), t("الغرض والفترة والمناطق", "Purpose, period & zones"),
     t("الأفراد", "People"), t("المركبات وموعد الدخول", "Vehicles & entry slot"), t("المعدات", "Equipment"), t("المرفقات", "Attachments"), t("الإقرار", "Declaration"),
   ];
-  const secKeys = [["org_name", "cr_number"], ["rep_"], ["purpose", "valid_", "zones"], ["people"], ["vehicles", "slot"], ["equipment"], ["__files"], ["declaration"]];
+  const secKeys = SEC_KEYS;
   const fileBad = files.some((x) => x.err);
   const secBad = secKeys.map((keys) => liveErrors.some((e) => keys.some((k) => e.field.startsWith(k))) || (keys[0] === "__files" && fileBad));
   const secDone = secBad.map((b, i) => !b && (i !== 0 || !!f.org_name.trim()));
   const doneCount = secDone.filter(Boolean).length;
   const nextIdx = secDone.findIndex((d) => !d);
-  const go = (field: string) => {
-    const el = document.querySelector<HTMLElement>(`[data-field="${field}"]`) ?? document.getElementById(field);
-    el?.scrollIntoView({ behavior: "smooth", block: "center" });
-    setTimeout(() => el?.querySelector<HTMLElement>("input,textarea,select,button")?.focus({ preventScroll: true }), 350);
+  /* ───── Step by step: one section at a time; "Next" checks the current step with the server's own rules ───── */
+  const lastStep = sections.length - 1;
+  const top = () => {
+    const el = formRef.current;
+    if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - 16, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   };
+  const toStep = (i: number) => {
+    setStep(i);
+    setReached((r) => Math.max(r, i));
+    requestAnimationFrame(() => { top(); document.getElementById(`s${i + 1}-h`)?.focus({ preventScroll: true }); });
+  };
+  // a later step opens only when every step before it is complete; going back is always allowed
+  const canReach = (i: number) => i <= Math.max(step, reached) && secDone.slice(0, i).every(Boolean);
+  const ticked = secDone.map((d, i) => d && (i < reached || (i === reached && i === lastStep && d)));
+  const tickCount = ticked.filter(Boolean).length;
+  const go = (field: string) => {
+    setStep(secOf(field));
+    setTimeout(() => {
+      const el = document.querySelector<HTMLElement>(`[data-field="${field}"]`) ?? document.getElementById(field);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      el?.querySelector<HTMLElement>("input,textarea,select,button")?.focus({ preventScroll: true });
+    }, 80);
+  };
+  const next = () => {
+    if (!secDone[step]) {
+      setTried((x) => (x.includes(step) ? x : [...x, step]));
+      const first = liveErrors.find((e) => secOf(e.field) === step)?.field.split(".")[0];
+      if (first) go(first);
+      return;
+    }
+    navigator.vibrate?.(8);
+    toStep(Math.min(lastStep, step + 1));
+  };
+  // a server-side error after sending (e.g. capacity just filled up) opens the step that needs fixing
+  useEffect(() => {
+    const first = state.errors.find((e) => e.field !== "form")?.field.split(".")[0];
+    if (first) go(first);
+  }, [state.errors]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ───── Saved team from the organization profile (requirement: profile keeps people, vehicles & equipment) ───── */
   const haveIds = new Set(people.map((p) => p.id_number));
@@ -229,6 +269,10 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
         confirmed.current = false;
         try { sessionStorage.removeItem(draftKey); } catch {}
       }}
+      onKeyDown={(e) => {
+        const el = e.target as HTMLElement;
+        if (e.key === "Enter" && el.tagName === "INPUT" && step < lastStep) { e.preventDefault(); next(); }
+      }}
       className="grid gap-5 lg:grid-cols-[1fr_16rem]"
     >
       <input type="hidden" name="payload" value={JSON.stringify(payload)} />
@@ -237,24 +281,32 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
       {init.permitId && <input type="hidden" name="permitId" value={init.permitId} />}
 
       <div className="min-w-0 space-y-5">
-        {/* Mobile progress — the desktop version lives in the side panel */}
-        <div className="sticky top-0 z-20 -mx-4 border-b border-line bg-paper/95 px-4 py-2.5 backdrop-blur lg:hidden">
+        {/* Mobile stepper — the desktop version lives in the side panel */}
+        <nav aria-label={t("خطوات الطلب", "Request steps")} className="sticky top-0 z-20 -mx-4 border-b border-line bg-paper/95 px-4 py-2.5 backdrop-blur lg:hidden">
           <div className="flex items-center justify-between gap-3 text-xs">
             <span className="font-semibold text-ink">
-              {t("اكتمل", "Done")} <span className="num">{doneCount}</span> {t("من", "of")} <span className="num">8</span>
+              {t("الخطوة", "Step")} <span className="num">{step + 1}</span> {t("من", "of")} <span className="num">{sections.length}</span>
+              <span className="text-ink-soft"> · {sections[step]}</span>
             </span>
-            {nextIdx >= 0 ? (
-              <a href={`#s${nextIdx + 1}`} className="truncate font-semibold text-brand">{t("التالي:", "Next:")} {sections[nextIdx]} ←</a>
-            ) : (
-              <span className="font-semibold text-ok">{t("جاهز للتقديم", "Ready to submit")} ✓</span>
-            )}
+            <span className="num shrink-0 text-ink-soft">{tickCount}/{sections.length} ✓</span>
           </div>
-          <div className="mt-2 grid grid-cols-8 gap-1" aria-hidden>
-            {secDone.map((d, i) => (
-              <a key={i} href={`#s${i + 1}`} tabIndex={-1} title={sections[i]} className={`h-1.5 rounded-full transition-colors ${d ? "bg-ok" : touched && secBad[i] ? "bg-bad" : "bg-line"}`} />
+          <ol className="mt-2 grid grid-cols-8 gap-1">
+            {ticked.map((d, i) => (
+              <li key={i}>
+                <button
+                  type="button"
+                  onClick={() => canReach(i) && toStep(i)}
+                  disabled={!canReach(i)}
+                  aria-current={i === step ? "step" : undefined}
+                  aria-label={`${i + 1}. ${sections[i]}${d ? " ✓" : ""}`}
+                  className="flex h-6 w-full items-center disabled:cursor-not-allowed"
+                >
+                  <span className={`block h-1.5 w-full rounded-full transition-colors ${i === step ? "bg-brand" : d ? "bg-ok" : tried.includes(i) && secBad[i] ? "bg-bad" : "bg-line"}`} />
+                </button>
+              </li>
             ))}
-          </div>
-        </div>
+          </ol>
+        </nav>
 
         {draft && (
           <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gold/40 bg-chip/60 px-4 py-3 text-sm" role="status">
@@ -283,7 +335,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
         )}
 
-        <Sec n={1} title={sections[0]} done={secDone[0]} hint={init.org_name && init.mode === "new" ? t("معبأ من ملف جهتك", "From your profile") : undefined}>
+        <Sec n={1} hidden={step !== 0} title={sections[0]} done={secDone[0]} hint={init.org_name && init.mode === "new" ? t("معبأ من ملف جهتك", "From your profile") : undefined}>
           <div className="grid gap-4 sm:grid-cols-2">
             <div data-field="org_name">
               <label className={label} htmlFor="org">{t("اسم الجهة أو الشركة", "Organization name")} *</label>
@@ -298,7 +350,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
         </Sec>
 
-        <Sec n={2} title={sections[1]} done={secDone[1]} hint={t("يُرسل له رمز التحقق عند البوابة", "Receives the gate code")}>
+        <Sec n={2} hidden={step !== 1} title={sections[1]} done={secDone[1]} hint={t("يُرسل له رمز التحقق عند البوابة", "Receives the gate code")}>
           <div className="grid gap-4 sm:grid-cols-3">
             <div data-field="rep_name">
               <label className={label} htmlFor="rn">{t("الاسم الكامل", "Full name")} *</label>
@@ -323,7 +375,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           )}
         </Sec>
 
-        <Sec n={3} title={sections[2]} done={secDone[2]}>
+        <Sec n={3} hidden={step !== 2} title={sections[2]} done={secDone[2]}>
           <div data-field="purpose">
             <label className={label} htmlFor="pu">{t("الغرض من الدخول", "Purpose of entry")} *</label>
             <textarea id="pu" rows={3} className={input} value={f.purpose} onChange={set("purpose")} aria-invalid={!!errOf("purpose")} aria-describedby="pu-h"
@@ -379,7 +431,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </fieldset>
         </Sec>
 
-        <Sec n={4} title={sections[3]} done={secDone[3]} hint={<span className="num">{filledPeople}/{LIMITS.people}</span>}>
+        <Sec n={4} hidden={step !== 3} title={sections[3]} done={secDone[3]} hint={<span className="num">{filledPeople}/{LIMITS.people}</span>}>
           <div data-field="people" className="space-y-2">
             {teams.length > 0 && (
               <div className="rounded-2xl border border-gold/40 bg-gradient-to-b from-chip/70 to-surface p-3">
@@ -465,7 +517,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
         </Sec>
 
-        <Sec n={5} title={sections[4]} done={secDone[4]} hint={<span className="num">{vehicles.length}/{LIMITS.vehicles}</span>}>
+        <Sec n={5} hidden={step !== 4} title={sections[4]} done={secDone[4]} hint={<span className="num">{vehicles.length}/{LIMITS.vehicles}</span>}>
           <div data-field="vehicles" className="space-y-2">
             {vehicles.length === 0 && <p className="text-sm text-ink-soft">{t("لا توجد مركبات؟ تجاوز هذا القسم.", "No vehicles? Skip this section.")}</p>}
             {savedVehicles.length > 0 && vehicles.length < LIMITS.vehicles && (
@@ -505,7 +557,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           )}
         </Sec>
 
-        <Sec n={6} title={sections[5]} done={secDone[5]} hint={<span className="num">{equipment.length}/{LIMITS.equipment}</span>}>
+        <Sec n={6} hidden={step !== 5} title={sections[5]} done={secDone[5]} hint={<span className="num">{equipment.length}/{LIMITS.equipment}</span>}>
           <div data-field="equipment" className="space-y-2">
             {equipment.length === 0 && <p className="text-sm text-ink-soft">{t("لا توجد معدات؟ تجاوز هذا القسم.", "No equipment? Skip this section.")}</p>}
             {savedEquipment.length > 0 && equipment.length < LIMITS.equipment && (
@@ -529,7 +581,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
         </Sec>
 
-        <Sec n={7} title={sections[6]} done={secDone[6]} hint={t("اختياري · PDF أو JPG أو PNG حتى 5MB", "Optional · PDF, JPG or PNG up to 5MB")}>
+        <Sec n={7} hidden={step !== 6} title={sections[6]} done={secDone[6]} hint={t("اختياري · PDF أو JPG أو PNG حتى 5MB", "Optional · PDF, JPG or PNG up to 5MB")}>
           <p className="text-xs text-ink-soft">{t("مثل خطاب التكليف أو العقد. إرفاقها من البداية يقلل احتمال إعادة الطلب للاستكمال.", "e.g. assignment letter or contract. Attaching them up front reduces the chance of a return.")}</p>
           <div className="space-y-3">
             {files.map((fl, i) => (
@@ -557,7 +609,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           </div>
         </Sec>
 
-        <Sec n={8} title={sections[7]} done={secDone[7]}>
+        <Sec n={8} hidden={step !== 7} title={sections[7]} done={secDone[7]}>
           <label data-field="declaration" className="flex min-h-11 cursor-pointer items-start gap-3">
             <input type="checkbox" className="mt-1 h-5 w-5 accent-brand" checked={declaration} onChange={(e) => setDeclaration(e.target.checked)} />
             <span className="text-sm leading-relaxed">
@@ -584,7 +636,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                   </button>
                 </li>
               ))}
-              {fileBad && <li className="text-sm text-bad">{t("أحد المرفقات غير مقبول — راجع القسم 7", "An attachment was rejected — see section 7")}</li>}
+              {fileBad && <li><button type="button" onClick={() => toStep(6)} className="text-start text-sm text-bad underline decoration-bad/40 underline-offset-4">{t("أحد المرفقات غير مقبول — راجع خطوة المرفقات", "An attachment was rejected — see the attachments step")}</button></li>}
               {liveErrors.length > 8 && <li className="text-xs text-bad/80 num">+{liveErrors.length - 8}</li>}
             </ul>
           </div>
@@ -593,8 +645,20 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
         {state.errors.some((e) => e.field === "form") && (
           <p role="alert" className="text-sm text-bad">{t(state.errors[0].ar, state.errors[0].en)}</p>
         )}
-        <div className="sticky bottom-[calc(4.6rem+env(safe-area-inset-bottom))] z-10 -mx-4 border-t border-line bg-paper/95 px-4 py-3 backdrop-blur md:bottom-0 lg:hidden">
-          <button className={`${btn.primary} w-full`} disabled={pending}>{pending ? t("جارٍ الإرسال…", "Submitting…") : t("مراجعة وتقديم الطلب", "Review & submit")}</button>
+        <div className="sticky bottom-[calc(4.6rem+env(safe-area-inset-bottom))] z-10 -mx-4 flex gap-2 border-t border-line bg-paper/95 px-4 py-3 backdrop-blur md:bottom-0 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
+          {step > 0 && (
+            <button type="button" className={`${btn.secondary} flex-1 sm:flex-none sm:px-6`} onClick={() => toStep(step - 1)}>
+              <Icon name="back" size={16} className="ltr:rotate-180" /> {t("السابق", "Back")}
+            </button>
+          )}
+          {step < lastStep ? (
+            <button type="button" className={`${btn.primary} min-w-0 flex-[2] lg:ms-auto lg:flex-none lg:px-8`} onClick={next}>
+              <span className="truncate">{t("التالي", "Next")}<span className="hidden sm:inline">: {sections[step + 1]}</span></span>
+              <Icon name="chevron" size={16} className="shrink-0 ltr:rotate-180" />
+            </button>
+          ) : (
+            <button className={`${btn.primary} min-w-0 flex-[2] lg:ms-auto lg:flex-none lg:px-8`} disabled={pending}>{pending ? t("جارٍ الإرسال…", "Submitting…") : t("مراجعة وتقديم الطلب", "Review & submit")}</button>
+          )}
         </div>
       </div>
 
@@ -603,23 +667,28 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
           <div>
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-ink">{t("التقدم", "Progress")}</span>
-              <span className="num text-ink-soft">{doneCount}/8</span>
+              <span className="num text-ink-soft">{tickCount}/8</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line">
-              <div className="h-full rounded-full bg-gradient-to-l from-ok to-ok-bright transition-[width] duration-500" style={{ width: `${(doneCount / 8) * 100}%` }} />
+              <div className="h-full rounded-full bg-gradient-to-l from-ok to-ok-bright transition-[width] duration-500" style={{ width: `${(tickCount / 8) * 100}%` }} />
             </div>
           </div>
           <ol className="space-y-1 text-sm">
             {sections.map((s, i) => (
               <li key={s}>
-                <a href={`#s${i + 1}`} className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-chip/50">
-                  <span className={`grid h-4 w-4 place-items-center rounded-full text-[9px] font-bold text-white ${secDone[i] ? "bg-ok" : touched && secBad[i] ? "bg-bad" : "bg-rose-soft"}`}>{secDone[i] ? "✓" : ""}</span>
-                  <span className={secDone[i] ? "text-ink-soft" : "text-ink"}>{s}</span>
-                </a>
+                <button
+                  type="button"
+                  onClick={() => canReach(i) && toStep(i)}
+                  disabled={!canReach(i)}
+                  aria-current={i === step ? "step" : undefined}
+                  className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-start transition disabled:cursor-not-allowed disabled:opacity-60 ${i === step ? "bg-chip font-semibold" : "hover:bg-chip/50"}`}
+                >
+                  <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${ticked[i] && i !== step ? "bg-ok text-white" : i === step ? "bg-brand text-white" : (touched || tried.includes(i)) && secBad[i] ? "bg-bad text-white" : "bg-mist text-ink-soft"}`}>{ticked[i] && i !== step ? "✓" : i + 1}</span>
+                  <span className={i === step ? "text-ink" : ticked[i] ? "text-ink-soft" : "text-ink"}>{s}</span>
+                </button>
               </li>
             ))}
           </ol>
-          <button className={`${btn.primary} w-full`} disabled={pending}>{pending ? t("جارٍ الإرسال…", "Submitting…") : t("مراجعة وتقديم الطلب", "Review & submit")}</button>
           {touched && liveErrors.length > 0 && <p className="text-xs text-bad">{t(`${liveErrors.length} حقل يحتاج تصحيح`, `${liveErrors.length} field(s) need attention`)}</p>}
           <p className="text-[11px] leading-relaxed text-ink-soft">{t("تُحفظ مسودتك تلقائيًا في هذه الجلسة.", "Your draft is saved automatically for this session.")}</p>
         </div>
@@ -645,7 +714,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                 <div key={String(k)} className="flex items-start gap-3 px-4 py-2.5">
                   <dt className="w-20 shrink-0 text-ink-soft">{k}</dt>
                   <dd className="min-w-0 flex-1 break-words font-medium text-ink">{v}</dd>
-                  <button type="button" className="shrink-0 text-xs font-semibold text-brand" onClick={() => { setReview(false); setTimeout(() => document.getElementById(`s${n}`)?.scrollIntoView({ behavior: "smooth" }), 50); }}>
+                  <button type="button" className="shrink-0 text-xs font-semibold text-brand" onClick={() => { setReview(false); toStep(Number(n) - 1); }}>
                     {t("تعديل", "Edit")}
                   </button>
                 </div>

@@ -26,6 +26,7 @@ const SAMPLES = { "[id]": "1" };
 const ROLE_FOR = [
   [/^\/apply\/login/, null], [/^\/staff\/login/, null],
   [/^\/apply/, "applicant"],
+  [/^\/staff\/health/, "opsmanager"],
   [/^\/staff\/ops/, "supervisor"],
   [/^\/staff\/(r|permits)/, "reviewer"],
   [/^\/verify/, "verifier"],

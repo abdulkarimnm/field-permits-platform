@@ -41,7 +41,7 @@ export default async function NewRequest({ searchParams }: { searchParams: Promi
 
   return (
     <Shell nav={APP_NAV} active="/apply/new" user={contact} kind="applicant" wide>
-      <PageTitle title={title} sub={t("ثمانية أقسام، والمعدات والمركبات والمرفقات تُتجاوز إن لم توجد. يتحقق النظام من البيانات أثناء الكتابة وتُحفظ مسودتك تلقائيًا.", "Eight sections; skip vehicles, equipment and files if none. Data is checked as you type and your draft is saved automatically.")} />
+      <PageTitle title={title} sub={t("ثماني خطوات قصيرة: أكمل الخطوة ثم اضغط «التالي». المركبات والمعدات والمرفقات تُتجاوز إن لم توجد، ومسودتك تُحفظ تلقائيًا.", "Eight short steps: complete one, then press Next. Skip vehicles, equipment and files if none; your draft is saved automatically.")} />
       <RequestForm init={init} zones={zones} lang={lang} saved={saved} teamId={sp.team} />
     </Shell>
   );

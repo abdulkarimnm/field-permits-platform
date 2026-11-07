@@ -16,13 +16,14 @@ import { normPlate } from "./validate";
    ───────────────────────────────────────────────────────────── */
 
 const SBX = "vp_sbx";
-export type SbxRole = "applicant" | "reviewer" | "approver" | "supervisor" | "verifier" | "admin";
+export type SbxRole = "applicant" | "reviewer" | "approver" | "supervisor" | "verifier" | "opsmanager" | "admin";
 export const ROLE_HOME: Record<SbxRole, string> = {
   applicant: "/apply",
   reviewer: "/staff",
   approver: "/staff",
   supervisor: "/staff/ops",
   verifier: "/verify",
+  opsmanager: "/staff/health",
   admin: "/staff",
 };
 
@@ -217,12 +218,12 @@ type Mission = { id: string; ar: string; en: string; href: string; done: boolean
 
 export async function missions(sbx: Sbx): Promise<Record<SbxRole, Mission[]>> {
   const ids: Record<string, number | null> = {};
-  for (const r of ["reviewer", "approver", "supervisor", "verifier", "admin"]) ids[r] = (await q1<{ id: number }>(`SELECT id FROM users WHERE $1 = ANY(roles) AND active ORDER BY id LIMIT 1`, [r]))?.id ?? null;
-  const rows = await q<{ actor: string; action: string; data: { status?: string } | null }>(
+  for (const r of ["reviewer", "approver", "supervisor", "verifier", "opsmanager", "admin"]) ids[r] = (await q1<{ id: number }>(`SELECT id FROM users WHERE $1 = ANY(roles) AND active ORDER BY id LIMIT 1`, [r]))?.id ?? null;
+  const rows = await q<{ actor: string; action: string; data: { status?: string; audit?: string } | null }>(
     `SELECT actor, action, data FROM audit WHERE at >= $1 AND action NOT IN ('staff.demo_session')`,
     [sbx.since],
   );
-  const did = (actor: string | null, action: string, pred?: (d: { status?: string } | null) => boolean) =>
+  const did = (actor: string | null, action: string, pred?: (d: { status?: string; audit?: string } | null) => boolean) =>
     !!actor && rows.some((r) => r.actor === actor && r.action === action && (!pred || pred(r.data)));
   const A = `applicant:${sbx.contact}`;
   const U = (r: string) => (ids[r] ? `user:${ids[r]}` : null);
@@ -251,6 +252,10 @@ export async function missions(sbx: Sbx): Promise<Record<SbxRole, Mission[]>> {
     supervisor: [
       m("react", "أعد تفعيل التصريح الموقوف", "Reactivate the suspended permit", "/staff/permits?status=suspended", did(U("supervisor"), "permit.reactivate")),
       m("csv", "صدّر تقرير التصاريح CSV", "Export the permits report as CSV", "/staff/permits", did(U("supervisor"), "export.csv")),
+    ],
+    opsmanager: [
+      m("health", "شغّل فحص حالة النظام وتأكد أن كل شيء يعمل", "Run the system health check and confirm everything works", "/staff/health", did(U("opsmanager"), "health.checked")),
+      m("audit", "تحقّق من سلامة سجل العمليات", "Verify the audit log's integrity", "/staff/audit", did(U("opsmanager"), "health.checked", (d) => d?.audit === "ok")),
     ],
     admin: [
       m("mode", "اجعل رمز الممثل إلزاميًا عند البوابة", "Make the representative code mandatory", "/staff/admin", did(U("admin"), "settings.workflow_updated")),

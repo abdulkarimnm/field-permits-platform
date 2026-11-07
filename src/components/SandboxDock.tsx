@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon, type IconName } from "./icons";
 
-type Role = "applicant" | "reviewer" | "approver" | "supervisor" | "verifier" | "admin";
+type Role = "applicant" | "reviewer" | "approver" | "supervisor" | "verifier" | "opsmanager" | "admin";
 type Mission = { id: string; ar: string; en: string; href: string; done: boolean };
 type State =
   | { active: false }
@@ -24,9 +24,10 @@ export const ROLE_META: Record<Role, { ar: string; en: string; icon: IconName; t
   approver: { ar: "معتمد نهائي", en: "Approver", icon: "shield", tone: "#b9e3c6" },
   supervisor: { ar: "مشرف الميدان", en: "Supervisor", icon: "pulse", tone: "#f0cf8e" },
   verifier: { ar: "متحقق ميداني", en: "Verifier", icon: "scan", tone: "#f3b4ab" },
+  opsmanager: { ar: "مدير التشغيل", en: "Ops manager", icon: "gauge", tone: "#a8e0d4" },
   admin: { ar: "مسؤول النظام", en: "Admin", icon: "settings", tone: "#d9c6f0" },
 };
-const ORDER: Role[] = ["applicant", "reviewer", "approver", "verifier", "supervisor", "admin"];
+const ORDER: Role[] = ["applicant", "reviewer", "approver", "verifier", "supervisor", "opsmanager", "admin"];
 const HIDE = [/^\/permit\//, /^\/demo/, /^\/sandbox/, /^\/offline/, /^\/staff\/ops\/screen/, /^\/staff\/reports\/print/];
 
 /** Floating roles-lab bar (demo mode only): switch roles, follow missions, read the representative's phone, test gate codes. */
