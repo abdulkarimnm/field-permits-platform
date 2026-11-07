@@ -26,7 +26,10 @@ const g = globalThis as G;
 async function makeDriver(): Promise<Driver> {
   const url = process.env.DATABASE_URL;
   if (url) {
-    const { Pool } = await import("pg");
+    const { Pool, types } = await import("pg");
+    // numeric/bigint arrive as strings by default; this app only uses them as counts and averages
+    types.setTypeParser(1700, (v) => Number(v)); // numeric
+    types.setTypeParser(20, (v) => Number(v)); // int8
     const pool = new Pool({ connectionString: url, max: 10 });
     return {
       async exec(sql) {
@@ -59,7 +62,8 @@ async function makeDriver(): Promise<Driver> {
   const { PGlite } = await import("@electric-sql/pglite");
   const dir = path.join(process.cwd(), "data", "pglite");
   fs.mkdirSync(dir, { recursive: true });
-  const db = new PGlite(dir);
+  // numeric (e.g. avg()) arrives as a string by default: parse it, so number methods never crash a page
+  const db = new PGlite(dir, { parsers: { 1700: (v: string) => Number(v) } });
   await db.waitReady;
   // PGlite is single-connection: serialize everything through one queue.
   let chain: Promise<unknown> = Promise.resolve();
