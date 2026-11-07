@@ -13,6 +13,7 @@ const ROLE_LABEL: Record<string, [string, string]> = {
   approver: ["معتمد نهائي", "Final approver"],
   supervisor: ["مشرف الميدان", "Field supervisor"],
   verifier: ["متحقق ميداني", "Field verifier"],
+  opsmanager: ["مدير التشغيل", "Operations manager"],
 };
 
 export default async function Admin({ searchParams }: { searchParams: Promise<{ tab?: string; err?: string; ok?: string }> }) {

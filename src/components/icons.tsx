@@ -31,6 +31,9 @@ const P: Record<string, string> = {
   monitor: "M3 5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM8 20h8M12 16v4",
   minimize: "M6 9l6 6 6-6",
   close: "M6 6l12 12M18 6 6 18",
+  gauge: "M12 21a9 9 0 1 1 9-9M12 12l4-4M3.5 12h2M12 3.5v2M18.5 12h2",
+  check: "M20 6 9 17l-5-5",
+  alert: "M12 3 2 20h20zM12 10v4M12 17h.01",
 };
 
 export type IconName = keyof typeof P;

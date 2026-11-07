@@ -9,13 +9,14 @@ type Role = keyof typeof ROLE_META;
 type Mission = { id: string; ar: string; en: string; href: string; done: boolean };
 type State = { active: false } | { active: true; contact: string; role: Role | null; missions: Record<Role, Mission[]>; seeded: boolean };
 
-const ORDER: Role[] = ["applicant", "reviewer", "approver", "verifier", "supervisor", "admin"];
+const ORDER: Role[] = ["applicant", "reviewer", "approver", "verifier", "supervisor", "opsmanager", "admin"];
 const ABOUT: Record<Role, [string, string]> = {
   applicant: ["تقدّم الطلبات وتتابعها، وتستكمل ما يُعاد إليك، وتحمل بطاقة الدخول على جوالك.", "Submit and track requests, complete returned ones, carry the pass on your phone."],
   reviewer: ["تفرز الطلبات بدرجة المخاطر وتعتمد أوليًا أو تعيد أو ترفض بسبب واضح.", "Triage by risk score; approve, return or reject with a clear reason."],
   approver: ["تعتمد نهائيًا فيصدر التصريح تلقائيًا، وتوقف التصاريح عند المخالفة.", "Give final approval to issue permits; suspend them on violations."],
   verifier: ["تمسح الرموز عند البوابة، وتطابق الموجودين، وتتحقق من الممثل برمز مؤقت.", "Scan at the gate, match who's present, verify the representative by code."],
   supervisor: ["تراقب الميدان من مركز القيادة، وتعيد تفعيل التصاريح، وتصدّر التقارير.", "Watch the field from the command center, reactivate permits, export reports."],
+  opsmanager: ["تتابع التشغيل كاملًا من «حالة النظام»: القاعدة وسلامة السجل والأخطاء وسير الطلبات والميدان — للاطلاع دون قرار.", "Oversee the whole operation from System health: database, audit integrity, errors, pipeline and field — view-only."],
   admin: ["تحدد مسؤول كل مرحلة، ووضع رمز الممثل، والمستخدمين والمناطق والسعة.", "Set stage owners, the representative-code mode, users, zones and capacity."],
 };
 

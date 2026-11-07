@@ -9,7 +9,7 @@
    duties are enforced on top of this, per request.
    ───────────────────────────────────────────────────────────── */
 
-export type Role = "admin" | "reviewer" | "approver" | "supervisor" | "verifier";
+export type Role = "admin" | "reviewer" | "approver" | "supervisor" | "verifier" | "opsmanager";
 
 export const CAPS = {
   // requests
@@ -28,6 +28,7 @@ export const CAPS = {
   "reports.view": { ar: "التقارير ومؤشرات النجاح", en: "Reports & success metrics", group: "oversight" },
   "reports.export": { ar: "تصدير التقارير Excel / PDF", en: "Export reports (Excel / PDF)", group: "oversight" },
   "audit.view": { ar: "سجل العمليات", en: "Audit log", group: "oversight" },
+  "health.view": { ar: "حالة النظام وفحوصات التشغيل", en: "System health & operational checks", group: "oversight" },
   // governance
   "users.manage": { ar: "المستخدمون والأدوار", en: "Users & roles", group: "governance" },
   "settings.manage": { ar: "مسؤولو المراحل والمناطق والإعدادات", en: "Stage owners, zones & settings", group: "governance" },
@@ -48,6 +49,7 @@ export const ROLE_INFO: Record<Role, { ar: string; en: string; job: [string, str
   approver: { ar: "معتمد نهائي", en: "Final approver", job: ["يعتمد الطلبات نهائيًا فيصدر التصريح، ويوقف التصاريح أو يلغيها.", "Gives final approval (issuing the permit) and suspends or revokes permits."], tone: "#2f9a66" },
   supervisor: { ar: "مشرف الميدان", en: "Field supervisor", job: ["يتابع الميدان لحظيًا والتصاريح والسجل، ويوقف أو يلغي، ويتحقق ميدانيًا.", "Watches the field live, permits and the log; suspends or revokes; verifies in the field."], tone: "#d9a441" },
   verifier: { ar: "متحقق ميداني", en: "Field verifier", job: ["يعمل عند البوابة فقط: يمسح الرمز ويطابق الحاضرين ويسجل الدخول والخروج.", "Works at the gate only: scans codes, matches who's present, records entry and exit."], tone: "#e0524a" },
+  opsmanager: { ar: "مدير التشغيل", en: "Operations manager", job: ["يتابع التشغيل كاملًا ويتأكد أن كل شيء يعمل: حالة النظام، وسير الطلبات، والميدان، والتقارير، والسجل، والأخطاء — للاطلاع والمتابعة دون صلاحية القرار أو تغيير الإعدادات.", "Oversees the whole operation and checks that everything works: system health, the request pipeline, the field, reports, the audit log and errors — view-only, with no decisions and no settings."], tone: "#5fb3a1" },
   admin: { ar: "مسؤول النظام", en: "System admin", job: ["يدير المستخدمين والأدوار ومسؤولي المراحل والمناطق والإعدادات — دون صلاحية القرار على الطلبات.", "Manages users, roles, stage owners, zones and settings — without deciding on requests."], tone: "#8a6fc0" },
 };
 
@@ -57,7 +59,9 @@ export const ROLE_CAPS: Record<Role, Cap[]> = {
   approver: ["request.view", "request.attachments", "request.approve", "permit.view", "permit.manage", "capacity.view", "ops.view", "reports.view", "reports.export"],
   supervisor: ["request.view", "request.attachments", "permit.view", "permit.manage", "capacity.view", "verify.scan", "ops.view", "reports.view", "reports.export", "audit.view"],
   verifier: ["verify.scan"],
-  admin: ["users.manage", "settings.manage", "audit.view", "errors.view"],
+  // sees everything that tells whether the operation works; decides nothing, changes nothing (separation of duties)
+  opsmanager: ["request.view", "request.attachments", "permit.view", "capacity.view", "ops.view", "reports.view", "reports.export", "audit.view", "errors.view", "health.view"],
+  admin: ["users.manage", "settings.manage", "audit.view", "errors.view", "health.view"],
 };
 
 export const ROLES = Object.keys(ROLE_INFO) as Role[];
@@ -68,4 +72,4 @@ export const canAny = (u: { roles: readonly string[] } | null | undefined, ...ca
 export const rolesWith = (cap: Cap) => ROLES.filter((r) => ROLE_CAPS[r].includes(cap));
 
 /** Home page of each role — where signing in takes you. */
-export const ROLE_HOME: Record<Role, string> = { reviewer: "/staff", approver: "/staff", supervisor: "/staff", verifier: "/verify", admin: "/staff" };
+export const ROLE_HOME: Record<Role, string> = { reviewer: "/staff", approver: "/staff", supervisor: "/staff", verifier: "/verify", admin: "/staff", opsmanager: "/staff/health" };

@@ -6,7 +6,7 @@ import { demoOn, ensureSbx, gateCodes, getSbx, markSeeded, missions, ROLE_HOME, 
 
 /** Roles lab API — refuses everything outside demo mode. */
 const err = (e: string, s = 400) => NextResponse.json({ error: e }, { status: s });
-const ROLES: SbxRole[] = ["applicant", "reviewer", "approver", "supervisor", "verifier", "admin"];
+const ROLES: SbxRole[] = ["applicant", "reviewer", "approver", "supervisor", "verifier", "opsmanager", "admin"];
 
 async function currentRole(): Promise<SbxRole | null> {
   const s = await getStaff();

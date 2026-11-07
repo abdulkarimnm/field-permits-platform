@@ -89,6 +89,7 @@ export async function Shell({
 export const STAFF_NAV: (NavItem & { cap?: Cap; any?: Cap[] })[] = [
   { href: "/staff", ar: "مساحة العمل", en: "Workspace", short: ["عملي", "Work"], icon: "home", any: ["request.view", "users.manage", "ops.view"] },
   { href: "/verify", ar: "بوابة التحقق", en: "Verification", short: ["التحقق", "Verify"], icon: "scan", cap: "verify.scan" },
+  { href: "/staff/health", ar: "حالة النظام", en: "System health", short: ["الحالة", "Health"], icon: "gauge", cap: "health.view" },
   { href: "/staff/ops", ar: "غرفة العمليات", en: "Operations room", short: ["العمليات", "Ops"], icon: "pulse", cap: "ops.view" },
   { href: "/staff/permits", ar: "التصاريح والطلبات", en: "Permits & requests", short: ["التصاريح", "Permits"], icon: "doc", cap: "permit.view" },
   { href: "/staff/capacity", ar: "السعة", en: "Capacity", icon: "grid", cap: "capacity.view" },

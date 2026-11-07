@@ -195,10 +195,19 @@ CREATE INDEX IF NOT EXISTS error_log_last ON error_log(last_at);
 
 export const DEMO_PASSWORD = "Demo@2026"; // documented in README – change before real use
 
+/** Roles added after a site was first seeded get their demo account once (idempotent). */
+async function ensureRoleAccounts(d: Driver) {
+  const has = await d.query(`SELECT 1 FROM users WHERE 'opsmanager' = ANY(roles) LIMIT 1`);
+  if (has.length) return;
+  const taken = await d.query(`SELECT 1 FROM users WHERE username='opsmanager'`);
+  if (taken.length) return;
+  await d.query(`INSERT INTO users(username,name,password_hash,roles,agency) VALUES ($1,$2,$3,$4,$5)`, ["opsmanager", "مدير التشغيل", await hashPassword(DEMO_PASSWORD), ["opsmanager"], null]);
+}
+
 export async function migrate(d: Driver) {
   await d.exec(DDL);
   const seeded = await d.query(`SELECT 1 FROM settings WHERE key='seeded'`);
-  if (seeded.length) return;
+  if (seeded.length) return ensureRoleAccounts(d);
 
   const { publicKey, privateKey } = generateKeyPairSync("ed25519");
   const settings: Record<string, unknown> = {
@@ -244,6 +253,7 @@ export async function migrate(d: Driver) {
     ["approver", "خالد المعتمد", ["approver"], null],
     ["supervisor", "مشرف الميدان", ["supervisor"], null],
     ["verifier", "متحقق البوابة", ["verifier"], "الجهة الأمنية المختصة"],
+    ["opsmanager", "مدير التشغيل", ["opsmanager"], null],
   ];
   for (const [u, n, r, a] of users) {
     await d.query(`INSERT INTO users(username,name,password_hash,roles,agency) VALUES ($1,$2,$3,$4,$5)`, [u, n, pw, r, a]);

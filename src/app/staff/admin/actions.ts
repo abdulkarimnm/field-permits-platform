@@ -6,7 +6,7 @@ import { audit } from "@/lib/audit";
 import { hashPassword } from "@/lib/crypto";
 import { setSetting, type StageRule } from "@/lib/settings";
 
-const ROLES: Role[] = ["admin", "reviewer", "approver", "supervisor", "verifier"];
+const ROLES: Role[] = ["admin", "reviewer", "approver", "supervisor", "verifier", "opsmanager"];
 const done = (tab: string, err?: string) => redirect(`/staff/admin?tab=${tab}${err ? `&err=${err}` : "&ok=1"}`);
 
 export async function saveWorkflowAction(fd: FormData) {

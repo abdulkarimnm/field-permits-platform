@@ -5,13 +5,14 @@ import { Icon } from "./icons";
 import { ROLE_META } from "./SandboxDock";
 
 type Role = keyof typeof ROLE_META;
-const ORDER: Role[] = ["applicant", "reviewer", "approver", "verifier", "supervisor", "admin"];
+const ORDER: Role[] = ["applicant", "reviewer", "approver", "verifier", "supervisor", "opsmanager", "admin"];
 const DO: Record<Role, [string, string]> = {
   applicant: ["يقدّم الطلبات ويحمل البطاقة", "Submits requests, carries the pass"],
   reviewer: ["المراجعة الأولية للطلبات", "First-stage review"],
   approver: ["الاعتماد النهائي وإصدار التصريح", "Final approval, issues permits"],
   verifier: ["مسح الرموز عند البوابة", "Scans codes at the gate"],
   supervisor: ["مركز القيادة والتقارير", "Command center & reports"],
+  opsmanager: ["حالة النظام ومتابعة التشغيل", "System health & oversight"],
   admin: ["المستخدمون والإعدادات", "Users & settings"],
 };
 
