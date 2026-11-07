@@ -46,8 +46,10 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 export function parseFilters(sp: Record<string, string | undefined>): Filters {
   const today = riyadhToday();
   const monthAgo = new Date(Date.now() + 3 * 3600_000 - 29 * 86400_000).toISOString().slice(0, 10);
-  let from = DATE_RE.test(sp.from ?? "") ? sp.from! : monthAgo;
-  let to = DATE_RE.test(sp.to ?? "") ? sp.to! : today;
+  // a real calendar date only (2026-99-99 matches the pattern but is not a date)
+  const real = (v?: string) => { if (!v || !DATE_RE.test(v)) return false; const d = new Date(`${v}T00:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v; };
+  let from = real(sp.from) ? sp.from! : monthAgo;
+  let to = real(sp.to) ? sp.to! : today;
   if (from > to) [from, to] = [to, from];
   const n = (v?: string) => (v && /^\d+$/.test(v) ? Number(v) : null);
   return { from, to, zone: n(sp.zone), gate: n(sp.gate) };

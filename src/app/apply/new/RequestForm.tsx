@@ -144,7 +144,8 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
     t("الأفراد", "People"), t("المركبات وموعد الدخول", "Vehicles & entry slot"), t("المعدات", "Equipment"), t("المرفقات", "Attachments"), t("الإقرار", "Declaration"),
   ];
   const secKeys = SEC_KEYS;
-  const fileBad = files.some((x) => x.err);
+  // a rejected file is cleared from its input, so nothing bad is sent: the note stays, but it never blocks the request
+  const fileBad = false;
   const secBad = secKeys.map((keys) => liveErrors.some((e) => keys.some((k) => e.field.startsWith(k))) || (keys[0] === "__files" && fileBad));
   const secDone = secBad.map((b, i) => !b && (i !== 0 || !!f.org_name.trim()));
   const doneCount = secDone.filter(Boolean).length;
@@ -498,7 +499,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
               </div>
             ))}
             {errors.filter((e) => e.field.startsWith("people")).slice(0, 3).map((e, i) => (
-              <p key={i} className="text-xs text-bad">{t(e.ar, e.en)}</p>
+              <p key={i} role="alert" className="text-xs text-bad">{t(e.ar, e.en)}</p>
             ))}
             <div className="flex flex-wrap gap-2 pt-1">
               <button type="button" className={btn.secondary} disabled={people.length >= LIMITS.people} onClick={() => setPeople([...people, { name: "", id_number: "" }])}>+ {t("إضافة فرد", "Add person")}</button>
@@ -536,7 +537,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                 onChange={(nv) => setVehicles(vehicles.map((x, j) => (j === i ? nv : x)))} onRemove={() => setVehicles(vehicles.filter((_, j) => j !== i))} />
             ))}
             {errors.filter((e) => e.field.startsWith("vehicles")).slice(0, 3).map((e, i) => (
-              <p key={i} className="text-xs text-bad">{t(e.ar, e.en)}</p>
+              <p key={i} role="alert" className="text-xs text-bad">{t(e.ar, e.en)}</p>
             ))}
             <div className="flex flex-wrap gap-2 pt-1">
               <button type="button" className={btn.secondary} disabled={vehicles.length >= LIMITS.vehicles} onClick={() => setVehicles([...vehicles, { plate: "", type: "", kind: "sa" }])}>+ {t("إضافة مركبة", "Add vehicle")}</button>
@@ -575,7 +576,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                 onChange={(nx) => setEquipment(equipment.map((y, j) => (j === i ? nx : y)))} onRemove={() => setEquipment(equipment.filter((_, j) => j !== i))} />
             ))}
             {errors.filter((e) => e.field.startsWith("equipment")).slice(0, 3).map((e, i) => (
-              <p key={i} className="text-xs text-bad">{t(e.ar, e.en)}</p>
+              <p key={i} role="alert" className="text-xs text-bad">{t(e.ar, e.en)}</p>
             ))}
             <button type="button" className={btn.secondary} disabled={equipment.length >= LIMITS.equipment} onClick={() => setEquipment([...equipment, { name: "", qty: 1 }])}>+ {t("إضافة معدة", "Add equipment")}</button>
           </div>
@@ -599,7 +600,12 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
                       if (err) e.target.value = "";
                       setFiles(files.map((x, j) => (j === i ? { ...x, name: err ? undefined : file?.name, size: file?.size, err, label: x.label || (file && !err ? file.name.replace(/\.[^.]+$/, "") : x.label) } : x)));
                     }} />
-                  {fl.err ? <p className="mt-1 text-xs text-bad" role="alert">{fl.err}</p> : fl.name && <p className="mt-1 text-xs text-ok">✓ <span dir="ltr">{fl.name}</span> · <span className="num">{fmtSize(fl.size ?? 0)}</span></p>}
+                  {fl.err ? (
+                    <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-bad" role="alert">
+                      {fl.err}
+                      <button type="button" className="min-h-8 rounded-md px-2 font-semibold underline underline-offset-4" onClick={() => setFiles(files.map((x, j) => (j === i ? { key: x.key, label: "" } : x)))}>{t("إزالة", "Remove")}</button>
+                    </p>
+                  ) : fl.name && <p className="mt-1 text-xs text-ok">✓ <span dir="ltr">{fl.name}</span> · <span className="num">{fmtSize(fl.size ?? 0)}</span></p>}
                 </div>
               </div>
             ))}

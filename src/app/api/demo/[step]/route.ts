@@ -1,3 +1,4 @@
+import { publicError } from "@/lib/safeError";
 import { NextResponse, type NextRequest } from "next/server";
 import { cookies } from "next/headers";
 import { randomInt } from "node:crypto";
@@ -187,7 +188,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ ste
       return NextResponse.json({ ok: true });
     }
   } catch (e) {
-    return err(e instanceof Error ? e.message : "failed", 500);
+    return err(publicError(e, "failed"), 500);
   }
   return err("unknown_step", 404);
 }

@@ -4,6 +4,11 @@ import { Badge } from "@/components/ui";
 import { Ticker } from "@/components/fx";
 import type { ReactNode } from "react";
 import CommandCenter from "./CommandCenter";
+import fs from "node:fs";
+import path from "node:path";
+
+// the real aerial photo of the field, if it has been added (public/brand/field-aerial.*)
+const aerial = () => ["webp", "jpg", "jpeg", "png"].map((x) => `/brand/field-aerial.${x}`).find((p) => fs.existsSync(path.join(process.cwd(), "public", p)));
 import { commandData } from "@/lib/ops";
 import AutoRefresh from "@/components/AutoRefresh";
 import { requireCap } from "@/lib/auth";
@@ -121,7 +126,7 @@ export default async function Ops() {
       </div>
 
       <div className="mt-5">
-        <CommandCenter data={cmd} lang={lang} />
+        <CommandCenter data={cmd} lang={lang} aerial={aerial()} />
       </div>
 
       <h2 className="mb-3 mt-8 font-display text-lg font-bold text-white">{t("مؤشرات قياس النجاح", "Success metrics")}</h2>
