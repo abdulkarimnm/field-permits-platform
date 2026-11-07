@@ -86,8 +86,8 @@ export default function CapacityPicker({
               }`}
             >
               <span className="num block text-sm font-semibold">{String(h).padStart(2, "0")}:00</span>
-              <span className={`mt-1 block h-1 rounded-full ${sel ? "bg-surface/40" : "bg-mist"}`}>
-                <span className={`block h-1 rounded-full ${sel ? "bg-surface" : pct > 0.5 ? "bg-ok" : pct > 0.2 ? "bg-wait" : "bg-bad"}`} style={{ width: `${Math.max(0, pct) * 100}%` }} />
+              <span className={`mt-1 block h-1 rounded-full ${sel ? "bg-cream/40" : "bg-mist"}`}>
+                <span className={`block h-1 rounded-full ${sel ? "bg-cream" : pct > 0.5 ? "bg-ok" : pct > 0.2 ? "bg-wait" : "bg-bad"}`} style={{ width: `${Math.max(0, pct) * 100}%` }} />
               </span>
               <span className={`num mt-1 block text-[11px] ${sel ? "text-cream" : ""}`}>
                 {Math.max(0, c.rem)}/{c.cap}

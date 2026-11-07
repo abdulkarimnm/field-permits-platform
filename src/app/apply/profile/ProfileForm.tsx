@@ -8,7 +8,7 @@ import { Icon } from "@/components/icons";
 import type { OrgProfile, Team } from "@/lib/org";
 import { normPlate, type Equipment, type Person, type Vehicle } from "@/lib/validate";
 
-const input = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
+const input = "w-full rounded-lg border border-line-strong bg-field px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-focus focus:ring-2 focus:ring-focus/25 aria-[invalid=true]:border-bad";
 const label = "mb-1.5 block text-sm font-medium text-ink";
 const ID_RE = /^[12]\d{9}$/;
 type Tab = "people" | "vehicles" | "equipment" | "teams";
@@ -78,7 +78,7 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
 
       {/* roster tabs */}
       <section className="overflow-hidden rounded-2xl border border-line bg-surface">
-        <div className="flex gap-1 overflow-x-auto border-b border-line bg-paper px-2 pt-2" role="tablist">
+        <div className="flex gap-1 overflow-x-auto border-b border-line bg-panel px-2 pt-2" role="tablist">
           {tabs.map(([k, l, n, icon]) => (
             <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => { setTab(k); setEditing(null); }}
               className={`flex min-h-11 shrink-0 items-center gap-2 rounded-t-xl px-4 text-sm font-semibold transition ${tab === k ? "bg-surface text-brand shadow-[0_-1px_0_var(--color-line),1px_0_0_var(--color-line),-1px_0_0_var(--color-line)]" : "text-ink-soft hover:text-ink"}`}>
@@ -94,7 +94,7 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
                 <p className="text-sm text-ink-soft">{t("الأفراد المعتادون لدى الجهة. تُبنى منهم فرق العمل.", "Your usual people. Teams are built from this list.")}</p>
                 {people.length > 8 && <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={t("بحث بالاسم أو الهوية", "Search name or ID")} className="min-h-10 w-56 rounded-lg border border-line px-3 text-sm" aria-label={t("بحث", "Search")} />}
               </div>
-              {people.length === 0 && <p className="rounded-xl bg-paper px-4 py-6 text-center text-sm text-ink-soft">{t("لا يوجد أفراد بعد — أضفهم أو الصقهم من Excel.", "No people yet — add or paste from Excel.")}</p>}
+              {people.length === 0 && <p className="rounded-xl bg-panel px-4 py-6 text-center text-sm text-ink-soft">{t("لا يوجد أفراد بعد — أضفهم أو الصقهم من Excel.", "No people yet — add or paste from Excel.")}</p>}
               <ul className="space-y-2">
                 {shownPeople.map(({ p, i }) => {
                   const bad = !!p.id_number && !ID_RE.test(p.id_number);
@@ -115,7 +115,7 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
                 <button type="button" onClick={() => setShowPaste(!showPaste)} className="min-h-11 px-3 text-sm font-semibold text-brand">{t("لصق قائمة من Excel", "Paste from Excel")}</button>
               </div>
               {showPaste && (
-                <div className="rounded-xl border border-line bg-paper p-3">
+                <div className="rounded-xl border border-line bg-panel p-3">
                   <p className="text-xs text-ink-soft">{t("عمودان: الاسم ورقم الهوية بأي ترتيب — سطر لكل فرد.", "Two columns: name and ID in any order — one per line.")}</p>
                   <textarea rows={5} dir="auto" value={paste} onChange={(e) => setPaste(e.target.value)} className={`${input} mt-2 font-mono text-sm`} />
                   <button type="button" onClick={addPasted} disabled={!paste.trim()} className="mt-2 min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white disabled:opacity-50">{t("إضافة", "Add")}</button>
@@ -147,7 +147,7 @@ export default function ProfileForm({ init, lang }: { init: OrgProfile; lang: "a
           {tab === "teams" && !editing && (
             <>
               <p className="text-sm text-ink-soft">{t("فرق العمل قوائم جاهزة من أفراد الجهة ومركباتها ومعداتها. عند طلب تصريح لاحقًا اختر الفريق بضغطة، ثم أضف أو عدّل أو احذف أي شخص لذلك الطلب.", "Teams are ready-made lists from your people, vehicles and equipment. In a later request pick a team in one tap, then add, edit or remove anyone for that request.")}</p>
-              {teams.length === 0 && <p className="rounded-xl bg-paper px-4 py-6 text-center text-sm text-ink-soft">{t("لا توجد فرق بعد.", "No teams yet.")}</p>}
+              {teams.length === 0 && <p className="rounded-xl bg-panel px-4 py-6 text-center text-sm text-ink-soft">{t("لا توجد فرق بعد.", "No teams yet.")}</p>}
               <div className="grid gap-3 md:grid-cols-2">
                 {teams.map((tm) => {
                   const names = tm.people.map((id) => people.find((p) => p.id_number === id)?.name).filter(Boolean) as string[];
@@ -247,7 +247,7 @@ function TeamEditor({ team, people, vehicles, equipment, t, onCancel, onSave }: 
               const k = normPlate(v.plate);
               const on = tm.vehicles.includes(k);
               return (
-                <button key={k} type="button" aria-pressed={on} onClick={() => toggle("vehicles", k)} className={`flex items-center gap-2 rounded-xl border p-1.5 pe-3 transition ${on ? "border-brand bg-surface ring-2 ring-brand/15" : "border-line bg-surface/60 opacity-75 hover:opacity-100"}`}>
+                <button key={k} type="button" aria-pressed={on} onClick={() => toggle("vehicles", k)} className={`flex items-center gap-2 rounded-xl border p-1.5 pe-3 transition ${on ? "border-brand bg-surface ring-2 ring-focus/25" : "border-line bg-surface/60 opacity-75 hover:opacity-100"}`}>
                   <SaudiPlate plate={v.plate} kind={v.kind} size="sm" />
                   <span className="text-xs text-ink-soft">{v.type}</span>
                   <span className={`grid h-5 w-5 place-items-center rounded text-[11px] ${on ? "bg-brand text-white" : "border border-line"}`}>{on ? "✓" : ""}</span>

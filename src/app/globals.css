@@ -19,21 +19,49 @@
   --color-surface: #ffffff;
   --color-masthead: #fffaf5;
   --color-chip: #ffecdc;
+  --color-panel: #faf7f4;       /* a tinted panel nested inside a card (notes, lists, sub-sections) */
+  --color-raised: #fdf8f4;      /* a layer above a card: hover rows, popovers, sheets */
+  --color-field: #ffffff;       /* inputs, selects, textareas */
+  --color-line-strong: #e3d5cc; /* control borders */
   --color-noir-2: #3d1b14;
 
   --color-ok: #1f7a4d;
   --color-ok-soft: #e3f3ea;
-  --color-wait: #9a6400;
+  --color-wait: #8a5900;
   --color-wait-soft: #fbf0da;
   --color-off: #66605d;
   --color-off-soft: #eeeceb;
-  --color-hold: #b85400;
+  --color-hold: #a34a00;
   --color-hold-soft: #fde9d9;
   --color-bad: #b3261e;
   --color-bad-soft: #fbe4e2;
+  --color-info: #2b6f93;
+  --color-info-soft: #e3f0f6;
+  /* solid fills that stay the same in both themes (white text sits on them) */
+  --color-info-solid: #2b6f93;
+  --color-ok-bright: #2a9662;
+  --color-brand-glow: #8f4a3c;
+  --color-excel: #1d6f42;
 
   --font-sans: var(--font-plex), system-ui, sans-serif;
   --font-display: var(--font-plex), system-ui, sans-serif;
+
+  /* elevation + focus as tokens, so they flip with the theme too (`shadow-card`, `shadow-raised`, `ring-focus`) */
+  --shadow-card: 0 1px 2px rgba(61, 42, 36, .04), 0 12px 32px -20px rgba(61, 42, 36, .18);
+  --shadow-raised: 0 2px 6px rgba(61, 42, 36, .06), 0 24px 48px -24px rgba(61, 42, 36, .28);
+  --color-focus: #763b30;
+}
+
+/* Safety net for any page: native controls start on the field token, so a new form is themed
+   even before it is styled. Utilities still override this (it lives in the base layer). */
+@layer base {
+  input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"]), select, textarea {
+    background-color: var(--color-field);
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  ::placeholder { color: color-mix(in oklab, var(--color-ink-soft) 70%, transparent); }
+  hr { border-color: var(--color-line); }
 }
 
 html { -webkit-text-size-adjust: 100%; }
@@ -44,7 +72,7 @@ body {
   font-feature-settings: "kern";
 }
 h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: 0; }
-:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: 6px; }
 input, select, textarea { font: inherit; }
 .num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
 
@@ -326,29 +354,66 @@ nav a, nav button { -webkit-touch-callout: none; }
 }
 
 /* ───────── Light / dark theme ─────────
-   One switch: the semantic tokens flip, components keep their classes.
-   Brand maroon + gold stay; surfaces go to a warm near-black so the identity holds.
-   Pairs checked for WCAG AA: ink/surface 13.9:1, ink-soft/surface 7.1:1, brand-text/surface 8.6:1. */
+   THE RULE (see THEME.md): components only use semantic tokens (paper, surface, raised, field,
+   chip, mist, line, line-strong, ink, ink-soft, brand, status, shadow-card, focus). Dark mode
+   repoints the tokens here; no page carries its own dark code, so every new page is dark-ready.
+
+   Dark palette: a warm cocoa ramp (OKLCH hue 38, low chroma) instead of flat black, so the brand's
+   maroon reads as part of the night rather than a hole in it. Depth comes from lightness steps:
+     paper L.195 → field L.215 → surface L.24 → raised L.28 → chip L.305 → line L.345 → line-strong L.53
+   Measured (WCAG 2.x contrast): ink/paper 15.8, ink/surface 14.3, ink/raised 12.7, ink-soft/surface 8.5,
+   ink-soft/chip 7.0, brand-text/surface 9.2, white/brand 7.2, status text/surface ≥7.3,
+   status text/its soft fill ≥6.4, line-strong/field 3.3 (control boundary ≥3). */
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-paper: #120d0b;
-  --color-surface: #1c1513;
-  --color-masthead: #1a1311;
-  --color-chip: #33221d;
-  --color-mist: #261c19;
-  --color-line: #3a2c27;
-  --color-ink: #f4e9e2;
-  --color-ink-soft: #bba79e;
-  --color-rose-soft: #4d332e;
-  --color-ok-soft: #12291d; --color-wait-soft: #2c2312; --color-off-soft: #292422; --color-hold-soft: #2f1f12; --color-bad-soft: #351513;
+  --color-paper: #1b1310;
+  --color-field: #1f1715;
+  --color-surface: #261d1a;
+  --color-masthead: #221714;
+  --color-panel: #2d2320;
+  --color-raised: #312622;
+  --color-chip: #392b27;
+  --color-mist: #2c221f;
+  --color-line: #423633;
+  --color-line-strong: #786863;
+  --color-ink: #f5ede7;
+  --color-ink-soft: #c6b7ae;
+  --color-rose-soft: #482d2b;
+  --color-brand: #903e2f;        /* the maroon fill, one step lighter so buttons don't sink into the page */
+  --color-brand-deep: #6e2f24;
+  --color-focus: #e9cfa6;        /* gold focus ring: maroon would be invisible on cocoa */
+  --color-ok-soft: #143320; --color-wait-soft: #3b2b0d; --color-off-soft: #322c29; --color-hold-soft: #412714; --color-bad-soft: #451e1c;
+  --color-info: #8dceee; --color-info-soft: #16303c;
+  --shadow-card: inset 0 1px 0 rgb(255 236 220 / .045), 0 1px 2px rgb(0 0 0 / .35), 0 18px 40px -22px rgb(0 0 0 / .75);
+  --shadow-raised: inset 0 1px 0 rgb(255 236 220 / .06), 0 4px 10px rgb(0 0 0 / .35), 0 28px 56px -24px rgb(0 0 0 / .8);
+}
+/* the page itself: a faint maroon dawn at the top instead of a flat void */
+:root[data-theme="dark"] body {
+  background:
+    radial-gradient(1100px 520px at 85% -120px, rgb(144 62 47 / .26), transparent 70%),
+    radial-gradient(900px 480px at 0% -160px, rgb(201 166 107 / .06), transparent 70%),
+    var(--color-paper);
+  background-repeat: no-repeat;
 }
 /* status fills keep their strong colour (white text on them stays AA); status *text* is lifted for dark surfaces */
-:root[data-theme="dark"] .text-ok { color: #63c995; }
-:root[data-theme="dark"] .text-wait { color: #e6b65c; }
-:root[data-theme="dark"] .text-off { color: #b9b1ad; }
-:root[data-theme="dark"] .text-hold { color: #f2a467; }
-:root[data-theme="dark"] .text-bad, :root[data-theme="dark"] .hover:text-bad:hover { color: #f48b81; }
-:root[data-theme="dark"] .border-bad/30, :root[data-theme="dark"] .border-bad/40 { border-color: rgb(244 139 129 / .35); }
+:root[data-theme="dark"] .text-ok { color: #72d699; }
+:root[data-theme="dark"] .text-wait { color: #f4c26a; }
+:root[data-theme="dark"] .text-off { color: #beb5b1; }
+:root[data-theme="dark"] .text-hold { color: #f9a870; }
+:root[data-theme="dark"] .text-bad, :root[data-theme="dark"] .hover\:text-bad:hover { color: #f98f87; }
+:root[data-theme="dark"] .border-bad\/30, :root[data-theme="dark"] .border-bad\/40 { border-color: rgb(249 143 135 / .35); }
+/* opacity variants of brand text/borders aren't covered by the token flip: lift them too */
+:root[data-theme="dark"] :is(.text-brand\/70, .text-brand\/80, .text-brand\/60):not(.force-light *) { color: rgb(241 179 166 / .85); }
+:root[data-theme="dark"] :is(.border-brand\/20, .border-brand\/25, .border-brand\/30, .border-brand\/40):not(.force-light *) { border-color: rgb(201 166 107 / .35); }
+
+/* Safety net for future pages: utility colours that do not flip are mapped to tokens in dark.
+   (New code should use the tokens directly — scripts/check-theme.mjs enforces it; this only
+   guarantees nothing ever renders as a white slab or black text if one slips through.)
+   Opt out with .force-light (documents) or .keep-white (QR codes, plates). */
+:root[data-theme="dark"] :is(.bg-white, .bg-gray-50, .bg-gray-100, .bg-stone-50, .bg-stone-100, .bg-neutral-50, .bg-neutral-100, .bg-slate-50, .bg-slate-100):not(.force-light, .force-light *, .keep-white, .noir *, .cc *, .ops-screen *) { background-color: var(--color-surface); }
+:root[data-theme="dark"] :is(.text-black, .text-gray-900, .text-gray-800, .text-stone-900, .text-neutral-900, .text-slate-900):not(.force-light *, .keep-white *) { color: var(--color-ink); }
+:root[data-theme="dark"] :is(.text-gray-500, .text-gray-600, .text-gray-700, .text-stone-500, .text-stone-600, .text-neutral-500, .text-slate-500):not(.force-light *) { color: var(--color-ink-soft); }
+:root[data-theme="dark"] :is(.border-gray-100, .border-gray-200, .border-gray-300, .border-stone-200, .border-neutral-200, .border-slate-200):not(.force-light *) { border-color: var(--color-line); }
 :root[data-theme="dark"] .force-light .text-ok { color: var(--color-ok); }
 :root[data-theme="dark"] .force-light .text-bad { color: var(--color-bad); }
 :root[data-theme="dark"] .force-light .text-hold { color: var(--color-hold); }
@@ -356,8 +421,6 @@ nav a, nav button { -webkit-touch-callout: none; }
 /* text in brand maroon would vanish on dark surfaces: lift it to a rose tint (buttons keep the maroon fill) */
 :root[data-theme="dark"] .text-brand, :root[data-theme="dark"] .hover\:text-brand:hover { color: #eeb3a4; }
 :root[data-theme="dark"] .border-brand { border-color: #b8695a; }
-:root[data-theme="dark"] .text-\[\#2b6f93\] { color: #8fcbea; }
-:root[data-theme="dark"] .bg-ink\/45, :root[data-theme="dark"] .bg-ink\/40 { background-color: rgb(0 0 0 / .6); }
 /* the brand logo is maroon on cream: on dark it becomes a single warm-cream mark */
 :root[data-theme="dark"] .logo-adapt { filter: brightness(0) invert(1) sepia(.25) brightness(.94); }
 :root[data-theme="dark"] .shadow-sm, :root[data-theme="dark"] [class*="shadow-[0_1px_2px"] { --tw-shadow-color: rgb(0 0 0 / .5); }
@@ -368,15 +431,27 @@ nav a, nav button { -webkit-touch-callout: none; }
 .force-light {
   color-scheme: light;
   --color-paper: #faf7f4; --color-surface: #ffffff; --color-masthead: #fffaf5; --color-chip: #ffecdc;
+  --color-panel: #faf7f4; --color-raised: #fdf8f4; --color-field: #ffffff; --color-line-strong: #e3d5cc;
+  --color-brand: #763b30; --color-brand-deep: #5a2b23; --color-focus: #763b30;
+  --shadow-card: 0 1px 2px rgba(61, 42, 36, .04), 0 12px 32px -20px rgba(61, 42, 36, .18);
+  --shadow-raised: 0 2px 6px rgba(61, 42, 36, .06), 0 24px 48px -24px rgba(61, 42, 36, .28);
   --color-mist: #f2f2f1; --color-line: #eadfd8; --color-ink: #3d2a24; --color-ink-soft: #6e5a53; --color-rose-soft: #e4bfbc;
-  --color-ok: #1f7a4d; --color-ok-soft: #e3f3ea; --color-wait: #9a6400; --color-wait-soft: #fbf0da;
-  --color-off: #66605d; --color-off-soft: #eeeceb; --color-hold: #b85400; --color-hold-soft: #fde9d9;
-  --color-bad: #b3261e; --color-bad-soft: #fbe4e2;
+  --color-ok: #1f7a4d; --color-ok-soft: #e3f3ea; --color-wait: #8a5900; --color-wait-soft: #fbf0da;
+  --color-off: #66605d; --color-off-soft: #eeeceb; --color-hold: #a34a00; --color-hold-soft: #fde9d9;
+  --color-bad: #b3261e; --color-bad-soft: #fbe4e2; --color-info: #2b6f93; --color-info-soft: #e3f0f6;
 }
 :root[data-theme="dark"] .force-light .text-brand { color: var(--color-brand); }
 :root[data-theme="dark"] .force-light .logo-adapt { filter: none; }
 
 .theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
+/* theme switch: the new theme is revealed as a circle from the tapped button (ThemeSwitch.applyTheme) */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+/* dark masthead: a touch of maroon warmth and a gold hairline so the header reads as a layer, not a gap */
+:root[data-theme="dark"] .bg-masthead:not(.force-light *) {
+  background: linear-gradient(180deg, #2a1a16 0%, var(--color-masthead) 100%);
+  box-shadow: inset 0 -1px 0 rgb(201 166 107 / .16);
+}
 
 /* While a sheet or dialog is open, floating chrome steps aside so it never covers the dialog's buttons. */
 html[data-overlay] .lab-dock, html[data-overlay] .tabbar, html[data-overlay] .float-chrome { opacity: 0; pointer-events: none; transform: translateY(12px); }

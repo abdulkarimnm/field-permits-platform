@@ -121,7 +121,7 @@ export default function RosterImport({ kind, room, onAdd, onClose, t }: { kind: 
   const cols = kind === "people" ? [t("الاسم", "Name"), t("رقم الهوية", "ID number")] : [t("رقم اللوحة", "Plate"), t("النوع", "Type")];
 
   return (
-    <div className="fixed inset-0 z-[90] grid place-items-end bg-ink/45 sm:place-items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="ri-h" onClick={onClose}>
+    <div className="fixed inset-0 z-[90] grid place-items-end bg-noir/60 sm:place-items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="ri-h" onClick={onClose}>
       <div className="flex max-h-[92dvh] w-full max-w-xl flex-col overflow-hidden rounded-t-3xl bg-surface shadow-2xl sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
         <div className="border-b border-line px-5 pb-3 pt-4">
           <div className="mx-auto mb-3 h-1.5 w-10 rounded-full bg-line sm:hidden" />

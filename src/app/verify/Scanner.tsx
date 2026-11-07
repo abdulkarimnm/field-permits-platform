@@ -52,7 +52,7 @@ export default function Scanner({ onResult, t }: { onResult: (text: string) => v
   }, [onResult, t]);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-ink">
+    <div className="relative overflow-hidden rounded-2xl bg-noir">
       <video ref={video} className="aspect-[4/3] w-full object-cover" playsInline muted />
       <canvas ref={canvas} className="hidden" />
       <div className="pointer-events-none absolute inset-0 grid place-items-center">
