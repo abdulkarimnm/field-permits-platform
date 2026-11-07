@@ -36,10 +36,10 @@ export default async function AuditPage({ searchParams }: { searchParams: Promis
       <Card>
         <ul className="-my-2 divide-y divide-line">
           {rows.map((r) => (
-            <li key={r.id} className="grid gap-1 py-2.5 text-sm md:grid-cols-[3rem_10rem_1fr_auto] md:items-center md:gap-3">
+            <li key={r.id} className="grid grid-cols-[minmax(0,1fr)] gap-1 py-2.5 text-sm md:grid-cols-[3rem_10rem_1fr_auto] md:items-center md:gap-3">
               <span className="num text-xs text-ink-soft">#{r.id}</span>
               <span className="text-xs text-ink-soft">{fmtDate(r.at)}</span>
-              <span className="min-w-0">
+              <span className="min-w-0 [overflow-wrap:anywhere]">
                 <span className="font-mono text-[13px] font-semibold">{r.action}</span>
                 <span className="ms-2 text-ink-soft">{users.get(r.actor) ?? r.actor}</span>
                 {r.entity && <span className="ms-2 text-xs text-ink-soft">{r.entity}#{r.entity_id}</span>}
