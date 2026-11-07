@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Field3D from "./Field3D";
 import type { CommandData, GateSeries, OpsAlert, ZoneSeries } from "@/lib/ops";
 
 /* ───────── site plan geometry (north up), keyed by zone code ───────── */
@@ -27,7 +28,7 @@ export const lvlOf = (r: number): Lvl => (r >= 0.85 ? "crit" : r >= 0.6 ? "busy"
 type Layer = "load" | "presence";
 type Sel = { kind: "zone" | "gate"; id: number } | null;
 
-export default function CommandCenter({ data, lang }: { data: CommandData; lang: "ar" | "en" }) {
+export default function CommandCenter({ data, lang, aerial }: { data: CommandData; lang: "ar" | "en"; aerial?: string }) {
   const t = useCallback((ar: string, en: string) => (lang === "ar" ? ar : en), [lang]);
   const { slots, nowIndex, zones, gates, events, alerts } = data;
   const [slot, setSlot] = useState(nowIndex);
@@ -36,6 +37,9 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
   const [tab, setTab] = useState<"alerts" | "zones" | "gates" | "live">("alerts");
   const [playing, setPlaying] = useState(false);
   const [tv, setTv] = useState(false);
+  const [view, setView] = useState<"real" | "plan">(aerial ? "real" : "plan");
+  useEffect(() => { try { const v = localStorage.getItem("cc:view"); if (aerial && (v === "real" || v === "plan")) setView(v); } catch {} }, [aerial]);
+  const pickView = (v: "real" | "plan") => { setView(v); try { localStorage.setItem("cc:view", v); } catch {} };
   const [clock, setClock] = useState("");
   const [pulses, setPulses] = useState<{ key: string; gate: number; zone: number; kind: string }[]>([]);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -197,6 +201,16 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
             </span>
           </div>
 
+          {aerial && (
+            <div className="z-20 mb-2 flex w-fit self-end rounded-xl bg-black/35 p-1 text-xs backdrop-blur sm:absolute sm:end-5 sm:top-5 sm:mb-0" role="radiogroup" aria-label={t("طريقة العرض", "View")}>
+              {([["real", t("الواقع ثلاثي الأبعاد", "3D reality")], ["plan", t("المخطط", "Plan")]] as const).map(([k, l]) => (
+                <button key={k} type="button" role="radio" aria-checked={view === k} onClick={() => pickView(k)} className={`min-h-9 rounded-lg px-3 font-semibold transition ${view === k ? "bg-gold-soft text-noir" : "text-cream/75 hover:text-white"}`}>{l}</button>
+              ))}
+            </div>
+          )}
+          {aerial && view === "real" ? (
+            <Field3D src={aerial} zones={zoneView} gates={gates} slot={slot} layer={layer} future={mode === "future"} maxPresence={maxPresence} sel={sel} onSelect={setSel} t={t} />
+          ) : (
           <svg viewBox="0 0 1000 690" className="h-auto w-full" role="img" aria-label={t("مخطط الميدان بمستويات الازدحام والتواجد", "Field plan with congestion and presence levels")}>
             <defs>
               <pattern id="cc-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(233,207,166,.06)" /></pattern>
@@ -273,6 +287,7 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
               );
             })}
           </svg>
+          )}
 
           {/* legend — label + icon + colour */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 text-[11px] text-cream/75">
@@ -322,7 +337,7 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
               <div className="flex gap-1 border-b border-white/10 p-2" role="tablist">
                 {([["alerts", t("التنبيهات", "Alerts"), alerts.filter((a) => a.level !== "info").length], ["zones", t("المناطق", "Zones"), 0], ["gates", t("البوابات", "Gates"), 0], ["live", t("مباشر", "Live"), 0]] as const).map(([k, l, n]) => (
                   <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg text-xs font-semibold transition ${tab === k ? "bg-white/10 text-gold-soft" : "text-cream/60 hover:text-white"}`}>
-                    {l}{n > 0 && <span className="num rounded-full bg-[#e0524a] px-1.5 text-[10px] text-white">{n}</span>}
+                    {l}{n > 0 && <span className="num rounded-full bg-[#c2392f] px-1.5 text-[10px] text-white">{n}</span>}
                   </button>
                 ))}
               </div>

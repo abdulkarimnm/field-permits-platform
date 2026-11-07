@@ -493,3 +493,12 @@ html[data-overlay] .lab-dock, html[data-overlay] .tabbar, html[data-overlay] .fl
 
 /* programmatic focus targets (step headings) move the reader, not the eye: no ring */
 [tabindex="-1"]:focus, [tabindex="-1"]:focus-visible { outline: none; }
+
+/* ───────── Ops room: 3D aerial view (Field3D) ─────────
+   The photo lies on a tilted plane; pins counter-rotate so they stand upright on it. */
+.f3d { --rx: 34deg; --rz: 0deg; perspective: 1500px; perspective-origin: 50% 20%; }
+.f3d-plane { transform-style: preserve-3d; transform-origin: 50% 60%; transform: rotateX(var(--rx)) rotateZ(var(--rz)); transition: transform .2s linear; }
+.f3d-anchor { width: 0; height: 0; transform-style: preserve-3d; }
+.f3d-pin { transform-origin: 50% 100%; transform: rotateX(calc(-1 * var(--rx))) rotateZ(calc(-1 * var(--rz))); }
+.f3d-anchor:focus-visible .f3d-pin > span:first-child { outline: 2px solid #e9cfa6; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .f3d-plane { transition: none; } }

@@ -1,3 +1,4 @@
+import { publicError } from "@/lib/safeError";
 import { NextResponse, type NextRequest } from "next/server";
 import { q } from "@/lib/db";
 import { sameOrigin } from "@/lib/access";
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ op:
       return NextResponse.json({ made });
     }
   } catch (e) {
-    return err(e instanceof Error ? e.message : "failed", 500);
+    return err(publicError(e, "failed"), 500);
   }
   return err("unknown", 404);
 }

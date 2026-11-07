@@ -1,3 +1,4 @@
+import { publicError } from "@/lib/safeError";
 import { NextResponse, type NextRequest } from "next/server";
 import { getStaff } from "@/lib/auth";
 import { sameOrigin } from "@/lib/access";
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ op:
         return NextResponse.json({ stored: await syncOffline(u, Array.isArray(body.items) ? body.items : []) });
     }
   } catch (e) {
-    return ERR(e instanceof Error ? e.message : "failed");
+    return ERR(publicError(e));
   }
   return ERR("not_found", 404);
 }
