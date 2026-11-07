@@ -4,7 +4,7 @@ import SaudiPlate from "./SaudiPlate";
 import { cleanDigits, cleanLetters, EQUIPMENT_KINDS, formatSaPlate, parseSaPlate, PLATE_LETTERS } from "@/lib/plates";
 import type { Equipment, Vehicle } from "@/lib/validate";
 
-const field = "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
+const field = "w-full rounded-lg border border-line-strong bg-field px-3 py-2.5 text-[15px] text-ink outline-none transition placeholder:text-ink-soft/60 focus:border-focus focus:ring-2 focus:ring-focus/25 aria-[invalid=true]:border-bad";
 const VEHICLE_TYPES: [string, string][] = [["سيارة صغيرة", "Car"], ["بيك أب", "Pickup"], ["فان", "Van"], ["شاحنة نقل خفيفة", "Light truck"], ["شاحنة", "Truck"], ["رافعة", "Crane"], ["حافلة", "Bus"], ["مركبة خدمات", "Service vehicle"]];
 
 /* ───────── Vehicle: Saudi plate (letters + digits with live plate) or any other plate ───────── */
@@ -42,7 +42,7 @@ export function PlateInput({ value, onChange, onRemove, index, t, lang, invalid 
           </div>
           {kind === "sa" ? (
             <div className="flex flex-wrap items-center gap-3">
-              <div className="flex overflow-hidden rounded-lg border border-line focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15" dir="rtl">
+              <div className="flex overflow-hidden rounded-lg border border-line focus-within:border-brand focus-within:ring-2 focus-within:ring-focus/25" dir="rtl">
                 <input aria-label={t(`حروف لوحة المركبة ${n}`, `Vehicle ${n} plate letters`)} placeholder={t("ر ك ن", "R K N")} value={letters} aria-invalid={invalid}
                   onFocus={() => setPad(true)}
                   onChange={(e) => { const L = cleanLetters(e.target.value); const s = L.join(" "); setLetters(s); emit(s, digits); }}
@@ -58,7 +58,7 @@ export function PlateInput({ value, onChange, onRemove, index, t, lang, invalid 
               onChange={(e) => onChange({ ...value, kind: "other", plate: e.target.value.toUpperCase().slice(0, 20) })} className={`${field} max-w-xs font-mono`} />
           )}
           {kind === "sa" && pad && (
-            <div className="mt-2 rounded-xl border border-line bg-paper p-2">
+            <div className="mt-2 rounded-xl border border-line bg-panel p-2">
               <div className="mb-1 flex items-center justify-between text-[11px] text-ink-soft">
                 <span>{t("الحروف المعتمدة في اللوحات — اضغط للإضافة، أو اكتب بالعربي أو الإنجليزي", "Approved plate letters — tap to add, or type Arabic/English")}</span>
                 <button type="button" className="font-semibold text-brand" onClick={() => setPad(false)}>{t("إخفاء", "Hide")}</button>

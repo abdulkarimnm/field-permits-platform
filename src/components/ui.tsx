@@ -12,13 +12,13 @@ export const btn = {
 };
 
 export const input =
-  "w-full rounded-lg border border-line bg-surface px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-soft/60 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/15 aria-[invalid=true]:border-bad";
+  "w-full rounded-lg border border-line-strong bg-field px-3 py-2.5 text-[15px] text-ink placeholder:text-ink-soft/60 outline-none transition focus:border-focus focus:ring-2 focus:ring-focus/25 aria-[invalid=true]:border-bad";
 
 export const label = "mb-1.5 block text-sm font-medium text-ink";
 
 export function Card({ children, className = "", title, action }: { children: ReactNode; className?: string; title?: ReactNode; action?: ReactNode }) {
   return (
-    <section className={`min-w-0 rounded-2xl border border-line/80 bg-surface shadow-[0_1px_2px_rgba(61,42,36,.04),0_12px_32px_-20px_rgba(61,42,36,.18)] ${className}`}>
+    <section className={`min-w-0 rounded-2xl border border-line/80 bg-surface shadow-card ${className}`}>
       {title && (
         <header className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-3 sm:px-5">
           <h2 className="flex items-center gap-2 text-base font-semibold text-ink"><span className="h-4 w-1 rounded-full bg-gradient-to-b from-gold to-brand" />{title}</h2>

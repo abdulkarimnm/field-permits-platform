@@ -277,7 +277,7 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
           {/* legend — label + icon + colour */}
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 px-1 text-[11px] text-cream/75">
             {(["ok", "busy", "crit"] as Lvl[]).map((k) => (
-              <span key={k} className="flex items-center gap-1.5"><i className="grid h-4 w-4 place-items-center rounded text-[9px] font-bold not-italic text-noir" style={{ background: ST[k].c }}>{ST[k].icon}</i>{t(ST[k].ar, ST[k].en)} {layer === "load" && <span className="text-cream/45">{k === "ok" ? "< 60%" : k === "busy" ? "60–85%" : "≥ 85%"}</span>}</span>
+              <span key={k} className="flex items-center gap-1.5"><i aria-hidden="true" className="grid h-4 w-4 place-items-center rounded text-[9px] font-bold not-italic text-noir" style={{ background: ST[k].c }}>{ST[k].icon}</i>{t(ST[k].ar, ST[k].en)} {layer === "load" && <span className="text-cream/45">{k === "ok" ? "< 60%" : k === "busy" ? "60–85%" : "≥ 85%"}</span>}</span>
             ))}
             <span className="flex items-center gap-1.5"><i className="h-3 w-4 rounded border border-dashed border-[#f0a46a]" />{t("منطقة حساسة", "Sensitive")}</span>
             <span className="flex items-center gap-1.5"><i className="h-3 w-4 rounded" style={{ background: "repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 2px,transparent 2px 5px)" }} />{t("توقع", "Forecast")}</span>
@@ -333,7 +333,7 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
                       <li key={a.id} className={`al-item rounded-2xl border p-3 ${a.level === "critical" ? "border-[#e0524a]/45 bg-[#e0524a]/10" : a.level === "warning" ? "border-[#d9a441]/40 bg-[#d9a441]/10" : "border-[#3aa0c8]/35 bg-[#3aa0c8]/10"}`}>
                         <button onClick={() => focusAlert(a)} className="block w-full text-start">
                           <p className="flex items-start gap-2 text-sm font-semibold text-white">
-                            <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md text-[10px] font-bold text-noir" style={{ background: a.level === "critical" ? ST.crit.c : a.level === "warning" ? ST.busy.c : ST.ok.c }}>{a.level === "critical" ? "▲" : a.level === "warning" ? "!" : "✓"}</span>
+                            <span aria-hidden="true" className="grid h-5 w-5 shrink-0 place-items-center rounded-md text-[10px] font-bold text-noir" style={{ background: a.level === "critical" ? ST.crit.c : a.level === "warning" ? ST.busy.c : ST.ok.c }}>{a.level === "critical" ? "▲" : a.level === "warning" ? "!" : "✓"}</span>
                             {t(a.ar[0], a.en[0])}
                           </p>
                           <p className="mt-1 ps-7 text-xs leading-relaxed text-cream/70">{t(a.ar[1], a.en[1])}</p>
@@ -379,7 +379,7 @@ export default function CommandCenter({ data, lang }: { data: CommandData; lang:
                       const c = e.kind === "allowed" ? ST.ok : e.kind === "exit" ? { ...ST.ok, c: "#9fd6ec", icon: "↑" } : e.kind === "lookup" ? ST.busy : ST.crit;
                       return (
                         <li key={e.id} className="al-item flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs hover:bg-white/5">
-                          <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md text-[10px] font-bold text-noir" style={{ background: c.c }}>{c.icon}</span>
+                          <span aria-hidden="true" className="grid h-5 w-5 shrink-0 place-items-center rounded-md text-[10px] font-bold text-noir" style={{ background: c.c }}>{c.icon}</span>
                           <span className="min-w-0 flex-1 truncate"><b className="num text-white">{e.number ?? t("رمز غير معروف", "Unknown code")}</b> <span className="text-cream/55">· {g ? t(g.name_ar, g.name_en) : ""}</span></span>
                           <span className="shrink-0 text-cream/50">{e.kind === "allowed" ? t("سُمح", "allowed") : e.kind === "exit" ? t("خروج", "exit") : e.kind === "denied" ? t("مُنع", "denied") : e.kind === "suspicious" ? t("مشبوه", "suspicious") : t("استعلام", "lookup")}</span>
                           <span className="num shrink-0 text-cream/40">{new Date(e.at).toLocaleTimeString("en-GB", { timeZone: "Asia/Riyadh", hour: "2-digit", minute: "2-digit" })}</span>

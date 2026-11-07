@@ -159,7 +159,7 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
           <div className="flex gap-1 border-b border-white/10 p-1.5" role="tablist">
             {([["missions", t("المهام", "Missions")], ["roles", t("الأدوار", "Roles")], ["phone", t("الجوال", "Phone")], ["codes", t("رموز البوابة", "Gate codes")]] as const).map(([k, l]) => (
               <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={`min-h-9 flex-1 rounded-lg text-[11px] font-semibold ${tab === k ? "bg-white/10 text-gold-soft" : "text-cream/60 hover:text-white"}`}>
-                {l}{k === "phone" && s.sms.length > 0 && <span className="num ms-1 rounded-full bg-[#3aa0c8] px-1.5 text-[9px] text-white">{s.sms.length}</span>}
+                {l}{k === "phone" && s.sms.length > 0 && <span className="num ms-1 rounded-full bg-info-solid px-1.5 text-[9px] text-white">{s.sms.length}</span>}
               </button>
             ))}
           </div>
@@ -176,7 +176,7 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
                       {ms.map((m) => (
                         <li key={m.id}>
                           <Link href={m.href} className={`flex min-h-11 items-center gap-2.5 rounded-xl border px-3 py-2 text-xs transition ${m.done ? "border-[#3aa0c8]/40 bg-[#3aa0c8]/10 text-cream/70" : "border-white/10 hover:border-gold/40"}`}>
-                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${m.done ? "bg-[#3aa0c8] text-white" : "border border-white/25"}`}>{m.done ? "✓" : ""}</span>
+                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${m.done ? "bg-info-solid text-white" : "border border-white/25"}`}>{m.done ? "✓" : ""}</span>
                             <span className={m.done ? "line-through decoration-white/30" : "text-white"}>{t(m.ar, m.en)}</span>
                           </Link>
                         </li>
@@ -261,7 +261,7 @@ export default function SandboxDock({ lang }: { lang: "ar" | "en" }) {
         <span className="grid h-9 w-9 place-items-center rounded-full text-noir" style={{ background: role ? ROLE_META[role].tone : "#e9cfa6" }}>
           <Icon name={role ? ROLE_META[role].icon : "user"} size={17} />
         </span>
-        <span className="num absolute -end-1 -top-1 rounded-full bg-[#3aa0c8] px-1.5 text-[10px] font-bold leading-4 text-white sm:hidden">{done}/{all.length}</span>
+        <span className="num absolute -end-1 -top-1 rounded-full bg-info-solid px-1.5 text-[10px] font-bold leading-4 text-white sm:hidden">{done}/{all.length}</span>
         <span className="hidden leading-tight text-start sm:block">
           <span className="block text-[10px] text-gold-soft">{t("مختبر الصلاحيات", "Roles lab")}</span>
           <span className="block text-xs font-semibold text-white">{role ? t(ROLE_META[role].ar, ROLE_META[role].en) : t("اختر دورًا", "Pick a role")} · <span className="num">{done}/{all.length}</span></span>

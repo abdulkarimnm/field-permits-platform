@@ -23,7 +23,7 @@ export async function Timeline({ events, showActor }: { events: { at: Date; acto
             {fmtDate(e.at)}
             {showActor && e.actor !== "applicant" ? ` · ${e.actor}` : ""}
           </p>
-          {e.note && <p className="mt-1 rounded-lg bg-paper px-3 py-2 text-sm">{e.note}</p>}
+          {e.note && <p className="mt-1 rounded-lg bg-panel px-3 py-2 text-sm">{e.note}</p>}
         </li>
       ))}
     </ol>

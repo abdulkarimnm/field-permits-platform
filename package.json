@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/check-theme.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:theme": "node scripts/check-theme.mjs",
+    "audit:theme": "node scripts/theme-audit.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.15",
@@ -29,6 +32,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.29",
+    "puppeteer-core": "^24.43.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

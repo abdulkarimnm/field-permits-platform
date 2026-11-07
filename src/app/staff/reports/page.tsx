@@ -91,7 +91,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
               </select>
             </div>
           )}
-          <button className="min-h-11 rounded-xl bg-ink px-5 text-sm font-semibold text-white hover:bg-brand">{t("عرض التقرير", "Show report")}</button>
+          <button className="min-h-11 rounded-xl bg-brand px-5 text-sm font-semibold text-white hover:bg-brand-deep">{t("عرض التقرير", "Show report")}</button>
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {presets.map(([ar, en, a, b]) => {
@@ -112,7 +112,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
         title={<span>{r.title}</span>}
         action={
           <div className="flex flex-wrap gap-2">
-            <a href={`/api/reports/${id}?${qs()}`} className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-[#1d6f42] px-4 text-sm font-semibold text-white shadow-sm transition hover:brightness-110">
+            <a href={`/api/reports/${id}?${qs()}`} className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-excel px-4 text-sm font-semibold text-white shadow-sm transition hover:brightness-110">
               <Icon name="download" size={16} /> {t("تصدير Excel", "Export Excel")}
             </a>
             <a href={`/staff/reports/print?${qs()}`} target="_blank" rel="noopener" className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-gradient-to-b from-brand to-brand-deep px-4 text-sm font-semibold text-white shadow-sm transition hover:brightness-110">
@@ -126,7 +126,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {r.summary.map((s) => (
-            <div key={s.label} className="rounded-xl border border-line bg-paper p-3">
+            <div key={s.label} className="rounded-xl border border-line bg-panel p-3">
               <p className="text-xs text-ink-soft">{s.label}</p>
               <p className="num mt-1 font-display text-2xl font-bold text-brand">{s.value}</p>
               {s.note && <p className="mt-0.5 truncate text-xs text-ink-soft" title={s.note}>{s.note}</p>}

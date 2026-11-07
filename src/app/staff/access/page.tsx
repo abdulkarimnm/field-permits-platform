@@ -43,15 +43,15 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
           {CAP_GROUPS.map((g) => {
             const items = capList.filter((c) => CAPS[c].group === g.id);
             return (
-              <div key={g.id} className="rounded-xl border border-line bg-paper p-3">
+              <div key={g.id} className="rounded-xl border border-line bg-panel p-3">
                 <p className="mb-2 text-xs font-bold text-ink-soft">{t(g.ar, g.en)}</p>
                 <ul className="space-y-1.5">
                   {items.map((c) => {
                     const on = mine.has(c);
                     return (
-                      <li key={c} className={`flex items-start gap-2 text-[13px] ${on ? "text-ink" : "text-ink-soft/60"}`}>
+                      <li key={c} className={`flex items-start gap-2 text-[13px] ${on ? "text-ink" : "text-ink-soft"}`}>
                         <span className={`mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full text-[9px] font-bold ${on ? "bg-ok text-white" : "border border-line"}`} aria-hidden>{on ? "✓" : ""}</span>
-                        <span className={on ? "" : "line-through decoration-ink-soft/30"}>{t(CAPS[c].ar, CAPS[c].en)}</span>
+                        <span className={on ? "" : "line-through decoration-ink-soft/50"}>{t(CAPS[c].ar, CAPS[c].en)}</span>
                         <span className="sr-only">{on ? t("متاح", "granted") : t("غير متاح", "not granted")}</span>
                       </li>
                     );
@@ -75,7 +75,7 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
                   <th key={r} scope="col" className={`px-2 py-3 text-center text-xs font-bold ${u.roles.includes(r) ? "rounded-t-xl bg-chip text-brand" : "text-ink"}`}>
                     <span className="mx-auto mb-1 block h-1.5 w-8 rounded-full" style={{ background: ROLE_INFO[r].tone }} />
                     {t(ROLE_INFO[r].ar, ROLE_INFO[r].en)}
-                    {u.roles.includes(r) && <span className="block text-[10px] font-semibold text-brand/70">{t("دورك", "your role")}</span>}
+                    {u.roles.includes(r) && <span className="block text-[10px] font-semibold text-ink-soft">{t("دورك", "your role")}</span>}
                   </th>
                 ))}
               </tr>
@@ -83,15 +83,15 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
             <tbody>
               {CAP_GROUPS.map((g) => (
                 <Fragment key={g.id}>
-                  <tr><th colSpan={ROLES.length + 1} scope="colgroup" className="border-t border-line bg-paper px-3 py-1.5 text-start text-[11px] font-bold uppercase tracking-wide text-ink-soft">{t(g.ar, g.en)}</th></tr>
+                  <tr><th colSpan={ROLES.length + 1} scope="colgroup" className="border-t border-line bg-panel px-3 py-1.5 text-start text-[11px] font-bold uppercase tracking-wide text-ink-soft">{t(g.ar, g.en)}</th></tr>
                   {capList.filter((c) => CAPS[c].group === g.id).map((c) => (
                     <tr key={c} className="group">
-                      <th scope="row" className="sticky start-0 border-t border-line bg-surface px-3 py-2 text-start font-medium text-ink group-hover:bg-paper">{t(CAPS[c].ar, CAPS[c].en)}</th>
+                      <th scope="row" className="sticky start-0 border-t border-line bg-surface px-3 py-2 text-start font-medium text-ink group-hover:bg-panel">{t(CAPS[c].ar, CAPS[c].en)}</th>
                       {ROLES.map((r) => {
                         const on = ROLE_CAPS[r].includes(c);
                         return (
-                          <td key={r} className={`border-t border-line px-2 py-2 text-center group-hover:bg-paper ${u.roles.includes(r) ? "bg-chip/50" : ""}`}>
-                            {on ? <span className="inline-grid h-6 w-6 place-items-center rounded-full bg-ok text-xs font-bold text-white" aria-label={t("مسموح", "allowed")}>✓</span> : <span className="text-ink-soft/40" aria-label={t("غير مسموح", "not allowed")}>—</span>}
+                          <td key={r} className={`border-t border-line px-2 py-2 text-center group-hover:bg-panel ${u.roles.includes(r) ? "bg-chip/50" : ""}`}>
+                            {on ? <span className="inline-grid h-6 w-6 place-items-center rounded-full bg-ok text-xs font-bold text-white" aria-label={t("مسموح", "allowed")}>✓</span> : <span className="text-ink-soft" aria-label={t("غير مسموح", "not allowed")}>—</span>}
                           </td>
                         );
                       })}
@@ -103,9 +103,9 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
           </table>
         </div>
         <ul className="mt-4 grid gap-2 text-xs text-ink-soft sm:grid-cols-3">
-          <li className="rounded-xl bg-paper p-3"><strong className="text-ink">{t("مسؤول المرحلة", "Stage owner")}:</strong> {t("صلاحية المراجعة أو الاعتماد تُمارَس فقط على الطلبات المسندة لدورك أو لشخصك في إعدادات المسار.", "Review/approval applies only to requests assigned to your role or to you in the workflow settings.")}</li>
-          <li className="rounded-xl bg-paper p-3"><strong className="text-ink">{t("فصل المهام", "Separation of duties")}:</strong> {t("من اعتمد المرحلة الأولى لا يعتمد النهائية للطلب نفسه عند تفعيل الخيار.", "Whoever did stage 1 cannot do stage 2 of the same request when enabled.")}</li>
-          <li className="rounded-xl bg-paper p-3"><strong className="text-ink">{t("حماية البيانات", "Data protection")}:</strong> {t("أرقام الهوية مخفية جزئيًا، وكل إظهار كامل أو اطلاع على مرفق يُسجَّل.", "IDs are partially masked; every full reveal or attachment view is logged.")}</li>
+          <li className="rounded-xl bg-panel p-3"><strong className="text-ink">{t("مسؤول المرحلة", "Stage owner")}:</strong> {t("صلاحية المراجعة أو الاعتماد تُمارَس فقط على الطلبات المسندة لدورك أو لشخصك في إعدادات المسار.", "Review/approval applies only to requests assigned to your role or to you in the workflow settings.")}</li>
+          <li className="rounded-xl bg-panel p-3"><strong className="text-ink">{t("فصل المهام", "Separation of duties")}:</strong> {t("من اعتمد المرحلة الأولى لا يعتمد النهائية للطلب نفسه عند تفعيل الخيار.", "Whoever did stage 1 cannot do stage 2 of the same request when enabled.")}</li>
+          <li className="rounded-xl bg-panel p-3"><strong className="text-ink">{t("حماية البيانات", "Data protection")}:</strong> {t("أرقام الهوية مخفية جزئيًا، وكل إظهار كامل أو اطلاع على مرفق يُسجَّل.", "IDs are partially masked; every full reveal or attachment view is logged.")}</li>
         </ul>
       </Card>
 
@@ -137,7 +137,7 @@ export default async function Access({ searchParams }: { searchParams: Promise<{
                 <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
                   {previewNav.length === 0 && <li className="text-sm text-ink-soft">—</li>}
                   {previewNav.map((n) => (
-                    <li key={n.href} className="flex items-center gap-2 rounded-lg bg-paper px-3 py-2 text-sm"><Icon name={n.icon as IconName} size={16} className="text-brand" />{t(n.ar, n.en)}</li>
+                    <li key={n.href} className="flex items-center gap-2 rounded-lg bg-panel px-3 py-2 text-sm"><Icon name={n.icon as IconName} size={16} className="text-brand" />{t(n.ar, n.en)}</li>
                   ))}
                 </ul>
                 <p className="mt-3 text-xs text-ink-soft">{preview === "verifier" ? t("يُوجَّه مباشرة إلى بوابة التحقق عند الدخول ولا يرى الطلبات أو المرفقات.", "Lands directly on the verification portal and never sees requests or attachments.") : t(`${ROLE_CAPS[preview].length} صلاحية من ${capList.length}.`, `${ROLE_CAPS[preview].length} of ${capList.length} permissions.`)}</p>

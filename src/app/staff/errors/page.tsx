@@ -73,7 +73,7 @@ export default async function Errors({ searchParams }: { searchParams: Promise<{
           {Object.entries(SRC).map(([k, v]) => <option key={k} value={k}>{t(...v)}</option>)}
         </select>
         <input name="q" defaultValue={sp.q} placeholder={t("بحث في الرسالة أو المسار أو رمز المرجع", "Search message, path or reference")} className="min-h-9 min-w-56 flex-1 rounded-lg border border-line px-3 text-sm" />
-        <button className="min-h-9 rounded-lg bg-ink px-4 text-sm font-semibold text-white">{t("بحث", "Search")}</button>
+        <button className="min-h-9 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-deep">{t("بحث", "Search")}</button>
       </form>
 
       <Card className="mt-4">
@@ -95,7 +95,7 @@ export default async function Errors({ searchParams }: { searchParams: Promise<{
                     <span className="text-xs text-ink-soft">{dt(r.last_at)}</span>
                     {r.resolved && <Badge tone="ok">{t("معالج", "Resolved")}</Badge>}
                   </summary>
-                  <div className="mt-3 space-y-3 rounded-xl bg-paper p-3 text-xs">
+                  <div className="mt-3 space-y-3 rounded-xl bg-panel p-3 text-xs">
                     <dl className="grid gap-2 sm:grid-cols-4">
                       <div><dt className="text-ink-soft">{t("المسار", "Path")}</dt><dd className="font-mono" dir="ltr">{r.method ? `${r.method} ` : ""}{r.path ?? "—"}</dd></div>
                       <div><dt className="text-ink-soft">{t("رمز المرجع", "Reference")}</dt><dd className="num font-bold">{r.digest ?? "—"}</dd></div>
@@ -103,7 +103,7 @@ export default async function Errors({ searchParams }: { searchParams: Promise<{
                       <div><dt className="text-ink-soft">{t("آخر ظهور", "Last seen")}</dt><dd>{dt(r.last_at)}</dd></div>
                     </dl>
                     {r.user_agent && <p className="truncate text-ink-soft" dir="ltr">{r.user_agent}</p>}
-                    {r.stack && <pre className="max-h-64 overflow-auto rounded-lg bg-ink p-3 text-[11px] leading-relaxed text-cream" dir="ltr">{r.stack}</pre>}
+                    {r.stack && <pre className="max-h-64 overflow-auto rounded-lg bg-noir p-3 text-[11px] leading-relaxed text-cream" dir="ltr">{r.stack}</pre>}
                     <div className="flex flex-wrap items-center gap-2">
                       <form action={toggleAction}>
                         <input type="hidden" name="id" value={r.id} />

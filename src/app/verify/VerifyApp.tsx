@@ -243,7 +243,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
           {(["in", "out"] as const).map((d) => (
             <button key={d} type="button" role="radio" aria-checked={dir === d}
               onClick={() => { setDir(d); setRes(null); setExitRes(null); try { localStorage.setItem("vp_dir", d); } catch {} }}
-              className={`min-h-11 rounded-lg text-sm font-bold transition ${dir === d ? (d === "in" ? "bg-ok text-white shadow" : "bg-[#2b6f93] text-white shadow") : "text-ink-soft hover:text-ink"}`}>
+              className={`min-h-11 rounded-lg text-sm font-bold transition ${dir === d ? (d === "in" ? "bg-ok text-white shadow" : "bg-info-solid text-white shadow") : "text-ink-soft hover:text-ink"}`}>
               {d === "in" ? t("↓ دخول", "↓ Entry") : t("↑ خروج", "↑ Exit")}
             </button>
           ))}
@@ -279,8 +279,8 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
 
       {exitRes && (
         exitRes.found && exitRes.exited ? (
-          <div className="overflow-hidden rounded-2xl border border-[#2b6f93]/30 bg-surface shadow-[0_24px_60px_-30px_rgba(43,111,147,.5)]">
-            <div className={`${undone === "done" ? "bg-off" : "bg-[#2b6f93]"} px-5 py-5 text-center text-white`}>
+          <div className="overflow-hidden rounded-2xl border border-info/30 bg-surface shadow-[0_24px_60px_-30px_rgba(43,111,147,.5)]">
+            <div className={`${undone === "done" ? "bg-off" : "bg-info-solid"} px-5 py-5 text-center text-white`}>
               <p className="font-display text-3xl font-bold">{undone === "done" ? t("أُلغي الخروج", "Exit undone") : t("تم تسجيل الخروج", "Exit recorded")}</p>
               <p className="num mt-1 text-sm opacity-90">{exitRes.number} · {exitRes.org}</p>
               <p className="mt-2 text-sm font-semibold">
@@ -294,20 +294,20 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
               <div>
                 <p className="mb-1.5 text-xs font-semibold text-ink-soft">{t("الأفراد الخارجون", "People out")}</p>
                 <ul className="max-h-60 space-y-1 overflow-y-auto text-sm">
-                  {exitRes.people.map((p, i) => <li key={i} className="flex items-center gap-2 rounded-lg bg-paper px-3 py-1.5"><span className="text-[#2b6f93]">↑</span><span className="flex-1">{p.name}</span><span className="num text-xs text-ink-soft">{p.id}</span></li>)}
+                  {exitRes.people.map((p, i) => <li key={i} className="flex items-center gap-2 rounded-lg bg-panel px-3 py-1.5"><span className="text-info">↑</span><span className="flex-1">{p.name}</span><span className="num text-xs text-ink-soft">{p.id}</span></li>)}
                 </ul>
               </div>
               {(exitRes.vehicles.length > 0 || exitRes.equipment.length > 0) && (
                 <div>
                   <p className="mb-1.5 text-xs font-semibold text-ink-soft">{t("المركبات والمعدات", "Vehicles & equipment")}</p>
                   <ul className="space-y-1 text-sm">
-                    {exitRes.vehicles.map((v, i) => <li key={`v${i}`} className="flex items-center gap-2 rounded-lg bg-paper px-3 py-1.5"><SaudiPlate plate={v.plate} size="sm" /> <span className="text-xs text-ink-soft">{v.type}</span></li>)}
-                    {exitRes.equipment.map((x, i) => <li key={`e${i}`} className="rounded-lg bg-paper px-3 py-1.5">{x.name} <span className="num text-xs text-ink-soft">×{x.qty}</span></li>)}
+                    {exitRes.vehicles.map((v, i) => <li key={`v${i}`} className="flex items-center gap-2 rounded-lg bg-panel px-3 py-1.5"><SaudiPlate plate={v.plate} size="sm" /> <span className="text-xs text-ink-soft">{v.type}</span></li>)}
+                    {exitRes.equipment.map((x, i) => <li key={`e${i}`} className="rounded-lg bg-panel px-3 py-1.5">{x.name} <span className="num text-xs text-ink-soft">×{x.qty}</span></li>)}
                   </ul>
                 </div>
               )}
             </div>
-            <div className="space-y-2 border-t border-line bg-paper p-4">
+            <div className="space-y-2 border-t border-line bg-panel p-4">
               <button autoFocus className={`${btn.primary} w-full py-4 text-base`} onClick={() => { setExitRes(null); setScanning(true); }}>{t("مسح الخروج التالي", "Scan next exit")}</button>
               {undone === "idle" && (
                 <button className={`${btn.ghost} w-full justify-center text-ink-soft`}
@@ -389,7 +389,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
             {ok.people.map((p, i) => (
               <Check key={i} on={matched.people.has(i)} onClick={() => toggle("people", i)}>
                 <span className="flex-1">{p.name}</span>
-                {ok.insidePeople?.includes(i) && <span className="rounded-full bg-[#e3f0f6] px-2 py-0.5 text-[11px] font-semibold text-[#2b6f93]">{t("بالداخل الآن", "Inside now")}</span>}
+                {ok.insidePeople?.includes(i) && <span className="rounded-full bg-info-soft px-2 py-0.5 text-[11px] font-semibold text-info">{t("بالداخل الآن", "Inside now")}</span>}
                 <span className="num text-xs text-ink-soft">{revealed[i] ?? p.id}</span>
                 {!ok.offline && !revealed[i] && (
                   <button
@@ -464,7 +464,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
             </div>
           )}
 
-          <div className="space-y-3 border-t border-line bg-paper p-4">
+          <div className="space-y-3 border-t border-line bg-panel p-4">
             {flash ? (
               <>
                 <p className={`rounded-xl px-4 py-3 text-center text-sm font-semibold ${flash.tone === "ok" ? "bg-ok-soft text-ok" : "bg-bad-soft text-bad"}`}>{flash.text}</p>
@@ -472,7 +472,7 @@ export default function VerifyApp({ lang, gates, initialCode, repOtpMode }: { la
               </>
             ) : (
               <>
-                <button className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-[#24915c] to-ok text-base font-bold text-white shadow-[0_10px_24px_-12px_rgba(31,122,77,.9)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:from-off-soft disabled:to-off-soft disabled:text-off disabled:shadow-none" disabled={allowDisabled} onClick={() => decide("allowed")}>
+                <button className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-b from-ok-bright to-ok text-base font-bold text-white shadow-[0_10px_24px_-12px_rgba(31,122,77,.9)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:from-off-soft disabled:to-off-soft disabled:text-off disabled:shadow-none" disabled={allowDisabled} onClick={() => decide("allowed")}>
                   {t("السماح بالدخول", "Allow entry")} {ok.canAllow && <span className="num text-sm opacity-80">({matched.people.size}/{ok.people.length})</span>}
                 </button>
                 {!ok.canAllow && <p className="text-center text-xs text-bad">{t("النظام يمنع السماح: التصريح غير سارٍ أو خارج نطاق هذه البوابة.", "Blocked: permit not valid or outside this gate's scope.")}</p>}

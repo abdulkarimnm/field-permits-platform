@@ -53,7 +53,7 @@ export default async function PermitAdmin({ params, searchParams }: { params: Pr
               <KV k={t("الأفراد / المركبات / المعدات", "People / vehicles / equipment")} v={<span className="num">{p.data.people.length} / {p.data.vehicles.length} / {p.data.equipment.length}</span>} />
               <KV k={t("تاريخ الإصدار", "Issued")} v={fmtDate(p.issued_at)} />
             </dl>
-            {p.status_reason && <p className="mt-4 rounded-lg bg-paper px-3 py-2 text-sm"><b>{t("سبب آخر تغيير:", "Last change reason:")}</b> {p.status_reason}</p>}
+            {p.status_reason && <p className="mt-4 rounded-lg bg-panel px-3 py-2 text-sm"><b>{t("سبب آخر تغيير:", "Last change reason:")}</b> {p.status_reason}</p>}
           </Card>
 
           <Card title={t("سجل التحقق الميداني", "Field verification log")}>

@@ -382,7 +382,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
         <Sec n={4} title={sections[3]} done={secDone[3]} hint={<span className="num">{filledPeople}/{LIMITS.people}</span>}>
           <div data-field="people" className="space-y-2">
             {teams.length > 0 && (
-              <div className="rounded-2xl border border-brand/25 bg-gradient-to-b from-chip/70 to-white p-3">
+              <div className="rounded-2xl border border-gold/40 bg-gradient-to-b from-chip/70 to-surface p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-bold text-ink">{t("اختر فريق عمل من ملف الجهة", "Pick a work team from your profile")}</p>
                   <Link href="/apply/profile" className="text-xs font-semibold text-brand">{t("إدارة الفرق", "Manage teams")}</Link>
@@ -454,7 +454,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
               {filledPeople > 0 && <button type="button" className={btn.ghost} onClick={() => setTeamSave({ open: !teamSave.open, name: teams.find((x) => x.id === activeTeam)?.name ?? "" })}>{t("حفظ القائمة كفريق", "Save list as a team")}</button>}
             </div>
             {teamSave.open && (
-              <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-paper p-3">
+              <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-panel p-3">
                 <input aria-label={t("اسم الفريق", "Team name")} autoFocus className={`${input} max-w-xs`} placeholder={t("اسم الفريق", "Team name")} value={teamSave.name} onChange={(e) => setTeamSave({ ...teamSave, name: e.target.value.slice(0, 60) })}
                   onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); saveAsTeam(); } }} />
                 <button type="button" className={`${btn.primary} min-h-10`} disabled={!teamSave.name.trim()} onClick={saveAsTeam}>{t("حفظ في ملف الجهة", "Save to profile")}</button>
@@ -492,7 +492,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
             </div>
           </div>
           {vehicles.length > 0 && (
-            <div data-field="slot" className="rounded-xl border border-line bg-paper p-3 sm:p-4">
+            <div data-field="slot" className="rounded-xl border border-line bg-panel p-3 sm:p-4">
               <h3 className="mb-1 font-sans text-sm font-semibold text-ink">{t("احجز موعد دخول المركبات", "Book the vehicles' entry slot")}</h3>
               <p className="mb-3 text-xs text-ink-soft">
                 {zoneIds.length
@@ -606,7 +606,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
               <span className="num text-ink-soft">{doneCount}/8</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-line">
-              <div className="h-full rounded-full bg-gradient-to-l from-ok to-[#2f9a66] transition-[width] duration-500" style={{ width: `${(doneCount / 8) * 100}%` }} />
+              <div className="h-full rounded-full bg-gradient-to-l from-ok to-ok-bright transition-[width] duration-500" style={{ width: `${(doneCount / 8) * 100}%` }} />
             </div>
           </div>
           <ol className="space-y-1 text-sm">
@@ -627,7 +627,7 @@ export default function RequestForm({ init, zones, lang, saved, teamId }: { init
 
       {/* Review sheet: one look at what will be sent — fewer returns for completion */}
       {review && (
-        <div className="fixed inset-0 z-[90] grid place-items-end bg-ink/45 p-0 sm:place-items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="rv-h" onClick={() => setReview(false)}>
+        <div className="fixed inset-0 z-[90] grid place-items-end bg-noir/60 p-0 sm:place-items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="rv-h" onClick={() => setReview(false)}>
           <div className="max-h-[92dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl bg-surface p-5 pb-0 sm:rounded-3xl" onClick={(e) => e.stopPropagation()}>
             <h3 id="rv-h" className="font-sans text-lg font-bold text-ink">{t("راجع طلبك قبل الإرسال", "Review before sending")}</h3>
             <p className="mt-1 text-xs text-ink-soft">{t("بعد الإرسال يمر الطلب بالمراجعة الأولية ثم الاعتماد النهائي.", "After sending, it goes to initial review then final approval.")}</p>

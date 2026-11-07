@@ -130,7 +130,7 @@ export default async function Workspace() {
   return (
     <Shell nav={staffNav(u.roles)} active="/staff" user={u.name} kind="staff" wide>
       {/* identity: who you are here and what that lets you do */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-brand-deep via-brand to-[#8f4a3c] p-5 text-white shadow-[0_24px_60px_-34px_rgba(90,43,35,.9)] sm:p-7">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-l from-brand-deep via-brand to-brand-glow p-5 text-white shadow-[0_24px_60px_-34px_rgba(90,43,35,.9)] sm:p-7">
         <svg className="pointer-events-none absolute -bottom-10 -start-6 h-48 opacity-[.08]" viewBox="0 0 96 64" aria-hidden><g fill="#fff"><path d="M4 64V22a14 14 0 0 1 28 0v42z" /><path d="M34 64V22a14 14 0 0 1 28 0v42z" /><path d="M64 64V22a14 14 0 0 1 28 0v42z" /></g></svg>
         <p className="text-sm text-white/70">{greet}</p>
         <h1 className="mt-1 font-display text-2xl font-bold sm:text-3xl">{u.name}</h1>
@@ -172,7 +172,7 @@ export default async function Workspace() {
                   const list = rows.filter((r) => (st === 1 ? r.status === "pending_review" : r.status === "pending_approval"));
                   const oldest = list.reduce((m, r) => Math.max(m, ageH(r.submitted_at)), 0);
                   return (
-                    <div key={String(st)} className="rounded-xl border border-line bg-paper p-3">
+                    <div key={String(st)} className="rounded-xl border border-line bg-panel p-3">
                       <p className="text-xs text-ink-soft">{l}</p>
                       <p className="num mt-1 font-display text-2xl font-bold text-brand">{list.length}</p>
                       <p className={`text-xs ${oldest >= SLA_H ? "font-semibold text-bad" : "text-ink-soft"}`}>{list.length ? t(`أقدم طلب منذ ${oldest} ساعة`, `Oldest ${oldest}h`) : t("لا يوجد", "None")}</p>
@@ -195,7 +195,7 @@ export default async function Workspace() {
               {pres.parties.length === 0 ? <Empty>{t("لا أحد داخل الميدان الآن", "Nobody inside right now")}</Empty> : (
                 <ul className="space-y-1.5">
                   {pres.parties.sort((a, b) => b.people - a.people).slice(0, 6).map((p) => (
-                    <li key={p.permit} className="flex items-center gap-3 rounded-xl bg-paper px-3 py-2 text-sm">
+                    <li key={p.permit} className="flex items-center gap-3 rounded-xl bg-panel px-3 py-2 text-sm">
                       <span className="num grid h-8 min-w-8 place-items-center rounded-lg bg-brand px-1.5 font-bold text-white">{p.people}</span>
                       <span className="min-w-0 flex-1 truncate">{p.org} <span className="num text-xs text-ink-soft">· {p.number}</span></span>
                       {p.expired ? <Badge tone="bad">{t("منتهٍ", "Expired")}</Badge> : p.since && <span className="text-xs text-ink-soft">{t("منذ", "since")} {fmtDate(p.since).split(" ").slice(-2).join(" ")}</span>}

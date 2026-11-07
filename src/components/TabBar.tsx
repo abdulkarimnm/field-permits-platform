@@ -74,10 +74,10 @@ export default function TabBar({
                   className="relative flex min-h-[3.75rem] w-full flex-col items-center justify-center gap-1 transition active:scale-95"
                 >
                   {on && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-gold" />}
-                  <span className={`grid h-8 w-12 place-items-center rounded-full transition ${on ? "bg-white/10 text-gold-soft" : "text-cream/55"}`}>
+                  <span className={`grid h-8 w-12 place-items-center rounded-full transition ${on ? "bg-white/10 text-gold-soft" : "text-cream/70"}`}>
                     <Icon name={t.icon} size={22} strokeWidth={on ? 2 : 1.7} />
                   </span>
-                  <span className={`text-[11px] ${on ? "font-semibold text-gold-soft" : "text-cream/55"}`}>{t.label}</span>
+                  <span className={`text-[11px] ${on ? "font-semibold text-gold-soft" : "text-cream/75"}`}>{t.label}</span>
                 </Link>
               </li>
             );
@@ -90,7 +90,7 @@ export default function TabBar({
               }}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="flex min-h-[3.75rem] w-full flex-col items-center justify-center gap-1 text-cream/55 active:scale-95"
+              className="flex min-h-[3.75rem] w-full flex-col items-center justify-center gap-1 text-cream/75 active:scale-95"
             >
               <span className="grid h-8 w-12 place-items-center rounded-full"><Icon name="more" size={24} strokeWidth={2.6} /></span>
               <span className="text-[11px]">{labels.more}</span>
